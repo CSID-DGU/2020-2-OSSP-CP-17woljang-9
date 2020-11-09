@@ -7,17 +7,17 @@ from random import *
 from pygame.locals import *
 
 # Define
-block_size = 17 # Height, width of single block
+block_size = 17 # Height, width of single block #블록 사이즈 이상해?!
 width = 10 # Board width
 height = 20 # Board height
-framerate = 30 # Bigger -> Slower
+framerate = 30 # Bigger -> Slower #너무 높으면 모니터가 제대로 출력 못함
 
 pygame.init()
 
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((300, 374))
+clock = pygame.time.Clock() #창, 화면을 초당 몇번 출력하는가(FPS) clock.tick 높을수록 cpu많이 사
+screen = pygame.display.set_mode((300, 374))  #GUI창 설정하는 변수
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.display.set_caption("PYTRIS™")
+pygame.display.set_caption("PYTRIS™") #GUI 창의 이름
 
 class ui_variables:
     # Fonts
@@ -65,13 +65,13 @@ class ui_variables:
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3]
 
 # Draw block
-def draw_block(x, y, color):
-    pygame.draw.rect(
+def draw_block(x, y, color): #블록 만들기
+    pygame.draw.rect( #사각형 만들기(테트리스 블록 )
         screen,
-        color,
+        color, #t_color?
         Rect(x, y, block_size, block_size)
     )
-    pygame.draw.rect(
+    pygame.draw.rect( #거의 검정색 사각형 만들기
         screen,
         ui_variables.grey_1,
         Rect(x, y, block_size, block_size),
@@ -79,18 +79,18 @@ def draw_block(x, y, color):
     )
 
 # Draw game screen
-def draw_board(next, hold, score, level, goal):
+def draw_board(next, hold, score, level, goal): #next는 아래에서 7개모양 중 하나로 선택됨
     screen.fill(ui_variables.grey_1)
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(204, 0, 96, 374)
+        Rect(204, 0, 96, 374) #사이즈 고정
     )
 
-    # Draw next mino
-    grid_n = tetrimino.mino_map[next - 1][0]
+    # Draw next mino 다음 블록
+    grid_n = tetrimino.mino_map[next - 1][0] #(배열이라-1) 다음 블록의 원래 모양
 
     for i in range(4):
         for j in range(4):
@@ -100,13 +100,13 @@ def draw_board(next, hold, score, level, goal):
                 pygame.draw.rect(
                     screen,
                     ui_variables.t_color[grid_n[i][j]],
-                    Rect(dx, dy, block_size, block_size)
+                    Rect(dx, dy, block_size, block_size) #해당 색, 사이즈의 블록 출력
                 )
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
 
-    if hold_mino != -1:
+    if hold_mino != -1:  #기본값이 -1. 즉 hold블록 존재할 때
         for i in range(4):
             for j in range(4):
                 dx = 220 + block_size * j
@@ -115,7 +115,7 @@ def draw_board(next, hold, score, level, goal):
                     pygame.draw.rect(
                         screen,
                         ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, block_size, block_size)
+                        Rect(dx, dy, block_size, block_size) #해당 색, 사이즈의 블록 출력
                     )
 
     # Set max score
@@ -142,7 +142,7 @@ def draw_board(next, hold, score, level, goal):
     screen.blit(text_goal, (215, 314))
     screen.blit(goal_value, (220, 330))
 
-    # Draw board
+    # Draw board  #board?
     for x in range(width):
         for y in range(height):
             dx = 17 + block_size * x
@@ -150,18 +150,18 @@ def draw_board(next, hold, score, level, goal):
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 # Draw a tetrimino
-def draw_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
+def draw_mino(x, y, mino, r): #mino는 모양, r은 회전된 모양 중 하나
+    grid = tetrimino.mino_map[mino - 1][r] #grid : 출력할 테트리스
 
     tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r):
-        ty += 1
+    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
+        ty += 1 #한칸 밑으로 하강
 
     # Draw ghost
     for i in range(4):
         for j in range(4):
-            if grid[i][j] != 0:
-                matrix[tx + j][ty + i] = 8
+            if grid[i][j] != 0: #테트리스 블록에서 해당 행렬위치에 블록 존재하면
+                matrix[tx + j][ty + i] = 8 #테트리스가 쌓일 위치에 8이라는 ghost 만듦
 
     # Draw mino
     for i in range(4):
@@ -192,9 +192,9 @@ def is_bottom(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (y + i + 1) > 20:
+                if (y + i + 1) > 20:   #바닥의 y좌표에 있음(바닥에 닿음)
                     return True
-                elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8:
+                elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8:  #그 블록 아랫쪽에 0, 8 아님(즉 블록 존재 함)
                     return True
 
     return False
@@ -206,9 +206,9 @@ def is_leftedge(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j - 1) < 0:
+                if (x + j - 1) < 0: #맨 왼쪽에 위치함
                     return True
-                elif matrix[x + j - 1][y + i] != 0:
+                elif matrix[x + j - 1][y + i] != 0: #그 위치의 왼쪽에 이미 무엇인가 존재함
                     return True
 
     return False
@@ -220,26 +220,26 @@ def is_rightedge(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j + 1) > 9:
+                if (x + j + 1) > 9: #맨 오른쪽에 위치
                     return True
-                elif matrix[x + j + 1][y + i] != 0:
+                elif matrix[x + j + 1][y + i] != 0:  #그 위치의 오른쪽에 이미 무엇인가 존재함
                     return True
 
     return False
 
 # Returns true if turning right is possible
 def is_turnable_r(x, y, mino, r):
-    if r != 3:
-        grid = tetrimino.mino_map[mino - 1][r + 1]
+    if r != 3: #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
+        grid = tetrimino.mino_map[mino - 1][r + 1] #3이 아니면 그 다음 모양
     else:
-        grid = tetrimino.mino_map[mino - 1][0]
+        grid = tetrimino.mino_map[mino - 1][0] #3이면 0번째 모양으로
 
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
+                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20: #테트리스 matrix크기 벗어나면 못돌림
                     return False
-                elif matrix[x + j][y + i] != 0:
+                elif matrix[x + j][y + i] != 0: #해당 자리에 이미 블록이 있으면 못돌림
                     return False
 
     return True
@@ -254,15 +254,15 @@ def is_turnable_l(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
+                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20: #테트리스 matrix크기 벗어나면 못돌림
                     return False
-                elif matrix[x + j][y + i] != 0:
+                elif matrix[x + j][y + i] != 0: #해당 자리에 이미 블록이 있으면 못돌림
                     return False
 
     return True
 
 # Returns true if new block is drawable
-def is_stackable(mino):
+def is_stackable(mino): #??
     grid = tetrimino.mino_map[mino - 1][0]
 
     for i in range(4):
@@ -289,18 +289,18 @@ hard_drop = False
 dx, dy = 3, 0 # Minos location status
 rotation = 0 # Minos rotation status
 
-mino = randint(1, 7) # Current mino
-next_mino = randint(1, 7) # Next mino
+mino = randint(1, 7) # Current mino #테트리스 블록 7가지 중 하나
+next_mino = randint(1, 7) # Next mino # 다음 테트리스 블록 7가지 중 하나
 
 hold = False # Hold status
-hold_mino = -1 # Holded mino
+hold_mino = -1 # Holded mino #현재 hold하는 것 없는 상태
 
 name_location = 0
 name = [65, 65, 65]
 
 with open('leaderboard.txt') as f:
     lines = f.readlines()
-lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
+lines = [line.rstrip('\n') for line in open('leaderboard.txt')] #leaderboard.txt 한줄씩 읽어옴
 
 leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
 for i in lines:
