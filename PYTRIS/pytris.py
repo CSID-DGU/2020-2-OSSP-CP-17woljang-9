@@ -343,7 +343,8 @@ while not done:
     # Game screen
     elif start:
         for event in pygame.event.get():
-            if event.type == QUIT:               done = True
+            if event.type == QUIT:
+                done = True
             elif event.type == USEREVENT:
                 # Set speed
                 if not game_over:
@@ -539,7 +540,6 @@ while not done:
             if event.type == QUIT:#유저가 발생시킨 이벤트 타입을 확인, 여기서는 Quit, 게임 창에서의 닫기 버튼 클릭하면 발생
                 done = True#무한루프에서 나옴
             elif event.type == USEREVENT:#유저가 임의로 설정하는 이벤트
-
                 pygame.time.set_timer(pygame.USEREVENT, 300)#타이머 설정, 변수는 이벤트명과 타이머 간격(밀리초 단위)
                 #주어진 시간(밀리 초)마다 이벤트 큐에 표시할 이벤트 유형을 설정
                 #처음 만들었던 ui_variables 클래스에서 지정한 글꼴 가져옴(OpenSans-Bold글꼴,크기는 30)
