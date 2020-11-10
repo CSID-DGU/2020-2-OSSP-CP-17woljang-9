@@ -536,19 +536,22 @@ while not done:
 
     # Game over screen
     elif game_over:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                done = True
-            elif event.type == USEREVENT:
-                pygame.time.set_timer(pygame.USEREVENT, 300)
+        for event in pygame.event.get():#유저의 키보드 혹은 마우스 이벤트를 확인#
+            if event.type == QUIT:#유저가 발생시킨 이벤트 타입을 확인, 여기서는 Quit, 게임 창에서의 닫기 버튼 클릭하면 발생
+                done = True#무한루프에서 나옴
+            elif event.type == USEREVENT:#유저가 임의로 설정하는 이벤트
+                pygame.time.set_timer(pygame.USEREVENT, 300)#타이머 설정, 변수는 이벤트명과 타이머 간격(밀리초 단위)
+                #주어진 시간(밀리 초)마다 이벤트 큐에 표시할 이벤트 유형을 설정
+                #처음 만들었던 ui_variables 클래스에서 지정한 글꼴 가져옴(OpenSans-Bold글꼴,크기는 30)
                 over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
+                #처음 만들었던 ui_variables 클래스에서 지정한 글꼴 가져옴(OpenSans-Light글꼴,크기는 13)
                 over_start = ui_variables.h5.render("Press return to continue", 1, ui_variables.white)
 
-                draw_board(next_mino, hold_mino, score, level, goal)
-                screen.blit(over_text_1, (58, 75))
+                draw_board(next_mino, hold_mino, score, level, goal)#게임시 오른쪽에 나오는 board
+                screen.blit(over_text_1, (58, 75))#이미지 넣기,넣을 이미지와 위치
                 screen.blit(over_text_2, (62, 105))
-
+                #이름과 점수 입력받는 이미지#
                 name_1 = ui_variables.h2_i.render(chr(name[0]), 1, ui_variables.white)
                 name_2 = ui_variables.h2_i.render(chr(name[1]), 1, ui_variables.white)
                 name_3 = ui_variables.h2_i.render(chr(name[2]), 1, ui_variables.white)
@@ -560,10 +563,11 @@ while not done:
                 screen.blit(name_1, (65, 147))
                 screen.blit(name_2, (95, 147))
                 screen.blit(name_3, (125, 147))
-
+                #깜빡이는 효과#
                 if blink:
                     screen.blit(over_start, (32, 195))
                     blink = False
+                #이름 문자열 받는 이미지#
                 else:
                     if name_location == 0:
                         screen.blit(underbar_1, (65, 145))
@@ -572,12 +576,15 @@ while not done:
                     elif name_location == 2:
                         screen.blit(underbar_3, (125, 145))
                     blink = True
-
+                #화면 업데이트#
                 pygame.display.update()
-            elif event.type == KEYDOWN:
-                if event.key == K_RETURN:
+            #조작키에 관한 이벤트 지정
+            elif event.type == KEYDOWN:#키가 눌려졌는지 확인하는 코드
+                if event.key == K_RETURN:#이전키 누르면? 일단 엔터##
                     ui_variables.click_sound.play()
+                    #ui_varaiable에서 지정한 SFX_ButtonUp 노래 나옴
 
+                    #파일 내 리더보드 메모장 열어서 이름과 점수 저장
                     outfile = open('leaderboard.txt','a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
@@ -603,56 +610,62 @@ while not done:
                     with open('leaderboard.txt') as f:
                         lines = f.readlines()
                     lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
+                    #상위 3위까지 보여주기 위한 코드#
                     leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
                     for i in lines:
                         leaders[i.split(' ')[0]] = int(i.split(' ')[1])
+                    #leaders의 [1]에 있는 애 기준으로 정렬#
                     leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
-
                     pygame.time.set_timer(pygame.USEREVENT, 1)
+                #오른쪽키 누르면
                 elif event.key == K_RIGHT:
-                    if name_location != 2:
-                        name_location += 1
-                    else:
-                        name_location = 0
+                    if name_location != 2:#만약 첫번째 혹은 두번째 칸이면#
+                        name_location += 1#위치 +1해서 이름칸 오른쪽으로 이동#
+                    else:#마지막 칸이면
+                        name_location = 0#다시 첫번째 칸으로 이동#
                     pygame.time.set_timer(pygame.USEREVENT, 1)
+                #왼쪽키 누르면#
                 elif event.key == K_LEFT:
-                    if name_location != 0:
-                        name_location -= 1
-                    else:
-                        name_location = 2
+                    if name_location != 0:#두번째 혹은 세번째 칸이면
+                        name_location -= 1#위치 -1해서 이름칸 왼쪽으로 이동#
+                    else:#첫번째 칸이면#
+                        name_location = 2#다시 마지막 칸으로 이동#
                     pygame.time.set_timer(pygame.USEREVENT, 1)
+                #위 키 누르면
                 elif event.key == K_UP:
-                    ui_variables.click_sound.play()
+                    ui_variables.click_sound.play()#버튼음 나오고#
+                    #Z가 아니면 알파벳 +1
                     if name[name_location] != 90:
                         name[name_location] += 1
-                    else:
+                    else:#Z면 처음 A로 다시#
                         name[name_location] = 65
                     pygame.time.set_timer(pygame.USEREVENT, 1)
+                #아래 키 누르면
                 elif event.key == K_DOWN:
                     ui_variables.click_sound.play()
+                    #A가 아니면 알파벳 -1
                     if name[name_location] != 65:
                         name[name_location] -= 1
-                    else:
+                    else:#A면 다시 Z#
                         name[name_location] = 90
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
     # Start screen
     else:
         for event in pygame.event.get():
-            if event.type == QUIT:
-                done = True
+            if event.type == QUIT:#나가는 버튼 누르면#
+                done = True#나감#
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    ui_variables.click_sound.play()
-                    start = True
+                if event.key == K_SPACE:#스페이스 누르면#
+                    ui_variables.click_sound.play()#버튼음 나오고
+                    start = True#시작#
 
         # pygame.time.set_timer(pygame.USEREVENT, 300)
-        screen.fill(ui_variables.white)
+        screen.fill(ui_variables.white)#화면 지우기, 지정한 하얀색으로#
         pygame.draw.rect(
             screen,
             ui_variables.grey_1,
-            Rect(0, 187, 300, 187)
+            Rect(0, 187, 300, 187)#회색 사각형을 그린다,(x축,y축,가로,세로 순)#
         )
 
         title = ui_variables.h1.render("PYTRIS™", 1, ui_variables.grey_1)
@@ -676,8 +689,9 @@ while not done:
         screen.blit(leader_2, (10, 23))
         screen.blit(leader_3, (10, 36))
 
+        #계속 스타트 화면에 머물러 있는 중#
         if not start:
             pygame.display.update()
-            clock.tick(3)
+            clock.tick(3)#3 FPS (초당 프레임 수) 를 위한 딜레이 추가, 딜레이 시간이 아닌 목표로 하는 FPS 값
 
 pygame.quit()
