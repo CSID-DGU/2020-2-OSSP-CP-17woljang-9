@@ -313,43 +313,43 @@ matrix = [[0 for y in range(height + 1)] for x in range(width)] # Board matrix
 # Loop Start
 ###########################################################
 
-while not done:
+while not done: # done이 True일 때까지 반복
     # Pause screen
-    if pause:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                done = True
+    if pause: # pause가 true일 때 실행
+        for event in pygame.event.get(): #
+            if event.type == QUIT:       # 게임 종료 버튼(창 닫기 버튼) 클릭 시 발생하거나 커맨드창에서 Ctrl + C를 입력하면 발생함
+                done = True              # while문 탈출하도록 처리, 즉 게임 종료
             elif event.type == USEREVENT:
-                pygame.time.set_timer(pygame.USEREVENT, 300)
-                draw_board(next_mino, hold_mino, score, level, goal)
+                pygame.time.set_timer(pygame.USEREVENT, 300) # eventid와 밀리초, 해당 밀리초마다 이벤트 큐에 반복적으로 이벤트 생성
+                draw_board(next_mino, hold_mino, score, level, goal) # 정지 화면에 들어갈 화면 그리기
 
                 pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.white)
-                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white)
+                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white) # 두 텍스트 선언
 
-                screen.blit(pause_text, (43, 100))
-                if blink:
+                screen.blit(pause_text, (43, 100)) # 위에서 선언한 텍스트 지정한 위치에 놓기
+                if blink: # else와 if 반복하며 True일 때 보였다 False일 때 안보였다 반복
                     screen.blit(pause_start, (40, 160))
                     blink = False
                 else:
                     blink = True
-                pygame.display.update()
-            elif event.type == KEYDOWN:
-                erase_mino(dx, dy, mino, rotation)
-                if event.key == K_ESCAPE:
-                    pause = False
-                    ui_variables.click_sound.play()
+                pygame.display.update() # 화면에 반영
+            elif event.type == KEYDOWN: # 키보드를 누른 후 뗄 때 발생함(키누름 이벤트)
+                erase_mino(dx, dy, mino, rotation) # 테트리미노(기본 블록 7가지) 지우기
+                if event.key == K_ESCAPE: # ESC 키를 눌렀을 때
+                    pause = False # if pause:문 탈출
+                    ui_variables.click_sound.play() # 클릭 소리 출력 
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
     # Game screen
-    elif start:
+    elif start: # 기본값 False
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
             elif event.type == USEREVENT:
-                # Set speed
-                if not game_over:
-                    keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:
+                # Set speed (소프트 드롭 Soft drop)
+                if not game_over: # 기본 False이므로 True
+                    keys_pressed = pygame.key.get_pressed() # 키보드 모든 키 눌렀으면 true, 아니면 false로 가져옴
+                    if keys_pressed[K_DOWN]: # 키보드 아래 화살표 누르면 속도 10배 빨라짐
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
@@ -364,28 +364,28 @@ while not done:
 
                 # Move mino down
                 if not is_bottom(dx, dy, mino, rotation):
-                    dy += 1
+                    dy += 1 # 밑으로 한 칸씩 이동
 
                 # Create new mino
                 else:
-                    if hard_drop or bottom_count == 6:
+                    if hard_drop or bottom_count == 6: # 스페이스 바 누르거나 바텀카운트 6이면
                         hard_drop = False
                         bottom_count = 0
-                        score += 10 * level
+                        score += 10 * level # 점수 추가
                         draw_mino(dx, dy, mino, rotation)
                         draw_board(next_mino, hold_mino, score, level, goal)
-                        if is_stackable(next_mino):
+                        if is_stackable(next_mino): # 새로운 블록 그릴 수 있으면, 즉 게임 계속 할 수 있으면
                             mino = next_mino
                             next_mino = randint(1, 7)
                             dx, dy = 3, 0
                             rotation = 0
                             hold = False
-                        else:
+                        else: # 게임 오버
                             start = False
                             game_over = True
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
-                        bottom_count += 1
+                        bottom_count += 1 # 블록 내려온 후 6번 카운트되면 하드 드롭과 같은 동작
 
                 # Erase line
                 erase_count = 0
@@ -401,7 +401,7 @@ while not done:
                             for i in range(10):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
-                if erase_count == 1:
+                if erase_count == 1: # 동시에 지우는 라인 수에 따라 소리와 점수가 다름
                     ui_variables.single_sound.play()
                     score += 50 * level
                 elif erase_count == 2:
@@ -416,18 +416,18 @@ while not done:
 
                 # Increase level
                 goal -= erase_count
-                if goal < 1 and level < 15:
+                if goal < 1 and level < 15: # 최대 레벨 15
                     level += 1
-                    goal += level * 5
-                    framerate = int(framerate * 0.8)
+                    goal += level * 5 # 다음 레벨 때 초과해서 줄 지운 만큼 반영해줬으면...!
+                    framerate = int(framerate * 0.8) # 속도가 빨라짐
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
-                    pause = True
+                    pause = True # 게임 정지 화면 Pause screen if문 동작
                 # Hard drop
-                elif event.key == K_SPACE:
+                elif event.key == K_SPACE: # 스페이스 눌렀을 때
                     ui_variables.drop_sound.play()
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
@@ -439,11 +439,11 @@ while not done:
                 elif event.key == K_LSHIFT or event.key == K_c:
                     if hold == False:
                         ui_variables.move_sound.play()
-                        if hold_mino == -1:
+                        if hold_mino == -1: # Hold한 테트리미노가 없으면
                             hold_mino = mino
                             mino = next_mino
                             next_mino = randint(1, 7)
-                        else:
+                        else: # 기존에 Hold한 테트리미노가 있으면
                             hold_mino, mino = mino, hold_mino
                         dx, dy = 3, 0
                         rotation = 0
