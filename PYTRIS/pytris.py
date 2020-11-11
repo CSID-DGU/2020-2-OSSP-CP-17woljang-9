@@ -313,43 +313,43 @@ matrix = [[0 for y in range(height + 1)] for x in range(width)] # Board matrix
 # Loop Start
 ###########################################################
 
-while not done: # done이 True일 때까지 반복
+while not done:
     # Pause screen
-    if pause: # pause가 true일 때 실행
-        for event in pygame.event.get(): #
-            if event.type == QUIT:       # 게임 종료 버튼(창 닫기 버튼) 클릭 시 발생하거나 커맨드창에서 Ctrl + C를 입력하면 발생함
-                done = True              # while문 탈출하도록 처리, 즉 게임 종료
-            elif event.type == USEREVENT:
-                pygame.time.set_timer(pygame.USEREVENT, 300) # eventid와 밀리초, 해당 밀리초마다 이벤트 큐에 반복적으로 이벤트 생성
-                draw_board(next_mino, hold_mino, score, level, goal) # 정지 화면에 들어갈 화면 그리기
-
-                pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.white)
-                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white) # 두 텍스트 선언
-
-                screen.blit(pause_text, (43, 100)) # 위에서 선언한 텍스트 지정한 위치에 놓기
-                if blink: # else와 if 반복하며 True일 때 보였다 False일 때 안보였다 반복
-                    screen.blit(pause_start, (40, 160))
-                    blink = False
-                else:
-                    blink = True
-                pygame.display.update() # 화면에 반영
-            elif event.type == KEYDOWN: # 키보드를 누른 후 뗄 때 발생함(키누름 이벤트)
-                erase_mino(dx, dy, mino, rotation) # 테트리미노(기본 블록 7가지) 지우기
-                if event.key == K_ESCAPE: # ESC 키를 눌렀을 때
-                    pause = False # if pause:문 탈출
-                    ui_variables.click_sound.play() # 클릭 소리 출력 
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-
-    # Game screen
-    elif start: # 기본값 False
+    if pause:
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
             elif event.type == USEREVENT:
-                # Set speed (소프트 드롭 Soft drop)
-                if not game_over: # 기본 False이므로 True
-                    keys_pressed = pygame.key.get_pressed() # 키보드 모든 키 눌렀으면 true, 아니면 false로 가져옴
-                    if keys_pressed[K_DOWN]: # 키보드 아래 화살표 누르면 속도 10배 빨라짐
+                pygame.time.set_timer(pygame.USEREVENT, 300)
+                draw_board(next_mino, hold_mino, score, level, goal)
+
+                pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.white)
+                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white)
+
+                screen.blit(pause_text, (43, 100))
+                if blink:
+                    screen.blit(pause_start, (40, 160))
+                    blink = False
+                else:
+                    blink = True
+                pygame.display.update()
+            elif event.type == KEYDOWN:
+                erase_mino(dx, dy, mino, rotation)
+                if event.key == K_ESCAPE:
+                    pause = False
+                    ui_variables.click_sound.play()
+                    pygame.time.set_timer(pygame.USEREVENT, 1)
+
+    # Game screen
+    elif start:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                done = True
+            elif event.type == USEREVENT:
+                # Set speed
+                if not game_over:
+                    keys_pressed = pygame.key.get_pressed()
+                    if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
@@ -364,28 +364,28 @@ while not done: # done이 True일 때까지 반복
 
                 # Move mino down
                 if not is_bottom(dx, dy, mino, rotation):
-                    dy += 1 # 밑으로 한 칸씩 이동
+                    dy += 1
 
                 # Create new mino
                 else:
-                    if hard_drop or bottom_count == 6: # 스페이스 바 누르거나 바텀카운트 6이면
+                    if hard_drop or bottom_count == 6:
                         hard_drop = False
                         bottom_count = 0
-                        score += 10 * level # 점수 추가
+                        score += 10 * level
                         draw_mino(dx, dy, mino, rotation)
                         draw_board(next_mino, hold_mino, score, level, goal)
-                        if is_stackable(next_mino): # 새로운 블록 그릴 수 있으면, 즉 게임 계속 할 수 있으면
+                        if is_stackable(next_mino):
                             mino = next_mino
                             next_mino = randint(1, 7)
                             dx, dy = 3, 0
                             rotation = 0
                             hold = False
-                        else: # 게임 오버
+                        else:
                             start = False
                             game_over = True
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
-                        bottom_count += 1 # 블록 내려온 후 6번 카운트되면 하드 드롭과 같은 동작
+                        bottom_count += 1
 
                 # Erase line
                 erase_count = 0
@@ -401,7 +401,7 @@ while not done: # done이 True일 때까지 반복
                             for i in range(10):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
-                if erase_count == 1: # 동시에 지우는 라인 수에 따라 소리와 점수가 다름
+                if erase_count == 1:
                     ui_variables.single_sound.play()
                     score += 50 * level
                 elif erase_count == 2:
@@ -416,18 +416,18 @@ while not done: # done이 True일 때까지 반복
 
                 # Increase level
                 goal -= erase_count
-                if goal < 1 and level < 15: # 최대 레벨 15
+                if goal < 1 and level < 15:
                     level += 1
-                    goal += level * 5 # 다음 레벨 때 초과해서 줄 지운 만큼 반영해줬으면...!
-                    framerate = int(framerate * 0.8) # 속도가 빨라짐
+                    goal += level * 5
+                    framerate = int(framerate * 0.8)
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
-                    pause = True # 게임 정지 화면 Pause screen if문 동작
+                    pause = True
                 # Hard drop
-                elif event.key == K_SPACE: # 스페이스 눌렀을 때
+                elif event.key == K_SPACE:
                     ui_variables.drop_sound.play()
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
@@ -439,11 +439,11 @@ while not done: # done이 True일 때까지 반복
                 elif event.key == K_LSHIFT or event.key == K_c:
                     if hold == False:
                         ui_variables.move_sound.play()
-                        if hold_mino == -1: # Hold한 테트리미노가 없으면
+                        if hold_mino == -1:
                             hold_mino = mino
                             mino = next_mino
                             next_mino = randint(1, 7)
-                        else: # 기존에 Hold한 테트리미노가 있으면
+                        else:
                             hold_mino, mino = mino, hold_mino
                         dx, dy = 3, 0
                         rotation = 0
@@ -536,22 +536,19 @@ while not done: # done이 True일 때까지 반복
 
     # Game over screen
     elif game_over:
-        for event in pygame.event.get():#유저의 키보드 혹은 마우스 이벤트를 확인#
-            if event.type == QUIT:#유저가 발생시킨 이벤트 타입을 확인, 여기서는 Quit, 게임 창에서의 닫기 버튼 클릭하면 발생
-                done = True#무한루프에서 나옴
-            elif event.type == USEREVENT:#유저가 임의로 설정하는 이벤트
-                pygame.time.set_timer(pygame.USEREVENT, 300)#타이머 설정, 변수는 이벤트명과 타이머 간격(밀리초 단위)
-                #주어진 시간(밀리 초)마다 이벤트 큐에 표시할 이벤트 유형을 설정
-                #처음 만들었던 ui_variables 클래스에서 지정한 글꼴 가져옴(OpenSans-Bold글꼴,크기는 30)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                done = True
+            elif event.type == USEREVENT:
+                pygame.time.set_timer(pygame.USEREVENT, 300)
                 over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
-                #처음 만들었던 ui_variables 클래스에서 지정한 글꼴 가져옴(OpenSans-Light글꼴,크기는 13)
                 over_start = ui_variables.h5.render("Press return to continue", 1, ui_variables.white)
 
-                draw_board(next_mino, hold_mino, score, level, goal)#게임시 오른쪽에 나오는 board
-                screen.blit(over_text_1, (58, 75))#이미지 넣기,넣을 이미지와 위치
+                draw_board(next_mino, hold_mino, score, level, goal)
+                screen.blit(over_text_1, (58, 75))
                 screen.blit(over_text_2, (62, 105))
-                #이름과 점수 입력받는 이미지#
+
                 name_1 = ui_variables.h2_i.render(chr(name[0]), 1, ui_variables.white)
                 name_2 = ui_variables.h2_i.render(chr(name[1]), 1, ui_variables.white)
                 name_3 = ui_variables.h2_i.render(chr(name[2]), 1, ui_variables.white)
@@ -563,11 +560,10 @@ while not done: # done이 True일 때까지 반복
                 screen.blit(name_1, (65, 147))
                 screen.blit(name_2, (95, 147))
                 screen.blit(name_3, (125, 147))
-                #깜빡이는 효과#
+
                 if blink:
                     screen.blit(over_start, (32, 195))
                     blink = False
-                #이름 문자열 받는 이미지#
                 else:
                     if name_location == 0:
                         screen.blit(underbar_1, (65, 145))
@@ -576,15 +572,12 @@ while not done: # done이 True일 때까지 반복
                     elif name_location == 2:
                         screen.blit(underbar_3, (125, 145))
                     blink = True
-                #화면 업데이트#
-                pygame.display.update()
-            #조작키에 관한 이벤트 지정
-            elif event.type == KEYDOWN:#키가 눌려졌는지 확인하는 코드
-                if event.key == K_RETURN:#이전키 누르면? 일단 엔터##
-                    ui_variables.click_sound.play()
-                    #ui_varaiable에서 지정한 SFX_ButtonUp 노래 나옴
 
-                    #파일 내 리더보드 메모장 열어서 이름과 점수 저장
+                pygame.display.update()
+            elif event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    ui_variables.click_sound.play()
+
                     outfile = open('leaderboard.txt','a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
@@ -610,62 +603,56 @@ while not done: # done이 True일 때까지 반복
                     with open('leaderboard.txt') as f:
                         lines = f.readlines()
                     lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-                    #상위 3위까지 보여주기 위한 코드#
+
                     leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
                     for i in lines:
                         leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-                    #leaders의 [1]에 있는 애 기준으로 정렬#
                     leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
+
                     pygame.time.set_timer(pygame.USEREVENT, 1)
-                #오른쪽키 누르면
                 elif event.key == K_RIGHT:
-                    if name_location != 2:#만약 첫번째 혹은 두번째 칸이면#
-                        name_location += 1#위치 +1해서 이름칸 오른쪽으로 이동#
-                    else:#마지막 칸이면
-                        name_location = 0#다시 첫번째 칸으로 이동#
+                    if name_location != 2:
+                        name_location += 1
+                    else:
+                        name_location = 0
                     pygame.time.set_timer(pygame.USEREVENT, 1)
-                #왼쪽키 누르면#
                 elif event.key == K_LEFT:
-                    if name_location != 0:#두번째 혹은 세번째 칸이면
-                        name_location -= 1#위치 -1해서 이름칸 왼쪽으로 이동#
-                    else:#첫번째 칸이면#
-                        name_location = 2#다시 마지막 칸으로 이동#
+                    if name_location != 0:
+                        name_location -= 1
+                    else:
+                        name_location = 2
                     pygame.time.set_timer(pygame.USEREVENT, 1)
-                #위 키 누르면
                 elif event.key == K_UP:
-                    ui_variables.click_sound.play()#버튼음 나오고#
-                    #Z가 아니면 알파벳 +1
+                    ui_variables.click_sound.play()
                     if name[name_location] != 90:
                         name[name_location] += 1
-                    else:#Z면 처음 A로 다시#
+                    else:
                         name[name_location] = 65
                     pygame.time.set_timer(pygame.USEREVENT, 1)
-                #아래 키 누르면
                 elif event.key == K_DOWN:
                     ui_variables.click_sound.play()
-                    #A가 아니면 알파벳 -1
                     if name[name_location] != 65:
                         name[name_location] -= 1
-                    else:#A면 다시 Z#
+                    else:
                         name[name_location] = 90
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
     # Start screen
     else:
         for event in pygame.event.get():
-            if event.type == QUIT:#나가는 버튼 누르면#
-                done = True#나감#
+            if event.type == QUIT:
+                done = True
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE:#스페이스 누르면#
-                    ui_variables.click_sound.play()#버튼음 나오고
-                    start = True#시작#
+                if event.key == K_SPACE:
+                    ui_variables.click_sound.play()
+                    start = True
 
         # pygame.time.set_timer(pygame.USEREVENT, 300)
-        screen.fill(ui_variables.white)#화면 지우기, 지정한 하얀색으로#
+        screen.fill(ui_variables.white)
         pygame.draw.rect(
             screen,
             ui_variables.grey_1,
-            Rect(0, 187, 300, 187)#회색 사각형을 그린다,(x축,y축,가로,세로 순)#
+            Rect(0, 187, 300, 187)
         )
 
         title = ui_variables.h1.render("PYTRIS™", 1, ui_variables.grey_1)
@@ -689,9 +676,8 @@ while not done: # done이 True일 때까지 반복
         screen.blit(leader_2, (10, 23))
         screen.blit(leader_3, (10, 36))
 
-        #계속 스타트 화면에 머물러 있는 중#
         if not start:
             pygame.display.update()
-            clock.tick(3)#3 FPS (초당 프레임 수) 를 위한 딜레이 추가, 딜레이 시간이 아닌 목표로 하는 FPS 값
+            clock.tick(3)
 
 pygame.quit()
