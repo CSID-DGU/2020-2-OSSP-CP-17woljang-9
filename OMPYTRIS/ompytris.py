@@ -14,16 +14,16 @@ height = 20  # Board height
 
 board_width = 800
 board_height = 450
-block_size = int(board_height * 0.045)
+block_size = int(board_height * 0.045)  #block_size 변수 중복됨?
 
-framerate = 30  # Bigger -> Slower
+framerate = 30  # Bigger -> Slower  #너무 높으면 모니터가 제대로 출력 못함
 
 pygame.init()
 
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+clock = pygame.time.Clock() #창, 화면을 초당 몇번 출력하는가(FPS) clock.tick 높을수록 cpu많이 사
+screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE) #GUI창 설정하는 변수
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.display.set_caption("OM TETRIS")
+pygame.display.set_caption("OM TETRIS") #GUI 창의 이름
 
 
 class ui_variables:
@@ -46,18 +46,18 @@ class ui_variables:
 
     # Sounds
 
-    pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav")
+    pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav") #음악 불러옴
     pygame.mixer.music.set_volume(0.3)
 
     intro_sound = pygame.mixer.Sound("assets/sounds/SFX_Intro.wav")
     fall_sound = pygame.mixer.Sound("assets/sounds/SFX_Fall.wav")
     break_sound = pygame.mixer.Sound("assets/sounds/SFX_Break.wav")
-    click_sound = pygame.mixer.Sound("assets/sounds/SFX_ButtonUp.wav")
+    click_sound = pygame.mixer.Sound("assets/sounds/SFX_ButtonUp.wav") #여기부터
     move_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceMoveLR.wav")
     drop_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceHardDrop.wav")
     single_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearSingle.wav")
     double_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearDouble.wav")
-    triple_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearTriple.wav")
+    triple_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearTriple.wav") #여기까지는 기존코드
     tetris_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialTetris.wav")
     LevelUp_sound = pygame.mixer.Sound("assets/sounds/SFX_LevelUp.wav")
     GameOver_sound = pygame.mixer.Sound("assets/sounds/SFX_GameOver.wav")
@@ -66,10 +66,10 @@ class ui_variables:
     combos = []
     large_combos = []
     combo_ring = pygame.image.load("assets/Combo/4combo ring.png")  # 4블록 동시제거 그래픽
-    combo_4ring = pygame.transform.smoothscale(combo_ring, (200, 100))
+    combo_4ring = pygame.transform.smoothscale(combo_ring, (200, 100)) #이미지를 특정 크기로 불러
     for i in range(1, 11):
         combos.append(pygame.image.load("assets/Combo/" + str(i) + "combo.png"))
-        large_combos.append(pygame.transform.smoothscale(combos[i - 1], (150, 200)))
+        large_combos.append(pygame.transform.smoothscale(combos[i - 1], (150, 200))) #이미지를 특정 크기로 불러옴
 
     combos_sound = []
     for i in range(1, 10):
@@ -78,11 +78,11 @@ class ui_variables:
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (0, 153, 153)  # rgb(255, 255, 255) # 청록색으로 변경
-    real_white = (255, 255, 255)  # rgb(255, 255, 255) # 청록색으로 변경
+    real_white = (255, 255, 255)  # rgb(255, 255, 255)
 
     grey_1 = (70, 130, 180)  # rgb(26, 26, 26) 테두리 파랑색
     grey_2 = (221, 221, 221)  # rgb(35, 35, 35)
-    grey_3 = (000, 000, 139)  # rgb(55, 55, 55)
+    grey_3 = (000, 000, 139)  # rgb(55, 55, 55) #남색
     bright_yellow = (255, 217, 102)  # 밝은 노랑
 
     # Tetrimino colors
@@ -109,8 +109,8 @@ class ui_variables:
                ghost_image, linessent_image]
 
 
-class button():
-    def __init__(self, x, y, width, height, id, img=''):
+class button(): #버튼객체
+    def __init__(self, x, y, width, height, id, img=''): #생성
         self.x = x
         self.y = y
         self.width = width
@@ -118,11 +118,11 @@ class button():
         self.id = id
         self.image = img
 
-    def draw(self, win, outline=None):
+    def draw(self, win, outline=None): #버튼 보이게 만들기
         if outline:
             draw_image(screen, self.image, self.x, self.y, self.width, self.height)
 
-    def isOver(self, pos):
+    def isOver(self, pos): #마우스의 위치에 따라 버튼 누르기 pos[0]은 마우스 x좌표, pos[1]은 마우스 y좌표
         if pos[0] > self.x - (self.width / 2) and pos[0] < self.x + (self.width / 2):
             if pos[1] > self.y - (self.height / 2) and pos[1] < self.y + (self.height / 2):
                 return True
@@ -311,6 +311,7 @@ def set_screen_interface():
 
     sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                                int(board_height * 0.1111), 1, plus_button_image)
+
     sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                                 int(board_height * 0.1111), 1, minus_button_image)
 
@@ -371,34 +372,34 @@ def draw_block_image(x, y, image):
 
 # Draw game screen
 def draw_board(next1, next2, hold, score, level, goal):
-    sidebar_width = int(board_width * 0.5312)
+    sidebar_width = int(board_width * 0.5312) #크기 유동적
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(board_width * 0.2375), board_height)
+        Rect(sidebar_width, 0, int(board_width * 0.2375), board_height) #크기 유동적
     )
 
-    # Draw next mino
-    grid_n1 = tetrimino.mino_map[next1 - 1][0]
-    grid_n2 = tetrimino.mino_map[next2 - 1][0]
+    # Draw next mino 다음 블록
+    grid_n1 = tetrimino.mino_map[next1 - 1][0] #(배열이라-1) 다음 블록의 원래 모양
+    grid_n2 = tetrimino.mino_map[next2 - 1][0] #(배열이라-1) 다음 블록의 원래 모양
 
-    for i in range(4):
+    for i in range(4): #다음 블록
         for j in range(4):
-            dx1 = int(board_width * 0.025) + sidebar_width + block_size * j
+            dx1 = int(board_width * 0.025) + sidebar_width + block_size * j #sidebar_width를 왜 넣어주지?
             dy1 = int(board_height * 0.3743) + block_size * i
-            if grid_n1[i][j] != 0:
+            if grid_n1[i][j] != 0: #해당 부분에 블록 존재하면
                 ##draw_block(dx,dy,ui_variables.t_color[grid_n[i][j]])
-                draw_block_image(dx1, dy1, ui_variables.t_block[grid_n1[i][j]])
+                draw_block_image(dx1, dy1, ui_variables.t_block[grid_n1[i][j]]) #블록 이미지 출력
 
-    for i in range(4):
+    for i in range(4): #다다음블록
         for j in range(4):
             dx2 = int(board_width * 0.145) + sidebar_width + block_size * j
             dy2 = int(board_height * 0.3743) + block_size * i
-            if grid_n2[i][j] != 0:
+            if grid_n2[i][j] != 0: #해당 부분에 블록 존재하면
                 ##draw_block(dx,dy,ui_variables.t_color[grid_n[i][j]])
-                draw_block_image(dx2, dy2, ui_variables.t_block[grid_n2[i][j]])
+                draw_block_image(dx2, dy2, ui_variables.t_block[grid_n2[i][j]]) #블록 이미지 출력
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
@@ -410,7 +411,7 @@ def draw_board(next1, next2, hold, score, level, goal):
                 dy = int(board_height * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
                     ##draw_block(dx,dy,ui_variables.t_color[grid_h[i][j]])
-                    draw_block_image(dx, dy, ui_variables.t_block[grid_h[i][j]])
+                    draw_block_image(dx, dy, ui_variables.t_block[grid_h[i][j]]) #hold 블록 출력
 
     # Set max score
     if score > 999999:
@@ -436,7 +437,7 @@ def draw_board(next1, next2, hold, score, level, goal):
     screen.blit(text_combo, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.8395)))
     screen.blit(combo_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.8823)))
 
-    # Draw board
+    # Draw board #board?
     for x in range(width):
         for y in range(height):
             dx = int(board_width * 0.25) + block_size * x
@@ -469,13 +470,13 @@ def draw_1Pboard(next, hold, score, level, goal):
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
 
-    if hold_mino != -1:
+    if hold_mino != -1: #기본값이 -1. 즉 hold블록 존재할 떄
         for i in range(4):
             for j in range(4):
                 dx = int(board_width * 0.045) + sidebar_width + block_size * j
                 dy = int(board_height * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
-                    draw_block_image(dx, dy, ui_variables.t_block[grid_h[i][j]])
+                    draw_block_image(dx, dy, ui_variables.t_block[grid_h[i][j]]) #hold 블록 그림
 
     # Set max score
     if score > 999999:
@@ -528,7 +529,7 @@ def draw_2Pboard(next, hold, score, level, goal):
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
 
-    if hold_mino != -1:
+    if hold_mino != -1:  #기본값이 -1. 즉 hold블록 존재할 떄
         for i in range(4):
             for j in range(4):
                 dx = int(board_width * 0.045) + sidebar_width + block_size * j
@@ -567,19 +568,22 @@ def draw_2Pboard(next, hold, score, level, goal):
             draw_block_image(dx, dy, ui_variables.t_block[matrix_2P[x][y + 1]])
 
 
+## 함수, _2P함수로 나눈것 너무 비효율적!! 함수 내용에서 matrix 인지 matrix_2p인지만 차이남!! ##
+#########################################################################################
+
 # Draw a tetrimino
-def draw_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
+def draw_mino(x, y, mino, r): #mino는 모양, r은 회전된 모양 중 하나
+    grid = tetrimino.mino_map[mino - 1][r] #grid : 출력할 테트리스
 
     tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r):
-        ty += 1
+    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
+        ty += 1 #한칸 밑으로 하강
 
     # Draw ghost
     for i in range(4):
         for j in range(4):
-            if grid[i][j] != 0:
-                matrix[tx + j][ty + i] = 8
+            if grid[i][j] != 0: #테트리스 블록에서 해당 행렬위치에 블록 존재하면
+                matrix[tx + j][ty + i] = 8 #테트리스가 쌓일 위치에 8 이라는 ghost 만듦
 
     # Draw mino
     for i in range(4):
@@ -648,9 +652,9 @@ def is_bottom(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (y + i + 1) > 20:
+                if (y + i + 1) > 20:   #바닥의 y좌표에 있음(바닥에 닿음)
                     return True
-                elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8:
+                elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8: #그 블록위치에 0, 8 아님(즉 블록 존재 함)
                     return True
 
     return False
@@ -662,13 +666,12 @@ def is_bottom_2P(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (y + i + 1) > 20:
+                if (y + i + 1) > 20: #그 블록위치에 0, 8 아님(즉 블록 존재 함)
                     return True
-                elif matrix_2P[x + j][y + i + 1] != 0 and matrix_2P[x + j][y + i + 1] != 8:
+                elif matrix_2P[x + j][y + i + 1] != 0 and matrix_2P[x + j][y + i + 1] != 8:  #그 블록 아랫쪽에 0, 8 아님(즉 블록 존재 함)
                     return True
 
     return False
-
 
 # Returns true if mino is at the left edge
 def is_leftedge(x, y, mino, r):
@@ -677,9 +680,9 @@ def is_leftedge(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j - 1) < 0:
+                if (x + j - 1) < 0:  #맨 왼쪽에 위치함
                     return True
-                elif matrix[x + j - 1][y + i] != 0:
+                elif matrix[x + j - 1][y + i] != 0:  #그 위치의 왼쪽에 이미 무엇인가 존재함
                     return True
 
     return False
@@ -691,9 +694,9 @@ def is_leftedge_2P(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j - 1) < 0:
+                if (x + j - 1) < 0:  #맨 왼쪽에 위치함
                     return True
-                elif matrix_2P[x + j - 1][y + i] != 0:
+                elif matrix_2P[x + j - 1][y + i] != 0:  #그 위치의 왼쪽에 이미 무엇인가 존재함
                     return True
 
     return False
@@ -706,7 +709,7 @@ def is_rightedge(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j + 1) > 9:
+                if (x + j + 1) > 9:  #맨 오른쪽에 위치
                     return True
                 elif matrix[x + j + 1][y + i] != 0:
                     return True
@@ -720,44 +723,44 @@ def is_rightedge_2P(x, y, mino, r):
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j + 1) > 9:
+                if (x + j + 1) > 9:  #맨 오른쪽에 위치
                     return True
-                elif matrix_2P[x + j + 1][y + i] != 0:
+                elif matrix_2P[x + j + 1][y + i] != 0: #그 위치의 오른쪽에 이미 무엇인가 존재함
                     return True
 
     return False
 
-
+###is_turnable_l or r 함수 차이는 회전모양 r 부분 뿐###
 # Returns true if turning right is possible
 def is_turnable_r(x, y, mino, r):
-    if r != 3:
-        grid = tetrimino.mino_map[mino - 1][r + 1]
+    if r != 3:  #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
+        grid = tetrimino.mino_map[mino - 1][r + 1] #3이 아니면 그 다음 모양
     else:
-        grid = tetrimino.mino_map[mino - 1][0]
+        grid = tetrimino.mino_map[mino - 1][0] #3이면 0번째 모양으로
 
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
+                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:  #테트리스 matrix크기 벗어나면 못돌림
                     return False
-                elif matrix[x + j][y + i] != 0:
+                elif matrix[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
 
     return True
 
 
 def is_turnable_r_2P(x, y, mino, r):
-    if r != 3:
-        grid = tetrimino.mino_map[mino - 1][r + 1]
+    if r != 3:  #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
+        grid = tetrimino.mino_map[mino - 1][r + 1] #3이 아니면 그 다음 모양
     else:
-        grid = tetrimino.mino_map[mino - 1][0]
+        grid = tetrimino.mino_map[mino - 1][0]  #3이면 0번째 모양으로
 
     for i in range(4):
         for j in range(4):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
+                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:  #테트리스 matrix크기 벗어나면 못돌림
                     return False
-                elif matrix_2P[x + j][y + i] != 0:
+                elif matrix_2P[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
 
     return True
@@ -781,7 +784,7 @@ def is_turnable_l(x, y, mino, r):
     return True
 
 
-def is_turnable_l(x, y, mino, r):
+def is_turnable_l(x, y, mino, r): #2p용 만들려다가 실수한듯 함
     if r != 0:
         grid = tetrimino.mino_map[mino - 1][r - 1]
     else:
@@ -792,14 +795,14 @@ def is_turnable_l(x, y, mino, r):
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
                     return False
-                elif matrix[x + j][y + i] != 0:
+                elif matrix[x + j][y + i] != 0: #matrix_2P로 바뀌어야할 듯
                     return False
 
     return True
 
 
 # Returns true if new block is drawable
-def is_stackable(mino):
+def is_stackable(mino): #??
     grid = tetrimino.mino_map[mino - 1][0]
 
     for i in range(4):
@@ -823,9 +826,9 @@ def is_stackable_2P(mino):
     return True
 
 
-def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P, score, level, goal):
+def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P, score, level, goal):  #pvp 모드에 score, level, goal ?
     screen.fill(ui_variables.real_white)
-    draw_1Pboard(next_1P, hold_1P, score, level, goal)
+    draw_1Pboard(next_1P, hold_1P, score, level, goal) #각각 hold, next, attack 만 존재함
     draw_2Pboard(next_2P, hold_2P, score, level, goal)
 
 
@@ -849,8 +852,8 @@ combo_count = 0
 score = 0
 level = 1
 goal = level * 5
-bottom_count = 0
-hard_drop = False
+bottom_count = 0 #
+hard_drop = False #
 
 volume_setting = False
 screen_setting = False
@@ -865,15 +868,14 @@ dx, dy = 3, 0  # Minos location status
 
 rotation = 0  # Minos rotation status
 
-mino = randint(1, 7)  # Current mino
+mino = randint(1, 7)  # Current mino #테트리스 블록 7가지 중 하나
 
-next_mino1 = randint(1, 7)  # Next mino1
-next_mino2 = randint(1, 7)  # Next mino2
+next_mino1 = randint(1, 7)  # Next mino1 # 다음 테트리스 블록 7가지 중 하나
+next_mino2 = randint(1, 7)  # Next mino2 # 다음 테트리스 블록 7가지 중 하나
 
 hold = False  # Hold status
 
-hold_mino = -1  # Holded mino
-
+hold_mino = -1  # Holded mino #현재 hold하는 것 없는 상태
 hold_mino_2P = -1
 bottom_count_2P = 0
 hard_drop_2P = False
@@ -885,13 +887,14 @@ dx_2P, dy_2P = 3, 0
 
 name_location = 0
 name = [65, 65, 65]
+
 previous_time = pygame.time.get_ticks()
 current_time = pygame.time.get_ticks()
 pause_time = pygame.time.get_ticks()
 
 with open('leaderboard.txt') as f:
     lines = f.readlines()
-lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
+lines = [line.rstrip('\n') for line in open('leaderboard.txt')]  #leaderboard.txt 한줄씩 읽어옴
 
 leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
 for i in lines:
@@ -2872,4 +2875,3 @@ while not done:
             clock.tick(3)
 
 pygame.quit()
-
