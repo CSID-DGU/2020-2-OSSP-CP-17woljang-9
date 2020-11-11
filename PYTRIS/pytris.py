@@ -273,7 +273,7 @@ def is_stackable(mino):
 
     return True
 
-# Initial values
+# Initial values 하단 코드에서 중복되어 사용되는 경우가 있어 묶어서 함수로 만들면 좋을 듯
 blink = False
 start = False
 pause = False
@@ -353,20 +353,21 @@ while not done: # done이 True일 때까지 반복
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-
+                # 새로운 블록 생성하고 지우고 밑으로 한 칸씩 이동함.
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 draw_board(next_mino, hold_mino, score, level, goal)
 
                 # Erase a mino
-                if not game_over:
+                if not game_over: # 게임 오버 되었을 때는 지울 필요가 없으므로(내려갈 필요가 없으므로) 지우지 않음. 
                     erase_mino(dx, dy, mino, rotation)
 
                 # Move mino down
                 if not is_bottom(dx, dy, mino, rotation):
-                    dy += 1 # 밑으로 한 칸씩 이동
+                    dy += 1 
 
-                # Create new mino
+                # Create new mino 
+                # bottom_count: 바닥에 닿았을 때 대기시간(고정되기까지의 시간). 바텀 카운트 하나당 대략 0.5초
                 else:
                     if hard_drop or bottom_count == 6: # 스페이스 바 누르거나 바텀카운트 6이면
                         hard_drop = False
@@ -394,12 +395,12 @@ while not done: # done이 True일 때까지 반복
                     for i in range(10):
                         if matrix[i][j] == 0:
                             is_full = False
-                    if is_full:
+                    if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
                         k = j
                         while k > 0:
                             for i in range(10):
-                                matrix[i][k] = matrix[i][k - 1]
+                                matrix[i][k] = matrix[i][k - 1] # 남아있는 블록 한 줄씩 내리기(덮어쓰기)
                             k -= 1
                 if erase_count == 1: # 동시에 지우는 라인 수에 따라 소리와 점수가 다름
                     ui_variables.single_sound.play()
@@ -428,7 +429,7 @@ while not done: # done이 True일 때까지 반복
                     pause = True # 게임 정지 화면 Pause screen if문 동작
                 # Hard drop
                 elif event.key == K_SPACE: # 스페이스 눌렀을 때
-                    ui_variables.drop_sound.play()
+                    ui_variables.drop_sound.play() # 소리가 제대로 안 나는 건 pygame.time.set_timer() 쓰지 않았기 때문 
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
                     hard_drop = True
@@ -437,7 +438,7 @@ while not done: # done이 True일 때까지 반복
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
                 elif event.key == K_LSHIFT or event.key == K_c:
-                    if hold == False:
+                    if hold == False: # hold 사용
                         ui_variables.move_sound.play()
                         if hold_mino == -1: # Hold한 테트리미노가 없으면
                             hold_mino = mino
@@ -447,15 +448,15 @@ while not done: # done이 True일 때까지 반복
                             hold_mino, mino = mino, hold_mino
                         dx, dy = 3, 0
                         rotation = 0
-                        hold = True
+                        hold = True # hold 한 번만 사용하도록 제한(한 번 쓰면 다시 새로운 블록 내려올 때까지 사용 불가)
                     draw_mino(dx, dy, mino, rotation)
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_x:
+                elif event.key == K_UP or event.key == K_x: # 수정 필요할 수도 1
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
-                    # Kick
+                    # Kick 회전 시 하좌우 벽에 부딪힐 때 한 두 칸씩 안쪽으로 조정
                     elif is_turnable_r(dx, dy - 1, mino, rotation):
                         ui_variables.move_sound.play()
                         dy -= 1
@@ -485,7 +486,7 @@ while not done: # done이 True일 때까지 반복
                     draw_mino(dx, dy, mino, rotation)
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:
+                elif event.key == K_z or event.key == K_LCTRL: # 수정 필요할 수도 2
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation -= 1
@@ -597,7 +598,6 @@ while not done: # done이 True일 때까지 반복
                     next_mino = randint(1, 7)
                     hold_mino = -1
                     framerate = 30
-                    score = 0
                     score = 0
                     level = 1
                     goal = level * 5
