@@ -7,7 +7,7 @@ from random import *
 from pygame.locals import *
 
 # Define
-block_size = 17 # Height, width of single block #블록 사이즈 이상해?!
+block_size = 17 # Height, width of single block
 width = 10 # Board width
 height = 20 # Board height
 framerate = 30 # Bigger -> Slower #너무 높으면 모니터가 제대로 출력 못함
@@ -273,7 +273,7 @@ def is_stackable(mino): #??
 
     return True
 
-# Initial values
+# Initial values 하단 코드에서 중복되어 사용되는 경우가 있어 묶어서 함수로 만들면 좋을 듯
 blink = False
 start = False
 pause = False
@@ -353,13 +353,13 @@ while not done:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-
+                # 새로운 블록 생성하고 지우고 밑으로 한 칸씩 이동함.
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 draw_board(next_mino, hold_mino, score, level, goal)
 
                 # Erase a mino
-                if not game_over:
+                if not game_over: # 게임 오버 되었을 때는 지울 필요가 없으므로(내려갈 필요가 없으므로) 지우지 않음.
                     erase_mino(dx, dy, mino, rotation)
 
                 # Move mino down
@@ -367,6 +367,7 @@ while not done:
                     dy += 1
 
                 # Create new mino
+                # bottom_count: 바닥에 닿았을 때 대기시간(고정되기까지의 시간). 바텀 카운트 하나당 대략 0.5초
                 else:
                     if hard_drop or bottom_count == 6:
                         hard_drop = False
@@ -389,30 +390,48 @@ while not done:
 
                 # Erase line
                 erase_count = 0
+                rainbow_count = 0
+                matrix_contents = []
                 for j in range(21):
                     is_full = True
                     for i in range(10):
                         if matrix[i][j] == 0:
                             is_full = False
-                    if is_full:
+                    if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
                         k = j
+                        rainbow = [1,2,3,4,5,6,7] #각 mino에 해당하는 숫자
+                        for i in range(10):
+                            matrix_contents.append(matrix[i][j]) #현재 클리어된 줄에 있는 mino 종류들 저장
+                        rainbow_check = list(set(matrix_contents).intersection(rainbow)) #현재 클리어된 줄에 있는 mino와 mino의 종류중 겹치는 것 저장
+                        if rainbow == rainbow_check: #현재 클리어된 줄에 모든 종류 mino 있다면
+                            rainbow_count += 1
+                        
                         while k > 0:
                             for i in range(10):
-                                matrix[i][k] = matrix[i][k - 1]
+                                matrix[i][k] = matrix[i][k - 1] # 남아있는 블록 한 줄씩 내리기(덮어쓰기)
                             k -= 1
-                if erase_count == 1:
-                    ui_variables.single_sound.play()
-                    score += 50 * level
-                elif erase_count == 2:
-                    ui_variables.double_sound.play()
-                    score += 150 * level
-                elif erase_count == 3:
-                    ui_variables.triple_sound.play()
-                    score += 350 * level
-                elif erase_count == 4:
-                    ui_variables.tetris_sound.play()
-                    score += 1000 * level
+                if erase_count>= 1: #combo_count추가하기, 소리 및 이미지 추가하기
+                    #previous_time = current_time #combo_count에 활용할 시간
+                    score += 50 * rainbow_count #임의로 rainbow는 한 줄당 50점으로 잡음
+                    rainbow_count = 0 #다시 초기화
+                    if erase_count == 1:
+                        ui_variables.single_sound.play()
+                        score += 50 * level
+                    elif erase_count == 2:
+                        ui_variables.double_sound.play()
+                        score += 150 * level
+                    elif erase_count == 3:
+                        ui_variables.triple_sound.play()
+                        score += 350 * level
+                    elif erase_count == 4:
+                        ui_variables.tetris_sound.play()
+                        score += 1000 * level
+
+
+                #if current_time - previous_time > 11000: #combo_count에 활용할 시간
+                #        previous_time = current_time
+
 
                 # Increase level
                 goal -= erase_count
@@ -427,8 +446,8 @@ while not done:
                     ui_variables.click_sound.play()
                     pause = True
                 # Hard drop
-                elif event.key == K_SPACE:
-                    ui_variables.drop_sound.play()
+                elif event.key == K_SPACE: # 스페이스 눌렀을 때
+                    ui_variables.drop_sound.play() # 소리가 제대로 안 나는 건 pygame.time.set_timer() 쓰지 않았기 때문
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
                     hard_drop = True
@@ -437,7 +456,7 @@ while not done:
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
                 elif event.key == K_LSHIFT or event.key == K_c:
-                    if hold == False:
+                    if hold == False: # hold 사용
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
                             hold_mino = mino
@@ -447,15 +466,15 @@ while not done:
                             hold_mino, mino = mino, hold_mino
                         dx, dy = 3, 0
                         rotation = 0
-                        hold = True
+                        hold = True # hold 한 번만 사용하도록 제한(한 번 쓰면 다시 새로운 블록 내려올 때까지 사용 불가)
                     draw_mino(dx, dy, mino, rotation)
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_x:
+                elif event.key == K_UP or event.key == K_x: # 수정 필요할 수도 1
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
-                    # Kick
+                    # Kick 회전 시 하좌우 벽에 부딪힐 때 한 두 칸씩 안쪽으로 조정
                     elif is_turnable_r(dx, dy - 1, mino, rotation):
                         ui_variables.move_sound.play()
                         dy -= 1
@@ -485,7 +504,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:
+                elif event.key == K_z or event.key == K_LCTRL: # 수정 필요할 수도 2
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation -= 1
@@ -590,7 +609,6 @@ while not done:
                     next_mino = randint(1, 7)
                     hold_mino = -1
                     framerate = 30
-                    score = 0
                     score = 0
                     level = 1
                     goal = level * 5
