@@ -199,6 +199,9 @@ clicked_plus_button_image = 'assets/vector/clicked_plus_button.png'
 
 minus_button_image = 'assets/vector/minus_button.png'
 clicked_minus_button_image = 'assets/vector/clicked_minus_button.png'
+#음소거 추가#
+sound_off_button_image = 'assets/vector/sound_off_button.png'
+sound_on_button_image = 'assets/vector/sound_on_button.png'
 
 check_button_image = 'assets/vector/checkbox_button.png'
 clicked_check_button_image = 'assets/vector/clicked_checkbox_button.png'
@@ -243,15 +246,24 @@ gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_
                               int(board_height * 0.1777), 1, quit_button_image)
 volume = 1.0
 
-effect_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
+effect_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                             int(board_height * 0.1111), 1, plus_button_image)
-effect_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
+effect_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                              int(board_height * 0.1111), 1, minus_button_image)
 
-sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
+sound_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
                            int(board_height * 0.1111), 1, plus_button_image)
-sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
+sound_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
                             int(board_height * 0.1111), 1, minus_button_image)
+#음소거 추가#
+effect_sound_off_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                           int(board_height * 0.15), 1, sound_off_button_image)
+music_sound_off_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                           int(board_height * 0.15), 1, sound_off_button_image)
+effect_sound_on_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                           int(board_height * 0.15), 1, sound_on_button_image)
+music_sound_on_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                           int(board_height * 0.15), 1, sound_on_button_image)
 
 mute_check_button = button(board_width * 0.2, board_height * 0.4, int(board_width * 0.0625), int(board_height * 0.1111),
                            1, check_button_image)
@@ -304,16 +316,26 @@ def set_screen_interface():
     gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                   int(board_height * 0.1777), 1, quit_button_image)
 
-    effect_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
+    effect_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                                 int(board_height * 0.1111), 1, plus_button_image)
-    effect_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
+    effect_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                                  int(board_height * 0.1111), 1, minus_button_image)
 
-    sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
+    sound_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
                                int(board_height * 0.1111), 1, plus_button_image)
 
-    sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
+    sound_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
                                 int(board_height * 0.1111), 1, minus_button_image)
+
+    #음소거 추가#
+    effect_sound_off_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                               int(board_height * 0.15), 1, sound_off_button_image)
+    music_sound_off_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                               int(board_height * 0.15), 1, sound_off_button_image)
+    effect_sound_on_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                               int(board_height * 0.15), 1, sound_on_button_image)
+    music_sound_on_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                               int(board_height * 0.15), 1, sound_on_button_image)
 
     mute_check_button = button(board_width * 0.2, board_height * 0.4, int(board_width * 0.0625),
                                int(board_height * 0.1111), 1, check_button_image)
@@ -935,12 +957,15 @@ while not done:
         effect_minus_button.draw(screen, (0, 0, 0))
         sound_plus_button.draw(screen, (0, 0, 0))
         sound_minus_button.draw(screen, (0, 0, 0))
+        #음소거 추가#
+        effect_sound_on_button.draw(screen,(0,0,0))
+        music_sound_on_button.draw(screen,(0,0,0))
         back_button.draw(screen, (0, 0, 0))
 
         music_volume_text = ui_variables.h5.render('Music Volume', 1, ui_variables.grey_1)
-        effect_volume_tex = ui_variables.h5.render('Effect Volume', 1, ui_variables.grey_1)
+        effect_volume_text = ui_variables.h5.render('Effect Volume', 1, ui_variables.grey_1)
         screen.blit(music_volume_text, (board_width * 0.44, board_height * 0.3))
-        screen.blit(effect_volume_tex, (board_width * 0.44, board_height * 0.5))
+        screen.blit(effect_volume_text, (board_width * 0.44, board_height * 0.5))
 
         music_volume_size_text = ui_variables.h4.render(str(music_volume), 1, ui_variables.grey_1)
         effect_volume_size_text = ui_variables.h4.render(str(effect_volume), 1, ui_variables.grey_1)
@@ -988,34 +1013,71 @@ while not done:
                 if back_button.isOver(pos):
                     ui_variables.click_sound.play()
                     volume_setting = False
-                if effect_plus_button.isOver(pos):
+                if sound_plus_button.isOver(pos):
                     ui_variables.click_sound.play()
                     if music_volume >= 10:
                         music_volume = 10
                     else:
+                        music_sound_on_button.image=sound_on_button_image
                         music_volume += 1
-                if effect_minus_button.isOver(pos):
+                if sound_minus_button.isOver(pos):
                     ui_variables.click_sound.play()
                     if music_volume <= 0:
                         music_volume = 0
+                        music_sound_on_button.image=sound_off_button_image
                     else:
-                        music_volume -= 1
-                if sound_plus_button.isOver(pos):
+                        if music_volume == 1:
+                            music_sound_on_button.image=sound_off_button_image
+                            music_volume -= 1
+                        else:
+                            music_sound_on_button.image=sound_on_button_image
+                            music_volume -= 1
+                if effect_plus_button.isOver(pos):
                     ui_variables.click_sound.play()
                     if effect_volume >= 10:
                         effect_volume = 10
                     else:
+                        effect_sound_on_button.image=sound_on_button_image
                         effect_volume += 1
-                if sound_minus_button.isOver(pos):
+                if effect_minus_button.isOver(pos):
                     ui_variables.click_sound.play()
                     if effect_volume <= 0:
                         effect_volume = 0
+                        effect_sound_on_button.image=sound_off_button_image
                     else:
-                        effect_volume -= 1
+                        if effect_volume == 1:
+                            effect_sound_on_button.image=sound_off_button_image
+                            effect_volume -= 1
+                        else:
+                            effect_sound_on_button.image=sound_on_button_image
+                            effect_volume -= 1
+                #음소거 추가#
+                if music_sound_on_button.isOver(pos):
+                    ui_variables.click_sound.play()
+                    if music_volume == 0 :
+                        music_volume = 5
+                        music_sound_on_button.image=sound_on_button_image
+                    else:
+                        music_volume = 0
+                        music_sound_off_button.draw(screen,(0,0,0))
+                        music_sound_on_button.image=sound_off_button_image
+                if effect_sound_on_button.isOver(pos):
+                    ui_variables.click_sound.play()
+                    if effect_volume == 0 :
+                        effect_volume = 5
+                        effect_sound_on_button.image=sound_on_button_image
+                    else:
+                        effect_volume = 0
+                        effect_sound_off_button.draw(screen,(0,0,0))
+                        effect_sound_on_button.image=sound_off_button_image
                 if mute_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    effect_volume = 0
-                    music_volume = 0
+                    if (effect_volume == 0) and (music_volume == 0):
+                        music_volume = 5
+                        effect_volume = 5
+                    else:
+                        music_volume = 0
+                        effect_volume = 0
 
                 set_volume()
 
@@ -1116,15 +1178,25 @@ while not done:
                     gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                                   int(board_height * 0.1777), 1, quit_button_image)
 
-                    effect_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
+                    effect_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
-                    effect_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
+                    effect_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                                                  int(board_height * 0.1111), 1, minus_button_image)
 
-                    sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
+                    sound_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, plus_button_image)
-                    sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
+                    sound_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, minus_button_image)
+
+                    #음소거 추가#
+                    effect_sound_off_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    music_sound_off_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    effect_sound_on_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
+                    music_sound_on_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
 
                     mute_check_button = button(board_width * 0.2, board_height * 0.4, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, check_button_image)
@@ -1180,15 +1252,25 @@ while not done:
                     gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                                   int(board_height * 0.1777), 1, quit_button_image)
 
-                    effect_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
+                    effect_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
-                    effect_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
+                    effect_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                                                  int(board_height * 0.1111), 1, minus_button_image)
 
-                    sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
+                    sound_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, plus_button_image)
-                    sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
+                    sound_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, minus_button_image)
+
+                    #음소거 추가#
+                    effect_sound_off_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    music_sound_off_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    effect_sound_on_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
+                    music_sound_on_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
 
                     mute_check_button = button(board_width * 0.2, board_height * 0.4, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, check_button_image)
@@ -1245,15 +1327,25 @@ while not done:
                     gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                                   int(board_height * 0.1777), 1, quit_button_image)
 
-                    effect_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
+                    effect_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
-                    effect_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
+                    effect_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
                                                  int(board_height * 0.1111), 1, minus_button_image)
 
-                    sound_plus_button = button(board_width * 0.43, board_height * 0.63, int(board_width * 0.0625),
+                    sound_plus_button = button(board_width * 0.43, board_height * 0.43, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, plus_button_image)
-                    sound_minus_button = button(board_width * 0.57, board_height * 0.63, int(board_width * 0.0625),
+                    sound_minus_button = button(board_width * 0.57, board_height * 0.43, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, minus_button_image)
+
+                    #음소거 추가#
+                    effect_sound_off_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    music_sound_off_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_off_button_image)
+                    effect_sound_on_button = button(board_width * 0.65, board_height * 0.63, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
+                    music_sound_on_button = button(board_width * 0.65, board_height * 0.43, int(board_width * 0.08),
+                                                  int(board_height * 0.15), 1, sound_on_button_image)
 
                     mute_check_button = button(board_width * 0.2, board_height * 0.4, int(board_width * 0.0625),
                                                int(board_height * 0.1111), 1, check_button_image)
