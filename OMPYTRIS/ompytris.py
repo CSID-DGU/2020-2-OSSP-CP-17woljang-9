@@ -510,8 +510,12 @@ def draw_1Pboard(next, hold, score, level, goal):
     # Draw texts
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.real_white)
     text_next = ui_variables.h5.render("NEXT", 1, ui_variables.real_white)
-    text_score = ui_variables.h5.render("ATTACK", 1, ui_variables.real_white)
+    text_score = ui_variables.h5.render("SCORE", 1, ui_variables.real_white)
     score_value = ui_variables.h4.render(str(attack_point), 1, ui_variables.real_white)
+    text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.real_white)
+    level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
+    text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
+    combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
 
     # Place texts
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
@@ -568,7 +572,7 @@ def draw_2Pboard(next, hold, score, level, goal):
 
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.real_white)
     text_next = ui_variables.h5.render("NEXT", 1, ui_variables.real_white)
-    text_score = ui_variables.h5.render("ATTACK", 1, ui_variables.real_white)
+    text_score = ui_variables.h5.render("SCORE", 1, ui_variables.real_white)
     score_value = ui_variables.h4.render(str(attack_point_2P), 1, ui_variables.real_white)
     text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.real_white)
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
@@ -580,10 +584,10 @@ def draw_2Pboard(next, hold, score, level, goal):
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
     screen.blit(score_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.5614)))
-    # screen.blit(text_level, (int(board_width*0.045) + sidebar_width, int(board_height*0.6791)))
-    # screen.blit(level_value, (int(board_width*0.055) + sidebar_width , int(board_height*0.7219)))
-    # screen.blit(text_combo, (int(board_width*0.045) + sidebar_width , int(board_height*0.8395)))
-    # screen.blit(combo_value, (int(board_width*0.055) + sidebar_width, int(board_height*0.8823)))
+    screen.blit(text_level, (int(board_width*0.045) + sidebar_width, int(board_height*0.6791)))
+    screen.blit(level_value, (int(board_width*0.055) + sidebar_width , int(board_height*0.7219)))
+    screen.blit(text_combo, (int(board_width*0.045) + sidebar_width , int(board_height*0.8395)))
+    screen.blit(combo_value, (int(board_width*0.055) + sidebar_width, int(board_height*0.8823)))
 
     # Draw board
     for x in range(width):
@@ -2320,7 +2324,7 @@ while not done:
                     ui_variables.click_sound.play()
                     pause = True
                 # Hard drop
-                elif event.key == K_k:
+                elif event.key == K_k: #왼쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
                     while not is_bottom(dx, dy, mino, rotation):
@@ -2330,7 +2334,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     # draw_mino_2P(dx_2P,dy_2P,mino_2P,rotation_2P)
                     # draw_multiboard(next_mino,hold_mino,next_mino_2P,hold_mino_2P,score,level,goal)
-                elif event.key == K_g:
+                elif event.key == K_g: #오른쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
                     while not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
@@ -2374,7 +2378,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
                 # Turn right
-                elif event.key == K_UP:
+                elif event.key == K_UP: #왼쪽창#
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
@@ -2481,7 +2485,7 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
                 # Move left
-                elif event.key == K_LEFT:  # key = pygame.key.get_pressed()
+                elif event.key == K_a:  # key = pygame.key.get_pressed()
                     if not is_leftedge(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
@@ -2491,7 +2495,7 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
                 # Move right
-                elif event.key == K_RIGHT:
+                elif event.key == K_d:
                     if not is_rightedge(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
@@ -2500,7 +2504,8 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
-                elif event.key == K_a:  # key = pygame.key.get_pressed()
+                # Move left
+                elif event.key == K_LEFT:  # key = pygame.key.get_pressed()
                     if not is_leftedge_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
@@ -2510,7 +2515,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
                 # Move right
-                elif event.key == K_d:
+                elif event.key == K_RIGHT:
                     if not is_rightedge_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
