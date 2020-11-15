@@ -75,6 +75,9 @@ class ui_variables:
     for i in range(1, 10):
         combos_sound.append(pygame.mixer.Sound("assets/sounds/SFX_" + str(i + 2) + "Combo.wav"))
 
+    #rainbow 보너스점수 graphic
+    rainbow_vector = pygame.image.load('assets/vector/rainbow.png')
+
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (0, 153, 153)  # rgb(255, 255, 255) # 청록색으로 변경
@@ -1849,6 +1852,8 @@ while not done:
 
                 # Erase line
                 erase_count = 0
+                rainbow_count = 0
+                matrix_contents = []
                 combo_value = 0
 
                 for j in range(21):
@@ -1856,15 +1861,30 @@ while not done:
                     for i in range(10):
                         if matrix[i][j] == 0:
                             is_full = False
-                    if is_full:
+                    if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
                         k = j
                         combo_value += 1
+                        #rainbow보너스 점수
+                        rainbow = [1,2,3,4,5,6,7] #각 mino에 해당하는 숫자
+                        for i in range(10):
+                            matrix_contents.append(matrix[i][j]) #현재 클리어된 줄에 있는 mino 종류들 저장
+                        rainbow_check = list(set(matrix_contents).intersection(rainbow)) #현재 클리어된 줄에 있는 mino와 mino의 종류중 겹치는 것 저장
+                        if rainbow == rainbow_check: #현재 클리어된 줄에 모든 종류 mino 있다면
+                            rainbow_count += 1
+
                         while k > 0:
                             for i in range(10):
-                                matrix[i][k] = matrix[i][k - 1]
+                                matrix[i][k] = matrix[i][k - 1]  # 남아있는 블록 한 줄씩 내리기(덮어쓰기)
                             k -= 1
                 if erase_count >= 1:
+                    if rainbow_count >= 1:
+                        score += 100 * rainbow_count #임의로 rainbow는 한 줄당 100점으로 잡음
+                        rainbow_count = 0 #다시 초기화
+                        screen.blit(ui_variables.rainbow_vector, (board_width * 0.27, board_height * 0.3))  # blits the combo number
+                        pygame.display.update()
+                        pygame.time.delay(400)
+
                     previous_time = current_time
                     combo_count += 1
                     if erase_count == 1:
