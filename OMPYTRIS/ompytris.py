@@ -16,7 +16,7 @@ board_width = 800
 board_height = 450
 block_size = int(board_height * 0.045)  #block_size 변수 중복됨?
 
-framerate = 30  # Bigger -> Slower  #너무 높으면 모니터가 제대로 출력 못함
+framerate = 30  # Bigger -> Slower  기본 게임속도
 
 pygame.init()
 
@@ -451,8 +451,10 @@ def draw_board(next1, next2, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
     combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
+    speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
 
     # Place texts
+    screen.blit(speed_value, (int(board_width * 0.060) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
@@ -522,10 +524,10 @@ def draw_1Pboard(next, hold, score, level, goal):
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
     screen.blit(score_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.5614)))
-    # screen.blit(text_level, (int(board_width*0.045) + sidebar_width, int(board_height*0.6791)))
-    # screen.blit(level_value, (int(board_width*0.055) + sidebar_width , int(board_height*0.7219)))
-    # screen.blit(text_combo, (int(board_width*0.045) + sidebar_width , int(board_height*0.8395)))
-    # screen.blit(combo_value, (int(board_width*0.055) + sidebar_width, int(board_height*0.8823)))
+    screen.blit(text_level, (int(board_width*0.045) + sidebar_width, int(board_height*0.6791)))
+    screen.blit(level_value, (int(board_width*0.055) + sidebar_width , int(board_height*0.7219)))
+    screen.blit(text_combo, (int(board_width*0.045) + sidebar_width , int(board_height*0.8395)))
+    screen.blit(combo_value, (int(board_width*0.055) + sidebar_width, int(board_height*0.8823)))
 
     # Draw board
     for x in range(width):
@@ -1950,7 +1952,7 @@ while not done:
                     ui_variables.LevelUp_sound.play()
                     ui_variables.LevelUp_sound.play()
                     goal += level * 5
-                    framerate = int(framerate * 0.8)
+                    framerate = int(framerate * 0.8) #곱셈이 아닌 -연산 해도 좋을듯
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1970,7 +1972,7 @@ while not done:
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                     pygame.display.update()
                 # Hold
-                elif event.key == K_LSHIFT or event.key == K_q:
+                elif event.key == K_LSHIFT or event.key == K_q: #keyboard 변경하기
                     if hold == False:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
@@ -1987,7 +1989,7 @@ while not done:
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_w:
+                elif event.key == K_UP or event.key == K_w:  #keyboard 변경하기
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
@@ -2022,7 +2024,7 @@ while not done:
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:
+                elif event.key == K_z or event.key == K_LCTRL:   #keyboard 변경하기
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation -= 1
@@ -2124,7 +2126,7 @@ while not done:
                 # Set speed
                 if not game_over:
                     keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:
+                    if keys_pressed[K_DOWN]:  #오른쪽 플레이어(2p)것에만 동작
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 20)
@@ -2316,7 +2318,7 @@ while not done:
                     goal += level * 5
                     framerate = int(framerate * 0.8)
 
-            elif event.type == KEYDOWN:  ##중요
+            elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
                 erase_mino(dx, dy, mino, rotation)
                 erase_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
 
