@@ -400,6 +400,9 @@ while not done: # done이 True일 때까지 반복
                         k = j
                         while k > 0:
                             for i in range(10):
+                                for m in range(7):
+                                    matrix[i][k] = m # 해당 라인 블록 모든 블록 색상으로 한 번씩 바뀜 
+                                    pygame.display.update() # 화면 업데이트
                                 matrix[i][k] = matrix[i][k - 1] # 남아있는 블록 한 줄씩 내리기(덮어쓰기)
                             k -= 1
                 if erase_count == 1: # 동시에 지우는 라인 수에 따라 소리와 점수가 다름
