@@ -17,13 +17,14 @@ board_height = 450
 block_size = int(board_height * 0.045)  #block_size 변수 중복됨?
 
 framerate = 30  # Bigger -> Slower  기본 게임속도
+speed_change = 1.5
 
 pygame.init()
 
 clock = pygame.time.Clock() #창, 화면을 초당 몇번 출력하는가(FPS) clock.tick 높을수록 cpu많이 사
 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE) #GUI창 설정하는 변수
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.display.set_caption("OM TETRIS") #GUI 창의 이름
+pygame.display.set_caption("TETRIS KINGDOM") #GUI 창의 이름
 
 
 class ui_variables:
@@ -659,7 +660,6 @@ def erase_mino(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0
 
-
 def erase_mino_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
@@ -690,7 +690,6 @@ def is_bottom(x, y, mino, r):
 
     return False
 
-
 def is_bottom_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
@@ -703,6 +702,7 @@ def is_bottom_2P(x, y, mino, r):
                     return True
 
     return False
+
 
 # Returns true if mino is at the left edge
 def is_leftedge(x, y, mino, r):
@@ -717,7 +717,6 @@ def is_leftedge(x, y, mino, r):
                     return True
 
     return False
-
 
 def is_leftedge_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
@@ -747,7 +746,6 @@ def is_rightedge(x, y, mino, r):
 
     return False
 
-
 def is_rightedge_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
@@ -776,9 +774,7 @@ def is_turnable_r(x, y, mino, r):
                     return False
                 elif matrix[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
-
     return True
-
 
 def is_turnable_r_2P(x, y, mino, r):
     if r != 3:  #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
@@ -793,7 +789,6 @@ def is_turnable_r_2P(x, y, mino, r):
                     return False
                 elif matrix_2P[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
-
     return True
 
 
@@ -814,8 +809,7 @@ def is_turnable_l(x, y, mino, r):
 
     return True
 
-
-def is_turnable_l(x, y, mino, r): #2p용 만들려다가 실수한듯 함
+def is_turnable_l_2P(x, y, mino, r):
     if r != 0:
         grid = tetrimino.mino_map[mino - 1][r - 1]
     else:
@@ -826,7 +820,7 @@ def is_turnable_l(x, y, mino, r): #2p용 만들려다가 실수한듯 함
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
                     return False
-                elif matrix[x + j][y + i] != 0: #matrix_2P로 바뀌어야할 듯
+                elif matrix2P[x + j][y + i] != 0:
                     return False
 
     return True
@@ -1952,7 +1946,7 @@ while not done:
                     ui_variables.LevelUp_sound.play()
                     ui_variables.LevelUp_sound.play()
                     goal += level * 5
-                    framerate = int(framerate * 0.8) #곱셈이 아닌 -연산 해도 좋을듯
+                    framerate = int(framerate-speed_change) #곱셈이 아닌 -연산 해도 좋을듯
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1972,7 +1966,7 @@ while not done:
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                     pygame.display.update()
                 # Hold
-                elif event.key == K_LSHIFT or event.key == K_q: #keyboard 변경하기
+                elif event.key == K_RSHIFT : #keyboard 변경하기
                     if hold == False:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
@@ -1989,7 +1983,7 @@ while not done:
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_w:  #keyboard 변경하기
+                elif event.key == K_UP:  #keyboard 변경하기
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
@@ -2024,7 +2018,7 @@ while not done:
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:   #keyboard 변경하기
+                elif event.key == K_m:   #keyboard 변경하기
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation -= 1
@@ -2126,7 +2120,7 @@ while not done:
                 # Set speed
                 if not game_over:
                     keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:  #오른쪽 플레이어(2p)것에만 동작
+                    if keys_pressed[K_DOWN] or keys_pressed[K_s]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 20)
@@ -2316,7 +2310,7 @@ while not done:
                     ui_variables.LevelUp_sound.play()
 
                     goal += level * 5
-                    framerate = int(framerate * 0.8)
+                    framerate = int(framerate - speed_change)
 
             elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
                 erase_mino(dx, dy, mino, rotation)
@@ -2325,8 +2319,9 @@ while not done:
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
                     pause = True
+                
                 # Hard drop
-                elif event.key == K_k: #왼쪽창#
+                elif event.key == K_e: #왼쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
                     while not is_bottom(dx, dy, mino, rotation):
@@ -2336,7 +2331,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     # draw_mino_2P(dx_2P,dy_2P,mino_2P,rotation_2P)
                     # draw_multiboard(next_mino,hold_mino,next_mino_2P,hold_mino_2P,score,level,goal)
-                elif event.key == K_g: #오른쪽창#
+                elif event.key == K_SPACE: #오른쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
                     while not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
@@ -2346,8 +2341,9 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     # draw_mino(dx, dy, mino, rotation)
                     # draw_multiboard(next_mino,hold_mino,next_mino_2P,hold_mino_2P,score,level,goal)
+                
                 # Hold
-                elif event.key == K_j:
+                elif event.key == K_LSHIFT:
                     if hold == False:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
@@ -2363,7 +2359,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
-                elif event.key == K_f:
+                elif event.key == K_RSHIFT:
                     if hold_2P == False:
                         ui_variables.move_sound.play()
                         if hold_mino_2P == -1:
@@ -2379,8 +2375,9 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_mino(dx, dy, mino, rotation)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                
                 # Turn right
-                elif event.key == K_UP: #왼쪽창#
+                elif event.key == K_w: #왼쪽창#
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation += 1
@@ -2413,37 +2410,33 @@ while not done:
                         rotation = 0
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score,
-                                    level, goal)
-
-
-                elif event.key == K_h or event.key == K_w:
-
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                elif event.key == K_UP: #오른쪽창#
                     if is_turnable_r(dx_2P, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         rotation_2P += 1
                     # Kick
-                    elif is_turnable_r(dx_2P, dy_2P - 1, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P, dy_2P - 1, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dy_2P -= 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P + 1, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P + 1, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dx_2P += 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P - 1, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P - 1, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dx_2P -= 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P, dy_2P - 2, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P, dy_2P - 2, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dy_2P -= 2
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P + 2, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P + 2, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dx_2P += 2
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P - 2, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r_2P(dx_2P - 2, dy_2P, mino_2P, rotation_2P):
                         ui_variables.move_sound.play()
                         dx_2P -= 2
                         rotation_2P += 1
@@ -2452,8 +2445,9 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_mino(dx, dy, mino, rotation)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                
                 # Turn left
-                elif event.key == K_l or event.key == K_LCTRL:
+                elif event.key == K_q:
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         rotation -= 1
@@ -2473,19 +2467,56 @@ while not done:
                     elif is_turnable_l(dx, dy - 2, mino, rotation):
                         ui_variables.move_sound.play()
                         dy -= 2
-                        rotation += 1
+                        rotation -= 1
                     elif is_turnable_l(dx + 2, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         dx += 2
-                        rotation += 1
+                        rotation -= 1
                     elif is_turnable_l(dx - 2, dy, mino, rotation):
                         ui_variables.move_sound.play()
                         dx -= 2
+                        rotation -= 1
                     if rotation == -1:
                         rotation = 3
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                elif event.key == K_m: #오른쪽창#
+                    if is_turnable_l_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        rotation_2P -= 1
+                    # Kick
+                    elif is_turnable_l_2P(dx_2P, dy_2P - 1, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dy_2P -= 1
+                        rotation_2P -= 1
+                    elif is_turnable_l_2P(dx_2P + 1, dy_2P, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P += 1
+                        rotation_2P -= 1
+                    elif is_turnable_l_2P(dx_2P - 1, dy_2P, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P -= 1
+                        rotation_2P -= 1
+                    elif is_turnable_l_2P(dx_2P, dy_2P - 2, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dy_2P -= 2
+                        rotation_2P -= 1
+                    elif is_turnable_l_2P(dx_2P + 2, dy_2P, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P += 2
+                        rotation_2P -= 1
+                    elif is_turnable_l_2P(dx_2P - 2, dy_2P, mino_2P, rotation_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P -= 2
+                        rotation_2P -= 1
+                    if rotation_2P == -1:
+                        rotation_2P = 3
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                
+
                 # Move left
                 elif event.key == K_a:  # key = pygame.key.get_pressed()
                     if not is_leftedge(dx, dy, mino, rotation):
@@ -2526,6 +2557,7 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_mino(dx, dy, mino, rotation)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+            
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
