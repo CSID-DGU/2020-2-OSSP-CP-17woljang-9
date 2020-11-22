@@ -17,13 +17,16 @@ board_height = 450
 block_size = int(board_height * 0.045)  #block_size 변수 중복됨?
 
 framerate = 30  # Bigger -> Slower  기본 게임속도
+framerate_2P = 30
+speed_change = 1.5
 
 pygame.init()
 
 clock = pygame.time.Clock() #창, 화면을 초당 몇번 출력하는가(FPS) clock.tick 높을수록 cpu많이 사
 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE) #GUI창 설정하는 변수
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.display.set_caption("OM TETRIS") #GUI 창의 이름
+pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 10)
+pygame.display.set_caption("TETRIS KINGDOM") #GUI 창의 이름
 
 
 class ui_variables:
@@ -80,6 +83,7 @@ class ui_variables:
 
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
+    black_pause = (0, 0, 0, 127)
     white = (0, 153, 153)  # rgb(255, 255, 255) # 청록색으로 변경
     real_white = (255, 255, 255)  # rgb(255, 255, 255)
 
@@ -513,13 +517,15 @@ def draw_1Pboard(next, hold, score, level, goal):
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.real_white)
     text_next = ui_variables.h5.render("NEXT", 1, ui_variables.real_white)
     text_score = ui_variables.h5.render("SCORE", 1, ui_variables.real_white)
-    score_value = ui_variables.h4.render(str(attack_point), 1, ui_variables.real_white)
+    score_value = ui_variables.h4.render(str(score), 1, ui_variables.real_white)
     text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.real_white)
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
     combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
+    speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
 
     # Place texts
+    screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
@@ -575,13 +581,15 @@ def draw_2Pboard(next, hold, score, level, goal):
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.real_white)
     text_next = ui_variables.h5.render("NEXT", 1, ui_variables.real_white)
     text_score = ui_variables.h5.render("SCORE", 1, ui_variables.real_white)
-    score_value = ui_variables.h4.render(str(attack_point_2P), 1, ui_variables.real_white)
+    score_value = ui_variables.h4.render(str(score), 1, ui_variables.real_white)
     text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.real_white)
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
-    combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
+    combo_value = ui_variables.h4.render(str(combo_count_2P), 1, ui_variables.real_white)
+    speed_value = ui_variables.h5.render("SPEED : "+str(framerate_2P), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
 
     # Place texts
+    screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
@@ -603,11 +611,11 @@ def draw_2Pboard(next, hold, score, level, goal):
 #########################################################################################
 
 # Draw a tetrimino
-def draw_mino(x, y, mino, r): #mino는 모양, r은 회전된 모양 중 하나
+def draw_mino(x, y, mino, r, matrix): #mino는 모양, r은 회전된 모양 중 하나
     grid = tetrimino.mino_map[mino - 1][r] #grid : 출력할 테트리스
 
     tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
+    while not is_bottom(tx, ty, mino, r, matrix): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
         ty += 1 #한칸 밑으로 하강
 
     # Draw ghost
@@ -622,29 +630,8 @@ def draw_mino(x, y, mino, r): #mino는 모양, r은 회전된 모양 중 하나
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = grid[i][j]
 
-
-def draw_mino_2P(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    tx, ty = x, y
-    while not is_bottom_2P(tx, ty, mino, r):
-        ty += 1
-
-    # Draw ghost
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix_2P[tx + j][ty + i] = 8
-
-    # Draw mino
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix_2P[x + j][y + i] = grid[i][j]
-
-
 # Erase a tetrimino
-def erase_mino(x, y, mino, r):
+def erase_mino(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
     # Erase ghost
@@ -659,25 +646,8 @@ def erase_mino(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0
 
-
-def erase_mino_2P(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    # Erase ghost
-    for j in range(21):
-        for i in range(10):
-            if matrix_2P[i][j] == 8:
-                matrix_2P[i][j] = 0
-
-    # Erase mino
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix_2P[x + j][y + i] = 0
-
-
 # Returns true if mino is at bottom
-def is_bottom(x, y, mino, r):
+def is_bottom(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
     for i in range(4):
@@ -690,22 +660,8 @@ def is_bottom(x, y, mino, r):
 
     return False
 
-
-def is_bottom_2P(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (y + i + 1) > 20: #그 블록위치에 0, 8 아님(즉 블록 존재 함)
-                    return True
-                elif matrix_2P[x + j][y + i + 1] != 0 and matrix_2P[x + j][y + i + 1] != 8:  #그 블록 아랫쪽에 0, 8 아님(즉 블록 존재 함)
-                    return True
-
-    return False
-
 # Returns true if mino is at the left edge
-def is_leftedge(x, y, mino, r):
+def is_leftedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
     for i in range(4):
@@ -718,23 +674,8 @@ def is_leftedge(x, y, mino, r):
 
     return False
 
-
-def is_leftedge_2P(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j - 1) < 0:  #맨 왼쪽에 위치함
-                    return True
-                elif matrix_2P[x + j - 1][y + i] != 0:  #그 위치의 왼쪽에 이미 무엇인가 존재함
-                    return True
-
-    return False
-
-
 # Returns true if mino is at the right edge
-def is_rightedge(x, y, mino, r):
+def is_rightedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
     for i in range(4):
@@ -747,23 +688,7 @@ def is_rightedge(x, y, mino, r):
 
     return False
 
-
-def is_rightedge_2P(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j + 1) > 9:  #맨 오른쪽에 위치
-                    return True
-                elif matrix_2P[x + j + 1][y + i] != 0: #그 위치의 오른쪽에 이미 무엇인가 존재함
-                    return True
-
-    return False
-
-###is_turnable_l or r 함수 차이는 회전모양 r 부분 뿐###
-# Returns true if turning right is possible
-def is_turnable_r(x, y, mino, r):
+def is_turnable_r(x, y, mino, r, matrix):
     if r != 3:  #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
         grid = tetrimino.mino_map[mino - 1][r + 1] #3이 아니면 그 다음 모양
     else:
@@ -776,29 +701,10 @@ def is_turnable_r(x, y, mino, r):
                     return False
                 elif matrix[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
-
     return True
-
-
-def is_turnable_r_2P(x, y, mino, r):
-    if r != 3:  #회전모양 총 0, 1, 2, 3번째 총 4가지 있음
-        grid = tetrimino.mino_map[mino - 1][r + 1] #3이 아니면 그 다음 모양
-    else:
-        grid = tetrimino.mino_map[mino - 1][0]  #3이면 0번째 모양으로
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:  #테트리스 matrix크기 벗어나면 못돌림
-                    return False
-                elif matrix_2P[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
-                    return False
-
-    return True
-
 
 # Returns true if turning left is possible
-def is_turnable_l(x, y, mino, r):
+def is_turnable_l(x, y, mino, r, matrix):
     if r != 0:
         grid = tetrimino.mino_map[mino - 1][r - 1]
     else:
@@ -814,26 +720,8 @@ def is_turnable_l(x, y, mino, r):
 
     return True
 
-
-def is_turnable_l(x, y, mino, r): #2p용 만들려다가 실수한듯 함
-    if r != 0:
-        grid = tetrimino.mino_map[mino - 1][r - 1]
-    else:
-        grid = tetrimino.mino_map[mino - 1][3]
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
-                    return False
-                elif matrix[x + j][y + i] != 0: #matrix_2P로 바뀌어야할 듯
-                    return False
-
-    return True
-
-
 # Returns true if new block is drawable
-def is_stackable(mino): #??
+def is_stackable(mino, matrix): #??
     grid = tetrimino.mino_map[mino - 1][0]
 
     for i in range(4):
@@ -844,23 +732,10 @@ def is_stackable(mino): #??
 
     return True
 
-
-def is_stackable_2P(mino):
-    grid = tetrimino.mino_map[mino - 1][0]
-
-    for i in range(4):
-        for j in range(4):
-            # print(grid[i][j], matrix[3 + j][i])
-            if grid[i][j] != 0 and matrix_2P[3 + j][i] != 0:
-                return False
-
-    return True
-
-
-def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P, score, level, goal):  #pvp 모드에 score, level, goal ?
+def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P, score1P, score2P, level1P, level2P, goal1P, goal2P):  #pvp 모드에 score, level, goal ?
     screen.fill(ui_variables.real_white)
-    draw_1Pboard(next_1P, hold_1P, score, level, goal) #각각 hold, next, attack 만 존재함
-    draw_2Pboard(next_2P, hold_2P, score, level, goal)
+    draw_1Pboard(next_1P, hold_1P, score1P, level1P, goal1P) #각각 hold, next, attack 만 존재함
+    draw_2Pboard(next_2P, hold_2P, score2P, level2P, goal2P)
 
 
 def set_vol(val):
@@ -877,44 +752,42 @@ done = False
 game_over = False
 leader_board = False
 setting = False
-pvp = False
-help = False
-combo_count = 0
-score = 0
-level = 1
-goal = level * 5
-bottom_count = 0 #
-hard_drop = False #
-
 volume_setting = False
 screen_setting = False
 keyboard_setting = False
-
 music_volume = 10
 effect_volume = 10
+pvp = False
+help = False
+
+combo_count = 0
+combo_count_2P = 0
+score = 0
+level = 1
+goal = level * 5
+score_2P = 0
+level_2P = 1
+goal_2P = level_2P * 5
+bottom_count = 0
+bottom_count_2P = 0
+hard_drop = False
+hard_drop_2P = False
 attack_point = 0
 attack_point_2P = 0
 
 dx, dy = 3, 0  # Minos location status
-
+dx_2P, dy_2P = 3, 0
 rotation = 0  # Minos rotation status
-
+rotation_2P = 0
 mino = randint(1, 7)  # Current mino #테트리스 블록 7가지 중 하나
-
+mino_2P = randint(1, 7)
 next_mino1 = randint(1, 7)  # Next mino1 # 다음 테트리스 블록 7가지 중 하나
 next_mino2 = randint(1, 7)  # Next mino2 # 다음 테트리스 블록 7가지 중 하나
-
+next_mino1_2P = randint(1, 7)
 hold = False  # Hold status
-
+hold_2P = False
 hold_mino = -1  # Holded mino #현재 hold하는 것 없는 상태
 hold_mino_2P = -1
-bottom_count_2P = 0
-hard_drop_2P = False
-hold_2P = False
-next_mino1_2P = randint(1, 7)
-mino_2P = randint(1, 7)
-rotation_2P = 0
-dx_2P, dy_2P = 3, 0
 
 name_location = 0
 name = [65, 65, 65]
@@ -954,6 +827,7 @@ while not done:
 
     # Pause screen
     # ui_variables.click_sound.set_volume(volume)
+    
     if volume_setting:
         draw_image(screen, setting_board_image, board_width * 0.5, board_height * 0.5, int(board_height * 1.3),
                    board_height)
@@ -1377,10 +1251,9 @@ while not done:
 
         if start:
             screen.fill(ui_variables.real_white)
-
             draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
         if pvp:
-            draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+            draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
 
         draw_image(screen, setting_board_image, board_width * 0.5, board_height * 0.5, int(board_height * 1.3),
                    board_height)
@@ -1399,8 +1272,8 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
-                pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.real_white)
-                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.real_white)
+                #pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.real_white)
+                #pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.real_white)
 
                 pygame.display.update()
 
@@ -1491,10 +1364,21 @@ while not done:
         # draw_board(next_mino, hold_mino, score, level, goal)
         if start:
             screen.fill(ui_variables.real_white)
-
             draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
+            #화면 회색으로 약간 불투명하게
+            pause_surface = screen.convert_alpha()
+            pause_surface.fill((0, 0, 0, 0))
+            pygame.draw.rect(pause_surface, (ui_variables.black_pause), [0, 0, int(board_width), int(board_height)])
+            screen.blit(pause_surface, (0, 0))
+
         if pvp:
-            draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+            draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+            #화면 회색으로 약간 불투명하게
+            pause_surface = screen.convert_alpha()
+            pause_surface.fill((0, 0, 0, 0))
+            pygame.draw.rect(pause_surface, (ui_variables.black_pause), [0, 0, int(board_width), int(board_height)])
+            screen.blit(pause_surface, (0, 0))
+
         draw_image(screen, pause_board_image, board_width * 0.5, board_height * 0.5, int(board_height * 0.7428),
                    board_height)
         resume_button.draw(screen, (0, 0, 0))
@@ -1510,12 +1394,12 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
-                pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.real_white)
-                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.real_white)
+                #pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.real_white)
+                #pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.real_white)
 
                 pygame.display.update()
             elif event.type == KEYDOWN:
-                erase_mino(dx, dy, mino, rotation)
+                erase_mino(dx, dy, mino, rotation, matrix)
                 if event.key == K_ESCAPE:
                     pause = False
                     ui_variables.click_sound.play()
@@ -1550,37 +1434,47 @@ while not done:
                     setting = True
                 if restart_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    hold = False
-                    dx, dy = 3, 0
-                    rotation = 0
-                    mino = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    hold_mino = -1
-                    framerate = 30
-                    score = 0
+                    
+                    combo_count = 0
+                    combo_count_2P = 0
                     score = 0
                     level = 1
-                    combo_count = 0
                     goal = level * 5
+                    score_2P = 0
+                    level_2P = 1
+                    goal_2P = level_2P * 5
                     bottom_count = 0
+                    bottom_count_2P = 0 
                     hard_drop = False
+                    hard_drop_2P = False 
+                    attack_point = 0
+                    attack_point_2P = 0
+
+                    dx, dy = 3, 0
+                    dx_2P, dy_2P = 3, 0
+                    rotation = 0
+                    rotation_2P = 0
+                    mino = randint(1, 7)
+                    mino_2P = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7)
+                    next_mino1_2P = randint(1, 7)
+                    hold = False
+                    hold_2P = False 
+                    hold_mino = -1
+                    hold_mino_2P = -1 
+
+                    framerate = 30
+                    framerate_2P = 30
+
+                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
                     pause = False
                     start = False
-
-                    hold_mino_2P = -1  #
-                    bottom_count_2P = 0  #
-                    hard_drop_2P = False  #
-                    hold_2P = False  #
-                    next_mino1_2P = randint(1, 7)  #
-                    mino_2P = randint(1, 7)  #
-                    rotation_2P = 0  #
-                    dx_2P, dy_2P = 3, 0  #
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
 
                     if pvp:
                         pvp = False
@@ -1745,7 +1639,7 @@ while not done:
 
                 pygame.display.update()
             elif event.type == KEYDOWN:
-                erase_mino(dx, dy, mino, rotation)
+                erase_mino(dx, dy, mino, rotation, matrix)
                 if event.key == K_ESCAPE:
                     pause = False
                     ui_variables.click_sound.play()
@@ -1816,7 +1710,7 @@ while not done:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 20)
 
                 # Draw a mino
-                draw_mino(dx, dy, mino, rotation)
+                draw_mino(dx, dy, mino, rotation, matrix)
                 screen.fill(ui_variables.real_white)
                 draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 pygame.display.update()
@@ -1824,10 +1718,10 @@ while not done:
                 current_time = pygame.time.get_ticks()
                 # Erase a mino
                 if not game_over:
-                    erase_mino(dx, dy, mino, rotation)
+                    erase_mino(dx, dy, mino, rotation, matrix)
 
                 # Move mino down
-                if not is_bottom(dx, dy, mino, rotation):
+                if not is_bottom(dx, dy, mino, rotation, matrix):
                     dy += 1
 
                 # Create new mino
@@ -1836,11 +1730,11 @@ while not done:
                         hard_drop = False
                         bottom_count = 0
                         score += 10 * level
-                        draw_mino(dx, dy, mino, rotation)
+                        draw_mino(dx, dy, mino, rotation, matrix)
                         screen.fill(ui_variables.real_white)
                         draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                         pygame.display.update()
-                        if is_stackable(next_mino1):
+                        if is_stackable(next_mino1, matrix):
                             mino = next_mino1
                             next_mino1 = next_mino2
                             next_mino2 = randint(1, 7)
@@ -1952,10 +1846,10 @@ while not done:
                     ui_variables.LevelUp_sound.play()
                     ui_variables.LevelUp_sound.play()
                     goal += level * 5
-                    framerate = int(framerate * 0.8) #곱셈이 아닌 -연산 해도 좋을듯
+                    framerate = int(framerate-speed_change) #곱셈이 아닌 -연산 해도 좋을듯
 
             elif event.type == KEYDOWN:
-                erase_mino(dx, dy, mino, rotation)
+                erase_mino(dx, dy, mino, rotation, matrix)
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
                     pause = True
@@ -1963,16 +1857,17 @@ while not done:
                 elif event.key == K_SPACE:
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
-                    while not is_bottom(dx, dy, mino, rotation):
+                    while not is_bottom(dx, dy, mino, rotation, matrix):
                         dy += 1
                     hard_drop = True
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                    draw_mino(dx, dy, mino, rotation)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate) #하드드롭 오류 해결
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                     pygame.display.update()
+
                 # Hold
-                elif event.key == K_LSHIFT or event.key == K_q: #keyboard 변경하기
+                elif event.key == K_RSHIFT : #keyboard 변경하기
                     if hold == False:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
@@ -1985,92 +1880,92 @@ while not done:
                         dx, dy = 3, 0
                         rotation = 0
                         hold = True
-                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_w:  #keyboard 변경하기
-                    if is_turnable_r(dx, dy, mino, rotation):
+                elif event.key == K_UP:  #keyboard 변경하기
+                    if is_turnable_r(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         rotation += 1
                     # Kick
-                    elif is_turnable_r(dx, dy - 1, mino, rotation):
+                    elif is_turnable_r(dx, dy - 1, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 1
                         rotation += 1
-                    elif is_turnable_r(dx + 1, dy, mino, rotation):
+                    elif is_turnable_r(dx + 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 1
                         rotation += 1
-                    elif is_turnable_r(dx - 1, dy, mino, rotation):
+                    elif is_turnable_r(dx - 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 1
                         rotation += 1
-                    elif is_turnable_r(dx, dy - 2, mino, rotation):
+                    elif is_turnable_r(dx, dy - 2, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 2
                         rotation += 1
-                    elif is_turnable_r(dx + 2, dy, mino, rotation):
+                    elif is_turnable_r(dx + 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 2
                         rotation += 1
-                    elif is_turnable_r(dx - 2, dy, mino, rotation):
+                    elif is_turnable_r(dx - 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 2
                         rotation += 1
                     if rotation == 4:
                         rotation = 0
-                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:   #keyboard 변경하기
-                    if is_turnable_l(dx, dy, mino, rotation):
+                elif event.key == K_m:   #keyboard 변경하기
+                    if is_turnable_l(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         rotation -= 1
                     # Kick
-                    elif is_turnable_l(dx, dy - 1, mino, rotation):
+                    elif is_turnable_l(dx, dy - 1, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 1
                         rotation -= 1
-                    elif is_turnable_l(dx + 1, dy, mino, rotation):
+                    elif is_turnable_l(dx + 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 1
                         rotation -= 1
-                    elif is_turnable_l(dx - 1, dy, mino, rotation):
+                    elif is_turnable_l(dx - 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 1
                         rotation -= 1
-                    elif is_turnable_l(dx, dy - 2, mino, rotation):
+                    elif is_turnable_l(dx, dy - 2, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 2
                         rotation += 1
-                    elif is_turnable_l(dx + 2, dy, mino, rotation):
+                    elif is_turnable_l(dx + 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 2
                         rotation += 1
-                    elif is_turnable_l(dx - 2, dy, mino, rotation):
+                    elif is_turnable_l(dx - 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 2
                     if rotation == -1:
                         rotation = 3
-                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Move left
                 elif event.key == K_LEFT:
-                    if not is_leftedge(dx, dy, mino, rotation):
+                    if not is_leftedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 1
-                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                 # Move right
                 elif event.key == K_RIGHT:
-                    if not is_rightedge(dx, dy, mino, rotation):
+                    if not is_rightedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 1
-                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino(dx, dy, mino, rotation, matrix)
                     screen.fill(ui_variables.real_white)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
             elif event.type == VIDEORESIZE:
@@ -2124,27 +2019,30 @@ while not done:
                 done = True
             elif event.type == USEREVENT:
                 # Set speed
-                if not game_over:
+                if not game_over: #소프트드롭이 별개로 안되는 것 같음
                     keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:  #오른쪽 플레이어(2p)것에만 동작
+                    if keys_pressed[K_s]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
-                    else:
+                    elif keys_pressed[K_DOWN] :
+                        pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 1)
+                    else :
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 20)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 20)
 
                 # Draw a mino
-                draw_mino(dx, dy, mino, rotation)
+                draw_mino(dx, dy, mino, rotation, matrix)
 
-                draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
-                draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
 
                 # Erase a mino
                 if not game_over:
-                    erase_mino(dx, dy, mino, rotation)
-                    erase_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    erase_mino(dx, dy, mino, rotation, matrix)
+                    erase_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
                 # Move mino down
-                if not is_bottom(dx, dy, mino, rotation):
+                if not is_bottom(dx, dy, mino, rotation, matrix):
                     dy += 1
 
                 # Create new mino
@@ -2153,9 +2051,9 @@ while not done:
                         hard_drop = False
                         bottom_count = 0
                         score += 10 * level
-                        draw_mino(dx, dy, mino, rotation)
+                        draw_mino(dx, dy, mino, rotation, matrix)
 
-                        if is_stackable(next_mino1):
+                        if is_stackable(next_mino1, matrix):
                             mino = next_mino1
                             # next_mino1 = next_mino2
                             next_mino1 = randint(1, 7)
@@ -2172,7 +2070,7 @@ while not done:
                         bottom_count += 1
 
                 # Move mino down
-                if not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                if not is_bottom(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                     dy_2P += 1
 
                 # Create new mino
@@ -2180,10 +2078,10 @@ while not done:
                     if hard_drop_2P or bottom_count_2P == 6:
                         hard_drop_2P = False
                         bottom_count_2P = 0
-                        score += 10 * level
-                        draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                        score_2P += 10 * level_2P
+                        draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
-                        if is_stackable_2P(next_mino1_2P):
+                        if is_stackable(next_mino1_2P, matrix_2P):
                             mino_2P = next_mino1_2P
                             # next_mino1_2P = next_mino2_2P
                             next_mino1_2P = randint(1, 7)
@@ -2204,7 +2102,9 @@ while not done:
                 erase_count = 0
                 erase_count_2P = 0
                 combo_value = 0
-                sent = 0
+                combo_value_2P = 0
+                sent_1P = 0
+                sent_2P = 0
 
                 attack_stack = 0
                 attack_stack_2P = 0
@@ -2216,14 +2116,13 @@ while not done:
                     if is_full:
                         erase_count += 1
                         attack_stack += 1
-                        # attack_stack += 1
                         k = j
                         combo_value += 1
                         while k > 0:
                             for i in range(10):
                                 matrix[i][k] = matrix[i][k - 1]
-
                             k -= 1
+
                 for j in range(21):
                     is_full = True
                     for i in range(10):
@@ -2233,16 +2132,16 @@ while not done:
                         erase_count_2P += 1
                         attack_stack_2P += 1
                         k = j
-                        combo_value += 1
+                        combo_value_2P += 1
                         while k > 0:
                             for i in range(10):
                                 matrix_2P[i][k] = matrix_2P[i][k - 1]
                             k -= 1
+
                 while attack_stack >= 2:
                     for j in range(20):
                         for i in range(10):
                             matrix_2P[i][j] = matrix_2P[i][j + 1]
-
                             attack_stack -= 1
                     for i in range(10):
                         matrix_2P[i][20] = 9
@@ -2254,7 +2153,6 @@ while not done:
                     for j in range(20):
                         for i in range(10):
                             matrix[i][j] = matrix[i][j + 1]
-
                             attack_stack_2P -= 1
                     for i in range(10):
                         matrix[i][20] = 9
@@ -2268,26 +2166,27 @@ while not done:
                 # if combo_count < 0:
                 # combo_count = 0
 
+                #1P
                 if erase_count >= 1:
                     combo_count += 1
                     if erase_count == 1:
                         ui_variables.break_sound.play()
                         ui_variables.single_sound.play()
                         score += 50 * level * erase_count + combo_count
-                        sent += 1
+                        sent_1P += 1
                     elif erase_count == 2:
                         ui_variables.break_sound.play()
                         ui_variables.double_sound.play()
                         ui_variables.double_sound.play()
                         score += 150 * level * erase_count + 2 * combo_count
-                        sent += 2
+                        sent_1P += 2
                     elif erase_count == 3:
                         ui_variables.break_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         score += 350 * level * erase_count + 3 * combo_count
-                        sent += 3
+                        sent_1P += 3
                     elif erase_count == 4:
                         ui_variables.break_sound.play()
                         ui_variables.tetris_sound.play()
@@ -2295,7 +2194,7 @@ while not done:
                         ui_variables.tetris_sound.play()
                         ui_variables.tetris_sound.play()
                         score += 1000 * level * erase_count + 4 * combo_count
-                        sent += 4
+                        sent_1P += 4
                         screen.blit(ui_variables.combo_4ring, (250, 160))
 
                     for i in range(1, 11):
@@ -2316,38 +2215,91 @@ while not done:
                     ui_variables.LevelUp_sound.play()
 
                     goal += level * 5
-                    framerate = int(framerate * 0.8)
+                    framerate = int(framerate - speed_change)
+
+                #2P
+                if erase_count_2P >= 1:
+                    combo_count_2P += 1
+                    if erase_count_2P == 1:
+                        ui_variables.break_sound.play()
+                        ui_variables.single_sound.play()
+                        score_2P += 50 * level_2P * erase_count_2P + combo_count_2P
+                        sent_2P += 1
+                    elif erase_count_2P == 2:
+                        ui_variables.break_sound.play()
+                        ui_variables.double_sound.play()
+                        ui_variables.double_sound.play()
+                        score_2P += 150 * level_2P * erase_count_2P + 2 * combo_count_2P
+                        sent_2P += 2
+                    elif erase_count_2P == 3:
+                        ui_variables.break_sound.play()
+                        ui_variables.triple_sound.play()
+                        ui_variables.triple_sound.play()
+                        ui_variables.triple_sound.play()
+                        score_2P += 350 * level_2P * erase_count_2P + 3 * combo_count_2P
+                        sent_2P += 3
+                    elif erase_count_2P == 4:
+                        ui_variables.break_sound.play()
+                        ui_variables.tetris_sound.play()
+                        ui_variables.tetris_sound.play()
+                        ui_variables.tetris_sound.play()
+                        ui_variables.tetris_sound.play()
+                        score_2P += 1000 * level_2P * erase_count_2P + 4 * combo_count_2P
+                        sent_2P += 4
+                        screen.blit(ui_variables.combo_4ring, (250, 160))
+
+                    for i in range(1, 11):
+                        if combo_count_2P == i:  # 1 ~ 10 콤보 이미지
+                            screen.blit(ui_variables.large_combos[i - 1], (124, 190))  # blits the combo number
+                        elif combo_count_2P > 10:  # 11 이상 콤보 이미지
+                            screen.blit(tetris4, (100, 190))  # blits the combo number
+
+                    for i in range(1, 10):
+                        if combo_count_2P == i + 2:  # 3 ~ 11 콤보 사운드
+                            ui_variables.combos_sound[i - 1].play()
+
+                # Increase level
+                goal_2P -= erase_count_2P
+                if goal_2P < 1 and level_2P < 15:
+                    level_2P += 1
+                    ui_variables.LevelUp_sound.play()
+                    ui_variables.LevelUp_sound.play()
+
+                    goal_2P += level_2P * 5
+                    framerate_2P = int(framerate_2P - speed_change)                    
 
             elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
-                erase_mino(dx, dy, mino, rotation)
-                erase_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                erase_mino(dx, dy, mino, rotation, matrix)
+                erase_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
                     pause = True
+                
                 # Hard drop
-                elif event.key == K_k: #왼쪽창#
+                elif event.key == K_e: #왼쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
-                    while not is_bottom(dx, dy, mino, rotation):
+                    while not is_bottom(dx, dy, mino, rotation, matrix):
                         dy += 1
                     hard_drop = True
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                    draw_mino(dx, dy, mino, rotation)
-                    # draw_mino_2P(dx_2P,dy_2P,mino_2P,rotation_2P)
-                    # draw_multiboard(next_mino,hold_mino,next_mino_2P,hold_mino_2P,score,level,goal)
-                elif event.key == K_g: #오른쪽창#
+                    pygame.time.set_timer(pygame.USEREVENT, framerate)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                elif event.key == K_SPACE: #오른쪽창#
                     ui_variables.fall_sound.play()
                     ui_variables.drop_sound.play()
-                    while not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                    while not is_bottom(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         dy_2P += 1
                     hard_drop_2P = True
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    # draw_mino(dx, dy, mino, rotation)
-                    # draw_multiboard(next_mino,hold_mino,next_mino_2P,hold_mino_2P,score,level,goal)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate_2P)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                
                 # Hold
-                elif event.key == K_j:
+                elif event.key == K_LSHIFT:
                     if hold == False:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
@@ -2360,10 +2312,10 @@ while not done:
                         dx, dy = 3, 0
                         rotation = 0
                         hold = True
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
-                elif event.key == K_f:
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                elif event.key == K_RSHIFT:
                     if hold_2P == False:
                         ui_variables.move_sound.play()
                         if hold_mino_2P == -1:
@@ -2376,156 +2328,192 @@ while not done:
                         dx_2P, dy_2P = 3, 0
                         rotation_2P = 0
                         hold_2P = True
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                
                 # Turn right
-                elif event.key == K_UP: #왼쪽창#
-                    if is_turnable_r(dx, dy, mino, rotation):
+                elif event.key == K_w: #왼쪽창#
+                    if is_turnable_r(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         rotation += 1
                     # Kick
-                    elif is_turnable_r(dx, dy - 1, mino, rotation):
+                    elif is_turnable_r(dx, dy - 1, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 1
                         rotation += 1
-                    elif is_turnable_r(dx + 1, dy, mino, rotation):
+                    elif is_turnable_r(dx + 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 1
                         rotation += 1
-                    elif is_turnable_r(dx - 1, dy, mino, rotation):
+                    elif is_turnable_r(dx - 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 1
                         rotation += 1
-                    elif is_turnable_r(dx, dy - 2, mino, rotation):
+                    elif is_turnable_r(dx, dy - 2, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 2
                         rotation += 1
-                    elif is_turnable_r(dx + 2, dy, mino, rotation):
+                    elif is_turnable_r(dx + 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 2
                         rotation += 1
-                    elif is_turnable_r(dx - 2, dy, mino, rotation):
+                    elif is_turnable_r(dx - 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 2
                         rotation += 1
                     if rotation == 4:
                         rotation = 0
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score,
-                                    level, goal)
-
-
-                elif event.key == K_h or event.key == K_w:
-
-                    if is_turnable_r(dx_2P, dy_2P, mino_2P, rotation_2P):
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                elif event.key == K_UP: #오른쪽창#
+                    if is_turnable_r(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         rotation_2P += 1
                     # Kick
-                    elif is_turnable_r(dx_2P, dy_2P - 1, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P, dy_2P - 1, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dy_2P -= 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P + 1, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P + 1, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dx_2P += 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P - 1, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P - 1, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dx_2P -= 1
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P, dy_2P - 2, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P, dy_2P - 2, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dy_2P -= 2
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P + 2, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P + 2, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dx_2P += 2
                         rotation_2P += 1
-                    elif is_turnable_r(dx_2P - 2, dy_2P, mino_2P, rotation_2P):
+                    elif is_turnable_r(dx_2P - 2, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         dx_2P -= 2
                         rotation_2P += 1
                     if rotation_2P == 4:
                         rotation_2P = 0
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                
                 # Turn left
-                elif event.key == K_l or event.key == K_LCTRL:
-                    if is_turnable_l(dx, dy, mino, rotation):
+                elif event.key == K_q:
+                    if is_turnable_l(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         rotation -= 1
                     # Kick
-                    elif is_turnable_l(dx, dy - 1, mino, rotation):
+                    elif is_turnable_l(dx, dy - 1, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 1
                         rotation -= 1
-                    elif is_turnable_l(dx + 1, dy, mino, rotation):
+                    elif is_turnable_l(dx + 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 1
                         rotation -= 1
-                    elif is_turnable_l(dx - 1, dy, mino, rotation):
+                    elif is_turnable_l(dx - 1, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 1
                         rotation -= 1
-                    elif is_turnable_l(dx, dy - 2, mino, rotation):
+                    elif is_turnable_l(dx, dy - 2, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dy -= 2
-                        rotation += 1
-                    elif is_turnable_l(dx + 2, dy, mino, rotation):
+                        rotation -= 1
+                    elif is_turnable_l(dx + 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx += 2
-                        rotation += 1
-                    elif is_turnable_l(dx - 2, dy, mino, rotation):
+                        rotation -= 1
+                    elif is_turnable_l(dx - 2, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         dx -= 2
+                        rotation -= 1
                     if rotation == -1:
                         rotation = 3
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                elif event.key == K_m: #오른쪽창#
+                    if is_turnable_l(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        rotation_2P -= 1
+                    # Kick
+                    elif is_turnable_l(dx_2P, dy_2P - 1, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dy_2P -= 1
+                        rotation_2P -= 1
+                    elif is_turnable_l(dx_2P + 1, dy_2P, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P += 1
+                        rotation_2P -= 1
+                    elif is_turnable_l(dx_2P - 1, dy_2P, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P -= 1
+                        rotation_2P -= 1
+                    elif is_turnable_l(dx_2P, dy_2P - 2, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dy_2P -= 2
+                        rotation_2P -= 1
+                    elif is_turnable_l(dx_2P + 2, dy_2P, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P += 2
+                        rotation_2P -= 1
+                    elif is_turnable_l(dx_2P - 2, dy_2P, mino_2P, rotation_2P, matrix_2P):
+                        ui_variables.move_sound.play()
+                        dx_2P -= 2
+                        rotation_2P -= 1
+                    if rotation_2P == -1:
+                        rotation_2P = 3
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+                
+
                 # Move left
                 elif event.key == K_a:  # key = pygame.key.get_pressed()
-                    if not is_leftedge(dx, dy, mino, rotation):
+                    if not is_leftedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
                         pygame.time.set_timer(pygame.KEYUP, framerate * 3)
                         dx -= 1
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
                 # Move right
                 elif event.key == K_d:
-                    if not is_rightedge(dx, dy, mino, rotation):
+                    if not is_rightedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
                         pygame.time.set_timer(pygame.KEYUP, framerate * 3)
                         dx += 1
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
                 # Move left
                 elif event.key == K_LEFT:  # key = pygame.key.get_pressed()
-                    if not is_leftedge_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                    if not is_leftedge(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_2P * 3)
                         dx_2P -= 1
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
                 # Move right
                 elif event.key == K_RIGHT:
-                    if not is_rightedge_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                    if not is_rightedge(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_2P * 3)
                         dx_2P += 1
-                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
-                    draw_mino(dx, dy, mino, rotation)
-                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, level, goal)
+                    draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
+                    draw_mino(dx, dy, mino, rotation, matrix)
+                    draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
+            
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
@@ -2618,38 +2606,50 @@ while not done:
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     ui_variables.click_sound.play()
-
+                    
+                    #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
 
                     game_over = False
-                    hold = False  #
-                    dx, dy = 3, 0  #
-                    rotation = 0  #
-                    mino = randint(1, 7)  #
-                    next_mino1 = randint(1, 7)  #
-                    hold_mino = -1  #
                     framerate = 30
-                    score = 0
+                    framerate_2P = 30
+
                     combo_count = 0
+                    combo_count_2P = 0
+                    score = 0
                     level = 1
                     goal = level * 5
-                    bottom_count = 0  #
-                    hard_drop = False  #
+                    score_2P = 0
+                    level_2P = 1
+                    goal_2P = level_2P * 5
+                    bottom_count = 0 
+                    bottom_count_2P = 0
+                    hard_drop = False 
+                    hard_drop_2P = False 
+                    attack_point = 0
+                    attack_point_2P = 0
+
+                    dx, dy = 3, 0
+                    dx_2P, dy_2P = 3, 0
+                    rotation = 0
+                    rotation_2P = 0
+                    mino = randint(1, 7)
+                    mino_2P = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7) 
+                    next_mino1_2P = randint(1, 7)
+                    hold = False 
+                    hold_2P = False
+                    hold_mino = -1
+                    hold_mino_2P = -1
+
+                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    hold_mino_2P = -1  #
-                    bottom_count_2P = 0  #
-                    hard_drop_2P = False  #
-                    hold_2P = False  #
-                    next_mino1_2P = randint(1, 7)  #
-                    mino_2P = randint(1, 7)  #
-                    rotation_2P = 0  #
-                    dx_2P, dy_2P = 3, 0  #
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
 
                     with open('leaderboard.txt') as f:
                         lines = f.readlines()
@@ -2709,39 +2709,50 @@ while not done:
                     ui_variables.click_sound.play()
                     ui_variables.click_sound.play()
 
+                    #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
 
                     game_over = False
-                    hold = False  #
-                    dx, dy = 3, 0  #
-                    rotation = 0  #
-                    mino = randint(1, 7)  #
-                    next_mino1 = randint(1, 7)  #
-                    hold_mino = -1  #
+                    
                     framerate = 30
-                    score = 0
+                    framerate_2P = 30
+
                     combo_count = 0
+                    combo_count_2P = 0
+                    score = 0
                     level = 1
                     goal = level * 5
-                    bottom_count = 0  #
-                    hard_drop = False  #
+                    score_2P = 0
+                    level_2P = 1
+                    goal_2P = level_2P * 5
+                    bottom_count = 0 
+                    bottom_count_2P = 0
+                    hard_drop = False 
+                    hard_drop_2P = False 
+                    attack_point = 0
+                    attack_point_2P = 0
+
+                    dx, dy = 3, 0
+                    dx_2P, dy_2P = 3, 0
+                    rotation = 0
+                    rotation_2P = 0
+                    mino = randint(1, 7)
+                    mino_2P = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7) 
+                    next_mino1_2P = randint(1, 7)
+                    hold = False 
+                    hold_2P = False
+                    hold_mino = -1
+                    hold_mino_2P = -1
+
+                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    hold_mino_2P = -1  #
-                    bottom_count_2P = 0  #
-                    hard_drop_2P = False  #
-                    hold_2P = False  #
-                    next_mino1_2P = randint(1, 7)  #
-                    mino_2P = randint(1, 7)  #
-                    rotation_2P = 0  #
-                    dx_2P, dy_2P = 3, 0  #
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
-                    attack_point = 0
-                    ttack_point_2P = 0
 
                     with open('leaderboard.txt') as f:
                         lines = f.readlines()
@@ -2759,33 +2770,45 @@ while not done:
                     start = False
                     pvp = False
                     game_over = False
-                    hold = False
-                    dx, dy = 3, 0
-                    rotation = 0
-                    mino = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    hold_mino = -1
+                    
                     framerate = 30
-                    score = 0
+                    framerate_2P = 30
+
                     combo_count = 0
+                    combo_count_2P = 0
+                    score = 0
                     level = 1
                     goal = level * 5
-                    bottom_count = 0
-                    hard_drop = False
+                    score_2P = 0
+                    level_2P = 1
+                    goal_2P = level_2P * 5
+                    bottom_count = 0 
+                    bottom_count_2P = 0
+                    hard_drop = False 
+                    hard_drop_2P = False 
+                    attack_point = 0
+                    attack_point_2P = 0
+
+                    dx, dy = 3, 0
+                    dx_2P, dy_2P = 3, 0
+                    rotation = 0
+                    rotation_2P = 0
+                    mino = randint(1, 7)
+                    mino_2P = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7) 
+                    next_mino1_2P = randint(1, 7)
+                    hold = False 
+                    hold_2P = False
+                    hold_mino = -1
+                    hold_mino_2P = -1
+
+                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    hold_mino_2P = -1  #
-                    bottom_count_2P = 0  #
-                    hard_drop_2P = False  #
-                    hold_2P = False  #
-                    next_mino1_2P = randint(1, 7)  #
-                    mino_2P = randint(1, 7)  #
-                    rotation_2P = 0  #
-                    dx_2P, dy_2P = 3, 0  #
-                    attack_point = 0
-                    ttack_point_2P = 0
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+
                 if restart_button.isOver(pos):
                     if game_status == 'start':
                         start = True
@@ -2795,34 +2818,45 @@ while not done:
                         pygame.mixer.music.play(-1)
                     ui_variables.click_sound.play()
                     game_over = False
-                    hold = False
-                    dx, dy = 3, 0
-                    rotation = 0
-                    mino = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    hold_mino = -1
+                    pause = False
+
                     framerate = 30
-                    score = 0
+                    framerate_2P = 30
+
                     combo_count = 0
+                    combo_count_2P = 0
+                    score = 0
                     level = 1
                     goal = level * 5
-                    bottom_count = 0
-                    hard_drop = False
+                    score_2P = 0
+                    level_2P = 1
+                    goal_2P = level_2P * 5
+                    bottom_count = 0 
+                    bottom_count_2P = 0
+                    hard_drop = False 
+                    hard_drop_2P = False 
+                    attack_point = 0
+                    attack_point_2P = 0
+
+                    dx, dy = 3, 0
+                    dx_2P, dy_2P = 3, 0
+                    rotation = 0
+                    rotation_2P = 0
+                    mino = randint(1, 7)
+                    mino_2P = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7) 
+                    next_mino1_2P = randint(1, 7)
+                    hold = False 
+                    hold_2P = False
+                    hold_mino = -1
+                    hold_mino_2P = -1
+
+                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    hold_mino_2P = -1  #
-                    bottom_count_2P = 0  #
-                    hard_drop_2P = False  #
-                    hold_2P = False  #
-                    next_mino1_2P = randint(1, 7)  #
-                    mino_2P = randint(1, 7)  #
-                    rotation_2P = 0  #
-                    dx_2P, dy_2P = 3, 0  #
-                    attack_point = 0
-                    ttack_point_2P = 0
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
-                    pause = False
 
                 if resume_button.isOver(pos):
                     pause = False
