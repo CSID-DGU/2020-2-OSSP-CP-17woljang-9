@@ -135,12 +135,7 @@ class button(): #버튼객체
                 return True
         return False
 
-
-start_image = 'assets/images/start.png'
-help_image = 'assets/images/help.png'
-start_button = button(board_width * 0.5, board_height * 0.5, 146, 43, 1, start_image)
-
-background_image = 'assets/vector/Background.png'
+background_image = 'assets/vector/kingdom.jpg'
 
 single_button_image = 'assets/vector/single_button.png'
 clicked_single_button_image = 'assets/vector/clicked_single_button.png'
@@ -155,7 +150,7 @@ quit_button_image = 'assets/vector/quit_button.png'
 clicked_quit_button_image = 'assets/vector/clicked_quit_button.png'
 
 leaderboard_vector = 'assets/vector/leaderboard_vector.png'
-clicked_leaderboard_vector = 'assets/vector/clicked_leader_vector.png'
+clicked_leaderboard_vector = 'assets/vector/clicked_leaderboard_vector.png'
 
 setting_vector = 'assets/vector/setting_vector.png'
 clicked_setting_vector = 'assets/vector/clicked_setting_vector.png'
@@ -216,17 +211,17 @@ clicked_check_button_image = 'assets/vector/clicked_checkbox_button.png'
 mute_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.1875), int(board_height * 0.1444), 1,
                      mute_button_image)
 
-single_button = button(board_width * 0.78, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777),
+single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
-pvp_button = button(board_width * 0.78, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777), 2,
+pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
                     pvp_button_image)
-help_button = button(board_width * 0.78, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777), 3,
+help_button = button(board_width * 0.15, board_height * 0.8, int(board_width * 0.25), int(board_height * 0.45), 3,
                      help_button_image)
-quit_button = button(board_width * 0.78, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 4,
+quit_button = button(board_width * 0.45, board_height * 0.8, int(board_width * 0.25), int(board_height * 0.45), 4,
                      quit_button_image)
-setting_icon = button(board_width * 0.1, board_height * 0.85, int(board_height * 0.23), int(board_height * 0.23), 5,
+setting_icon = button(board_width * 0.9, board_height * 0.85, int(board_height * 0.23), int(board_height * 0.23), 5,
                       setting_vector)
-leaderboard_icon = button(board_width * 0.1, board_height * 0.6, int(board_height * 0.23), int(board_height * 0.23), 6,
+leaderboard_icon = button(board_width * 0.77, board_height * 0.85, int(board_height * 0.23), int(board_height * 0.23), 6,
                           leaderboard_vector)
 
 resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
@@ -280,10 +275,6 @@ midiumsize_check_button = button(board_width * 0.5, board_height * 0.45, int(boa
                                  int(board_height * 0.1444), 1, midiumsize_board)
 bigsize_check_button = button(board_width * 0.5, board_height * 0.65, int(board_width * 0.1875),
                               int(board_height * 0.1444), 1, bigsize_board)
-
-tetris3 = pygame.image.load("assets/images/tetris3.png")
-tetris4 = pygame.transform.smoothscale(tetris3, (200, 150))
-
 
 def set_screen_interface():
     single_button = button(board_width * 0.78, board_height * 0.23, int(board_width * 0.3734),
@@ -827,7 +818,7 @@ while not done:
 
     # Pause screen
     # ui_variables.click_sound.set_volume(volume)
-    
+
     if volume_setting:
         draw_image(screen, setting_board_image, board_width * 0.5, board_height * 0.5, int(board_height * 1.3),
                    board_height)
@@ -1434,7 +1425,7 @@ while not done:
                     setting = True
                 if restart_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    
+
                     combo_count = 0
                     combo_count_2P = 0
                     score = 0
@@ -1444,9 +1435,9 @@ while not done:
                     level_2P = 1
                     goal_2P = level_2P * 5
                     bottom_count = 0
-                    bottom_count_2P = 0 
+                    bottom_count_2P = 0
                     hard_drop = False
-                    hard_drop_2P = False 
+                    hard_drop_2P = False
                     attack_point = 0
                     attack_point_2P = 0
 
@@ -1460,9 +1451,9 @@ while not done:
                     next_mino2 = randint(1, 7)
                     next_mino1_2P = randint(1, 7)
                     hold = False
-                    hold_2P = False 
+                    hold_2P = False
                     hold_mino = -1
-                    hold_mino_2P = -1 
+                    hold_mino_2P = -1
 
                     framerate = 30
                     framerate_2P = 30
@@ -2266,7 +2257,7 @@ while not done:
                     ui_variables.LevelUp_sound.play()
 
                     goal_2P += level_2P * 5
-                    framerate_2P = int(framerate_2P - speed_change)                    
+                    framerate_2P = int(framerate_2P - speed_change)
 
             elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
                 erase_mino(dx, dy, mino, rotation, matrix)
@@ -2275,7 +2266,7 @@ while not done:
                 if event.key == K_ESCAPE:
                     ui_variables.click_sound.play()
                     pause = True
-                
+
                 # Hard drop
                 elif event.key == K_e: #왼쪽창#
                     ui_variables.fall_sound.play()
@@ -2297,7 +2288,7 @@ while not done:
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
-                
+
                 # Hold
                 elif event.key == K_LSHIFT:
                     if hold == False:
@@ -2331,7 +2322,7 @@ while not done:
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
-                
+
                 # Turn right
                 elif event.key == K_w: #왼쪽창#
                     if is_turnable_r(dx, dy, mino, rotation, matrix):
@@ -2401,7 +2392,7 @@ while not done:
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
-                
+
                 # Turn left
                 elif event.key == K_q:
                     if is_turnable_l(dx, dy, mino, rotation, matrix):
@@ -2471,7 +2462,7 @@ while not done:
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
-                
+
 
                 # Move left
                 elif event.key == K_a:  # key = pygame.key.get_pressed()
@@ -2513,7 +2504,7 @@ while not done:
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_multiboard(next_mino1, hold_mino, next_mino1_2P, hold_mino_2P, score, score_2P, level, level_2P, goal, goal_2P)
-            
+
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
@@ -2606,7 +2597,7 @@ while not done:
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     ui_variables.click_sound.play()
-                    
+
                     #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
@@ -2624,10 +2615,10 @@ while not done:
                     score_2P = 0
                     level_2P = 1
                     goal_2P = level_2P * 5
-                    bottom_count = 0 
+                    bottom_count = 0
                     bottom_count_2P = 0
-                    hard_drop = False 
-                    hard_drop_2P = False 
+                    hard_drop = False
+                    hard_drop_2P = False
                     attack_point = 0
                     attack_point_2P = 0
 
@@ -2638,15 +2629,15 @@ while not done:
                     mino = randint(1, 7)
                     mino_2P = randint(1, 7)
                     next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7) 
+                    next_mino2 = randint(1, 7)
                     next_mino1_2P = randint(1, 7)
-                    hold = False 
+                    hold = False
                     hold_2P = False
                     hold_mino = -1
                     hold_mino_2P = -1
 
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2715,7 +2706,7 @@ while not done:
                     outfile.close()
 
                     game_over = False
-                    
+
                     framerate = 30
                     framerate_2P = 30
 
@@ -2727,10 +2718,10 @@ while not done:
                     score_2P = 0
                     level_2P = 1
                     goal_2P = level_2P * 5
-                    bottom_count = 0 
+                    bottom_count = 0
                     bottom_count_2P = 0
-                    hard_drop = False 
-                    hard_drop_2P = False 
+                    hard_drop = False
+                    hard_drop_2P = False
                     attack_point = 0
                     attack_point_2P = 0
 
@@ -2741,15 +2732,15 @@ while not done:
                     mino = randint(1, 7)
                     mino_2P = randint(1, 7)
                     next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7) 
+                    next_mino2 = randint(1, 7)
                     next_mino1_2P = randint(1, 7)
-                    hold = False 
+                    hold = False
                     hold_2P = False
                     hold_mino = -1
                     hold_mino_2P = -1
 
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2770,7 +2761,7 @@ while not done:
                     start = False
                     pvp = False
                     game_over = False
-                    
+
                     framerate = 30
                     framerate_2P = 30
 
@@ -2782,10 +2773,10 @@ while not done:
                     score_2P = 0
                     level_2P = 1
                     goal_2P = level_2P * 5
-                    bottom_count = 0 
+                    bottom_count = 0
                     bottom_count_2P = 0
-                    hard_drop = False 
-                    hard_drop_2P = False 
+                    hard_drop = False
+                    hard_drop_2P = False
                     attack_point = 0
                     attack_point_2P = 0
 
@@ -2796,15 +2787,15 @@ while not done:
                     mino = randint(1, 7)
                     mino_2P = randint(1, 7)
                     next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7) 
+                    next_mino2 = randint(1, 7)
                     next_mino1_2P = randint(1, 7)
-                    hold = False 
+                    hold = False
                     hold_2P = False
                     hold_mino = -1
                     hold_mino_2P = -1
 
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2831,10 +2822,10 @@ while not done:
                     score_2P = 0
                     level_2P = 1
                     goal_2P = level_2P * 5
-                    bottom_count = 0 
+                    bottom_count = 0
                     bottom_count_2P = 0
-                    hard_drop = False 
-                    hard_drop_2P = False 
+                    hard_drop = False
+                    hard_drop_2P = False
                     attack_point = 0
                     attack_point_2P = 0
 
@@ -2845,15 +2836,15 @@ while not done:
                     mino = randint(1, 7)
                     mino_2P = randint(1, 7)
                     next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7) 
+                    next_mino2 = randint(1, 7)
                     next_mino1_2P = randint(1, 7)
-                    hold = False 
+                    hold = False
                     hold_2P = False
                     hold_mino = -1
                     hold_mino_2P = -1
 
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)] 
+                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
                     name_location = 0
                     name = [65, 65, 65]
