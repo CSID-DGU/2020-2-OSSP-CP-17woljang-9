@@ -135,6 +135,13 @@ class button(): #버튼객체
                 return True
         return False
 
+    def isOver_2(self, pos): #start 화면에서 single,pvp,help,setting을 위해서 y좌표 조금만 인식하도록
+        if pos[0] > self.x - (self.width / 2) and pos[0] < self.x + (self.width / 2):
+            if pos[1] > self.y - (self.height / 4) and pos[1] < self.y + (self.height / 4):
+                return True
+        return False
+
+
 background_image = 'assets/vector/kingdom.jpg'
 
 single_button_image = 'assets/vector/single_button.png'
@@ -2094,19 +2101,17 @@ while not done:
                 erase_count_2P = 0
                 combo_value = 0
                 combo_value_2P = 0
-                sent_1P = 0
-                sent_2P = 0
+                attack_line = 0
+                attack_line_2P = 0
 
-                attack_stack = 0
-                attack_stack_2P = 0
                 for j in range(21):
                     is_full = True
                     for i in range(10):
-                        if matrix[i][j] == 0:
+                        if matrix[i][j] == 0 or matrix[i][j] == 9:
                             is_full = False
                     if is_full:
                         erase_count += 1
-                        attack_stack += 1
+                        attack_line += 1
                         k = j
                         combo_value += 1
                         while k > 0:
@@ -2117,11 +2122,11 @@ while not done:
                 for j in range(21):
                     is_full = True
                     for i in range(10):
-                        if matrix_2P[i][j] == 0:
+                        if matrix_2P[i][j] == 0 or matrix_2P[i][j] == 9:
                             is_full = False
                     if is_full:
                         erase_count_2P += 1
-                        attack_stack_2P += 1
+                        attack_line_2P += 1
                         k = j
                         combo_value_2P += 1
                         while k > 0:
@@ -2129,27 +2134,21 @@ while not done:
                                 matrix_2P[i][k] = matrix_2P[i][k - 1]
                             k -= 1
 
-                while attack_stack >= 2:
-                    for j in range(20):
-                        for i in range(10):
-                            matrix_2P[i][j] = matrix_2P[i][j + 1]
-                            attack_stack -= 1
+                while attack_line >= 1 : #2p에게 공격 보내기
                     for i in range(10):
-                        matrix_2P[i][20] = 9
-                    k = randint(1, 10)
-                    matrix_2P[k][20] = 0
+                        if matrix_2P[i][20-attack_point] == 0 :
+                            matrix_2P[i][20-attack_point] = 9
+                    attack_line -= 1
                     attack_point += 1
+                    
 
-                while attack_stack_2P >= 2:
-                    for j in range(20):
-                        for i in range(10):
-                            matrix[i][j] = matrix[i][j + 1]
-                            attack_stack_2P -= 1
+                while attack_line_2P >= 1 :  #1p에게 공격 보내기
                     for i in range(10):
-                        matrix[i][20] = 9
-                    k = randint(1, 10)
-                    matrix[k][20] = 0
+                        if matrix[i][20-attack_point_2P] == 0 :
+                            matrix[i][20-attack_point_2P] = 9
+                    attack_line_2P -= 1
                     attack_point_2P += 1
+               
 
                 # 지운 블록이 없으면 콤보 -1
                 # if erase_count == 0 :
@@ -2164,20 +2163,20 @@ while not done:
                         ui_variables.break_sound.play()
                         ui_variables.single_sound.play()
                         score += 50 * level * erase_count + combo_count
-                        sent_1P += 1
+                       
                     elif erase_count == 2:
                         ui_variables.break_sound.play()
                         ui_variables.double_sound.play()
                         ui_variables.double_sound.play()
                         score += 150 * level * erase_count + 2 * combo_count
-                        sent_1P += 2
+                       
                     elif erase_count == 3:
                         ui_variables.break_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         score += 350 * level * erase_count + 3 * combo_count
-                        sent_1P += 3
+                        
                     elif erase_count == 4:
                         ui_variables.break_sound.play()
                         ui_variables.tetris_sound.play()
@@ -2185,7 +2184,7 @@ while not done:
                         ui_variables.tetris_sound.play()
                         ui_variables.tetris_sound.play()
                         score += 1000 * level * erase_count + 4 * combo_count
-                        sent_1P += 4
+                       
                         screen.blit(ui_variables.combo_4ring, (250, 160))
 
                     for i in range(1, 11):
@@ -2215,20 +2214,20 @@ while not done:
                         ui_variables.break_sound.play()
                         ui_variables.single_sound.play()
                         score_2P += 50 * level_2P * erase_count_2P + combo_count_2P
-                        sent_2P += 1
+                       
                     elif erase_count_2P == 2:
                         ui_variables.break_sound.play()
                         ui_variables.double_sound.play()
                         ui_variables.double_sound.play()
                         score_2P += 150 * level_2P * erase_count_2P + 2 * combo_count_2P
-                        sent_2P += 2
+                       
                     elif erase_count_2P == 3:
                         ui_variables.break_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         ui_variables.triple_sound.play()
                         score_2P += 350 * level_2P * erase_count_2P + 3 * combo_count_2P
-                        sent_2P += 3
+                        
                     elif erase_count_2P == 4:
                         ui_variables.break_sound.play()
                         ui_variables.tetris_sound.play()
@@ -2236,7 +2235,7 @@ while not done:
                         ui_variables.tetris_sound.play()
                         ui_variables.tetris_sound.play()
                         score_2P += 1000 * level_2P * erase_count_2P + 4 * combo_count_2P
-                        sent_2P += 4
+                        
                         screen.blit(ui_variables.combo_4ring, (250, 160))
 
                     for i in range(1, 11):
@@ -2909,22 +2908,22 @@ while not done:
                     ui_variables.click_sound.play()
                     start = True
             elif event.type == pygame.MOUSEMOTION:
-                if single_button.isOver(pos):
+                if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
                 else:
                     single_button.image = single_button_image
 
-                if pvp_button.isOver(pos):
+                if pvp_button.isOver_2(pos):
                     pvp_button.image = clicked_pvp_button_image
                 else:
                     pvp_button.image = pvp_button_image
 
-                if help_button.isOver(pos):
+                if help_button.isOver_2(pos):
                     help_button.image = clicked_help_button_image
                 else:
                     help_button.image = help_button_image
 
-                if quit_button.isOver(pos):
+                if quit_button.isOver_2(pos):
                     quit_button.image = clicked_quit_button_image
                 else:
                     quit_button.image = quit_button_image
@@ -2939,12 +2938,12 @@ while not done:
                 else:
                     leaderboard_icon.image = leaderboard_vector
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if single_button.isOver(pos):
+                if single_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     previous_time = pygame.time.get_ticks()
                     start = True
                     pygame.mixer.music.play(-1)
-                if pvp_button.isOver(pos):
+                if pvp_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     pvp = True
                     pygame.mixer.music.play(-1)
@@ -2954,10 +2953,10 @@ while not done:
                 if setting_icon.isOver(pos):
                     ui_variables.click_sound.play()
                     setting = True
-                if quit_button.isOver(pos):
+                if quit_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     done = True
-                if help_button.isOver(pos):
+                if help_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     help = True
             elif event.type == VIDEORESIZE:
