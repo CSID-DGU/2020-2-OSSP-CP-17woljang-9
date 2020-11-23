@@ -2904,9 +2904,10 @@ while not done:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    ui_variables.click_sound.play()
-                    start = True
+                # space로 start loop 진입하면 배경음악 안 들려서 주석 처리
+                # if event.key == K_SPACE:
+                #     ui_variables.click_sound.play()
+                #     start = True
             elif event.type == pygame.MOUSEMOTION:
                 if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
