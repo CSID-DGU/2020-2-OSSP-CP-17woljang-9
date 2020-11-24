@@ -176,6 +176,7 @@ pause_board_image = 'assets/vector/pause_board.png'
 leader_board_image = 'assets/vector/leader_board.png'
 setting_board_image = 'assets/vector/setting_board.png'
 gameover_board_image = 'assets/vector/gameover_board.png'
+gameover_image = 'assets/vector/gameover.png'
 
 smallsize_board = 'assets/vector/screensize1.png'
 midiumsize_board = 'assets/vector/screensize2.png'
@@ -224,6 +225,9 @@ sound_on_button_image = 'assets/vector/sound_on_button.png'
 
 check_button_image = 'assets/vector/checkbox_button.png'
 clicked_check_button_image = 'assets/vector/clicked_checkbox_button.png'
+
+pvp_win_image = 'assets/vector/pvp_win.png'
+pvp_lose_image = 'assets/vector/pvp_lose.png'
 
 mute_button = button(board_width * 0.5, board_height * 0.27, int(board_width * 0.25), int(board_height * 0.45), 1,
                      mute_button_image)
@@ -2080,7 +2084,6 @@ while not done:
                     if hard_drop or bottom_count == 6:
                         hard_drop = False
                         bottom_count = 0
-                        score += 10 * level
                         draw_mino(dx, dy, mino, rotation, matrix)
 
                         if is_stackable(next_mino1, matrix):
@@ -2090,12 +2093,68 @@ while not done:
                             dx, dy = 3, 0
                             rotation = 0
                             hold = False
+                            score += 10 * level
                         else:  # 더이상 쌓을 수 없으면 게임오버
-                            ui_variables.GameOver_sound.play()
-                            pvp = False
+                            #ui_variables.GameOver_sound.play()
+                            #game_over = True
+                            pvp = True
                             game_status = 'pvp'
-                            game_over = True
-                            pygame.time.set_timer(pygame.USEREVENT, 1)
+                            #pygame.time.set_timer(pygame.USEREVENT, 1)
+                            if score >= score_2P :
+                                draw_image(screen, gameover_image,board_width * 0.15, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.45))
+                            else :
+                                ui_variables.GameOver_sound.play()
+                                draw_image(screen,pvp_lose_image,board_width * 0.15, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.6))
+                                draw_image(screen,pvp_win_image,board_width * 0.6, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.55))
+                                pvp = False
+                                pygame.mixer.music.stop()
+                                if game_status == 'start':
+                                    start = True
+                                    pygame.mixer.music.play(-1)
+                                if game_status == 'pvp':
+                                    pvp = True
+                                    pygame.mixer.music.play(-1)
+                                ui_variables.click_sound.play()
+                                game_over = False
+                                pause = False
+
+                                framerate = 30
+                                framerate_2P = 30
+
+                                combo_count = 0
+                                combo_count_2P = 0
+                                score = 0
+                                level = 1
+                                goal = level * 5
+                                score_2P = 0
+                                level_2P = 1
+                                goal_2P = level_2P * 5
+                                bottom_count = 0
+                                bottom_count_2P = 0
+                                hard_drop = False
+                                hard_drop_2P = False
+                                attack_point = 0
+                                attack_point_2P = 0
+
+                                dx, dy = 3, 0
+                                dx_2P, dy_2P = 3, 0
+                                rotation = 0
+                                rotation_2P = 0
+                                mino = randint(1, 7)
+                                mino_2P = randint(1, 7)
+                                next_mino1 = randint(1, 7)
+                                next_mino2 = randint(1, 7)
+                                next_mino1_2P = randint(1, 7)
+                                hold = False
+                                hold_2P = False
+                                hold_mino = -1
+                                hold_mino_2P = -1
+
+                                matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                                matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
                     else:
                         bottom_count += 1
 
@@ -2108,7 +2167,6 @@ while not done:
                     if hard_drop_2P or bottom_count_2P == 6:
                         hard_drop_2P = False
                         bottom_count_2P = 0
-                        score_2P += 10 * level_2P
                         draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
                         if is_stackable(next_mino1_2P, matrix_2P):
@@ -2118,12 +2176,68 @@ while not done:
                             dx_2P, dy_2P = 3, 0
                             rotation_2P = 0
                             hold_2P = False
+                            score_2P += 10 * level_2P
                         else:  # 더이상 쌓을 수 없으면 게임오버
-                            ui_variables.GameOver_sound.play()
-                            pvp = False
+                            #ui_variables.GameOver_sound.play()
+                            #game_over = True
+                            pvp = True
                             gagame_status = 'pvp'
-                            game_over = True
-                            pygame.time.set_timer(pygame.USEREVENT, 1)
+                            #pygame.time.set_timer(pygame.USEREVENT, 1)
+                            if score <= score_2P :
+                                draw_image(screen, gameover_image,board_width * 0.6, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.45))
+                            else :
+                                ui_variables.GameOver_sound.play()
+                                draw_image(screen,pvp_win_image,board_width * 0.15, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.55))
+                                draw_image(screen,pvp_lose_image,board_width * 0.6, board_height * 0.5, int(board_width * 0.25),
+                                    int(board_height * 0.6))
+                                pvp = False
+                                pygame.mixer.music.stop()
+                                if game_status == 'start':
+                                    start = True
+                                    pygame.mixer.music.play(-1)
+                                if game_status == 'pvp':
+                                    pvp = True
+                                    pygame.mixer.music.play(-1)
+                                ui_variables.click_sound.play()
+                                game_over = False
+                                pause = False
+
+                                framerate = 30
+                                framerate_2P = 30
+
+                                combo_count = 0
+                                combo_count_2P = 0
+                                score = 0
+                                level = 1
+                                goal = level * 5
+                                score_2P = 0
+                                level_2P = 1
+                                goal_2P = level_2P * 5
+                                bottom_count = 0
+                                bottom_count_2P = 0
+                                hard_drop = False
+                                hard_drop_2P = False
+                                attack_point = 0
+                                attack_point_2P = 0
+
+                                dx, dy = 3, 0
+                                dx_2P, dy_2P = 3, 0
+                                rotation = 0
+                                rotation_2P = 0
+                                mino = randint(1, 7)
+                                mino_2P = randint(1, 7)
+                                next_mino1 = randint(1, 7)
+                                next_mino2 = randint(1, 7)
+                                next_mino1_2P = randint(1, 7)
+                                hold = False
+                                hold_2P = False
+                                hold_mino = -1
+                                hold_mino_2P = -1
+
+                                matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                                matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
                     else:
                         bottom_count_2P += 1
 
