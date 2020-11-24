@@ -29,6 +29,8 @@ effect_music_sound_off_button_w = 0.65
 effect_sound_on_off_button_h = 0.73
 music_sound_on_off_button_h = 0.53
 
+value_plus_button_w = 0.055
+level_plus_minus_button_h = 0.7719
 
 pygame.init()
 
@@ -276,6 +278,9 @@ sound_plus_button = button(board_width * effect_sound_plus_button_w, board_heigh
                            int(board_height * 0.1111), 1, plus_button_image)
 sound_minus_button = button(board_width * effect_sound_minus_button_w, board_height * sound_plus_minus_button_h, int(board_width * 0.0625),
                             int(board_height * 0.1111), 1, minus_button_image)
+level_plus_button = button(board_width * value_plus_button_w + board_width * 0.57, board_height * level_plus_minus_button_h, int(board_width * 0.0625),
+                            int(board_height * 0.1111), 1, plus_button_image)
+
 #음소거 추가#
 effect_sound_off_button = button(board_width * effect_music_sound_off_button_w, board_height * effect_sound_on_off_button_h, int(board_width * 0.08),
                            int(board_height * 0.15), 1, sound_off_button_image)
@@ -463,10 +468,12 @@ def draw_board(next1, next2, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
     combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
-    speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+    # 디버그 출력 코드
+    if debug: 
+        speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+        
 
     # Place texts
-    screen.blit(speed_value, (int(board_width * 0.060) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
     screen.blit(text_score, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.5187)))
@@ -475,6 +482,8 @@ def draw_board(next1, next2, hold, score, level, goal):
     screen.blit(level_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.7219)))
     screen.blit(text_combo, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.8395)))
     screen.blit(combo_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.8823)))
+    if debug:
+        screen.blit(speed_value, (int(board_width * 0.060) + sidebar_width, int(board_height * 0.015)))
 
     # Draw board #board?
     for x in range(width):
@@ -530,7 +539,8 @@ def draw_1Pboard(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
     combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
-    speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+    if debug: 
+        speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
 
     # Place texts
     screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
@@ -594,7 +604,8 @@ def draw_2Pboard(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
     text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
     combo_value = ui_variables.h4.render(str(combo_count_2P), 1, ui_variables.real_white)
-    speed_value = ui_variables.h5.render("SPEED : "+str(framerate_2P), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+    if debug:
+        speed_value = ui_variables.h5.render("SPEED : "+str(framerate_2P), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
 
     # Place texts
     screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
@@ -763,8 +774,8 @@ setting = False
 volume_setting = False
 screen_setting = False
 keyboard_setting = False
-music_volume = 10
-effect_volume = 10
+music_volume = 5
+effect_volume = 5
 pvp = False
 help = False
 debug = False
@@ -1715,6 +1726,8 @@ while not done:
                 gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                               int(board_height * 0.1777), 1, quit_button_image)
     elif start:
+        if debug:
+            level_plus_button.draw(screen, (0, 0, 0))
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
@@ -2028,6 +2041,31 @@ while not done:
                                      int(board_height * 0.1777), 1, menu_button_image)
                 gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
                                               int(board_height * 0.1777), 1, quit_button_image)
+            elif event.type == pygame.MOUSEMOTION:
+                if debug:
+                    if level_plus_button.isOver(pos):
+                        level_plus_button.image = clicked_plus_button_image
+                    else:
+                        level_plus_button.image = plus_button_image
+
+                    # if level_minus_button.isOver(pos):
+                    #     level_minus_button.image = clicked_minus_button_image
+                    # else:
+                    #     level_minus_button.image = minus_button_image
+
+                    pygame.display.update()  
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if debug:
+                    if level_plus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        if level < 15:
+                            # level_plus_button.image = plus_button_image
+                            level += 1
+                            # goal += level * 5
+                            # framerate = int(framerate-speed_change)
+
+                    pygame.display.update()
 
         pygame.display.update()
     elif pvp:
