@@ -668,6 +668,22 @@ def is_bottom(x, y, mino, r, matrix):
 
     return False
 
+def gravity(x, y, mino, r, matrix):
+    grid = tetrimino.mino_map[mino - 1][r]
+
+    for j in [3, 2, 1, 0]:
+        for i in [3, 2, 1, 0]:
+            if grid[i][j] != 0:
+                dy = y
+                if ((dy + i) == 20 or (matrix[x + j][dy + i+1] != 0)) :
+                    matrix[x+j][dy+i] = grid[i][j]
+                else :
+                    while( (dy+1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
+                        dy+=1
+                        matrix[x+j][dy+i] = grid[i][j]
+                        matrix[x+j][dy+i-1] = 0
+
+
 # Returns true if mino is at the left edge
 def is_leftedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
@@ -1739,10 +1755,12 @@ while not done:
                 # Create new mino
                 else:
                     if hard_drop or bottom_count == 6:
+                        if gravity(dx, dy, mino, rotation, matrix):
+                            erase_mino(dx, dy, mino, rotation, matrix)
                         hard_drop = False
                         bottom_count = 0
                         score += 10 * level
-                        draw_mino(dx, dy, mino, rotation, matrix)
+                        #draw_mino(dx, dy, mino, rotation, matrix) #w제가 불필요해보여서 지웠는데, 지워도 잘 작동되더라구요
                         screen.fill(ui_variables.real_white)
                         draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                         pygame.display.update()
