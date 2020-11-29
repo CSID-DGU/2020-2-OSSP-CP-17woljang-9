@@ -2936,10 +2936,10 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
-            elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    ui_variables.click_sound.play()
-                    start = True
+            # elif event.type == KEYDOWN:
+            #     if event.key == K_SPACE:
+            #         ui_variables.click_sound.play()
+            #         start = True
             elif event.type == pygame.MOUSEMOTION:
                 if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
