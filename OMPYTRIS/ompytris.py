@@ -784,6 +784,7 @@ music_volume = 10
 effect_volume = 10
 pvp = False
 help = False
+gravity_mode = False
 
 combo_count = 0
 combo_count_2P = 0
@@ -1753,15 +1754,40 @@ while not done:
                 if not is_bottom(dx, dy, mino, rotation, matrix):
                     dy += 1
 
-                # Create new mino
-                else:
+                # Create new mino: 중력 모드
+                elif gravity_mode:
                     if hard_drop or bottom_count == 6:
                         if gravity(dx, dy, mino, rotation, matrix):
                             erase_mino(dx, dy, mino, rotation, matrix)
                         hard_drop = False
                         bottom_count = 0
                         score += 10 * level
-                        #draw_mino(dx, dy, mino, rotation, matrix) #w제가 불필요해보여서 지웠는데, 지워도 잘 작동되더라구요
+                        screen.fill(ui_variables.real_white)
+                        draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
+                        pygame.display.update()
+                        if is_stackable(next_mino1, matrix):
+                            mino = next_mino1
+                            next_mino1 = next_mino2
+                            next_mino2 = randint(1, 7)
+                            dx, dy = 3, 0
+                            rotation = 0
+                            hold = False
+                        else:
+                            ui_variables.GameOver_sound.play()
+                            start = False
+                            game_status = 'start'
+                            game_over = True
+                            pygame.time.set_timer(pygame.USEREVENT, 1)
+                    else:
+                        bottom_count += 1
+
+                # Create new mino: 일반 모드
+                else:
+                    if hard_drop or bottom_count == 6:
+                        hard_drop = False
+                        bottom_count = 0
+                        score += 10 * level
+                        draw_mino(dx, dy, mino, rotation, matrix)
                         screen.fill(ui_variables.real_white)
                         draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                         pygame.display.update()
@@ -2936,7 +2962,13 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
-            # elif event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
+                if event.key == K_F1:
+                    ui_variables.click_sound.play()
+                    if not gravity_mode:
+                        gravity_mode = True
+                    else:
+                        gravity_mode = False
             #     if event.key == K_SPACE:
             #         ui_variables.click_sound.play()
             #         start = True
