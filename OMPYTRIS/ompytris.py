@@ -684,7 +684,8 @@ def gravity(x, y, mino, r, matrix):
                 else :
                     while( (dy+1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
                         dy+=1
-                        matrix[x+j][dy+i] = grid[i][j]
+                        matrix[x+j][dy+i] = 9
+                        #grid[i][j]
                         matrix[x+j][dy+i-1] = 0
 
 
@@ -1793,7 +1794,7 @@ while not done:
                 for j in range(21):
                     is_full = True
                     for i in range(10):
-                        if matrix[i][j] == 0:
+                        if matrix[i][j] == 0 or matrix[i][j] == 9 :
                             is_full = False
                     if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
@@ -1852,7 +1853,7 @@ while not done:
                             pygame.display.update()
                             pygame.time.delay(500)
                         elif combo_count > 10:  # 11 이상 콤보 이미지
-                            screen.blit(tetris4, (board_width * 0.27, board_height * 0.3))  # blits the combo number
+                            #screen.blit(tetris4, (board_width * 0.27, board_height * 0.3))  # blits the combo number
                             pygame.display.update()
 
                             pygame.time.delay(300)
