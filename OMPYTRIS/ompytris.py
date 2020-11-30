@@ -804,6 +804,12 @@ effect_volume = 10
 pvp = False
 help = False
 gravity_mode = False
+debug = False
+d = False
+e = False
+b = False
+u = False
+g = False
 
 # 게임 음악 속도 조절 관련 변수
 CHANNELS = 1
@@ -2985,15 +2991,40 @@ while not done:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
 
             elif event.type == KEYDOWN:
+                # if event.key == K_SPACE:
+                #     ui_variables.click_sound.play()
+                #     start = True
                 if event.key == K_F1:
                     ui_variables.click_sound.play()
                     if not gravity_mode:
                         gravity_mode = True
                     else:
                         gravity_mode = False
-            #     if event.key == K_SPACE:
-            #         ui_variables.click_sound.play()
-            #         start = True
+                if event.key == K_d:
+                    if not d:
+                        d = True
+                    else:
+                        d = False
+                if event.key == K_e:
+                    if not e:
+                        e = True
+                    else:
+                        e = False                
+                if event.key == K_b:
+                    if not b:
+                        b = True
+                    else:
+                        b = False
+                if event.key == K_u:
+                    if not u:
+                        u = True
+                    else:
+                        u = False
+                if event.key == K_g:
+                    if not g:
+                        g = True
+                    else:
+                        g = False
             elif event.type == pygame.MOUSEMOTION:
                 if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
@@ -3099,6 +3130,12 @@ while not done:
 
         setting_icon.draw(screen, (0, 0, 0))
         leaderboard_icon.draw(screen, (0, 0, 0))
+
+        if d == e == b == u == g == True:
+            ui_variables.click_sound.play() # 디버그 상태에서는 Start Screen에서 계속 소리 남
+            debug = True # 이 상태로 start loop 들어가면 debug 모드 실행
+        else:
+            debug = False
 
         if not start:
             pygame.display.update()
