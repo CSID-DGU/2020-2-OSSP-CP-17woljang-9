@@ -3,9 +3,11 @@
 
 import pygame
 import operator
+import wave
 from mino import *
 from random import *
 from pygame.locals import *
+import os
 
 # Define
 block_size = 17  # Height, width of single block
@@ -679,6 +681,23 @@ def is_bottom(x, y, mino, r, matrix):
 
     return False
 
+def gravity(x, y, mino, r, matrix):
+    grid = tetrimino.mino_map[mino - 1][r]
+
+    for j in [3, 2, 1, 0]:
+        for i in [3, 2, 1, 0]:
+            if grid[i][j] != 0:
+                dy = y
+                if ((dy + i) == 20 or (matrix[x + j][dy + i+1] != 0)) :
+                    matrix[x+j][dy+i] = grid[i][j]
+                else :
+                    while( (dy+1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
+                        dy+=1
+                        matrix[x+j][dy+i] = 9
+                        #grid[i][j]
+                        matrix[x+j][dy+i-1] = 0
+
+
 # Returns true if mino is at the left edge
 def is_leftedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
@@ -762,6 +781,23 @@ def set_vol(val):
     print(volume)
     ui_variables.click_sound.set_volume(volume)
 
+def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
+    spf = wave.open('assets/sounds/SFX_BattleMusic.wav', 'rb')
+    RATE = spf.getframerate()
+    signal = spf.readframes(-1)
+    if os.path.isfile('assets/sounds/SFX_BattleMusic_Changed.wav'):
+        pygame.mixer.quit()
+        os.remove('assets/sounds/SFX_BattleMusic_Changed.wav')
+        pygame.mixer.init()
+    wf = wave.open('assets/sounds/SFX_BattleMusic_Changed.wav', 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(swidth)
+    wf.setframerate(RATE*Change_RATE)
+    wf.writeframes(signal)
+    wf.close()
+
+    pygame.mixer.music.load('assets/sounds/SFX_BattleMusic_Changed.wav')
+    pygame.mixer.music.play(-1)
 
 # Initial values
 blink = False
@@ -778,12 +814,18 @@ music_volume = 5
 effect_volume = 5
 pvp = False
 help = False
+gravity_mode = False
 debug = False
 d = False
 e = False
 b = False
 u = False
 g = False
+
+# 게임 음악 속도 조절 관련 변수
+CHANNELS = 1
+swidth = 2
+Change_RATE = 2
 
 combo_count = 0
 combo_count_2P = 0
@@ -1755,7 +1797,34 @@ while not done:
                 if not is_bottom(dx, dy, mino, rotation, matrix):
                     dy += 1
 
-                # Create new mino
+                # Create new mino: 중력 모드
+                elif gravity_mode:
+                    if hard_drop or bottom_count == 6:
+                        if gravity(dx, dy, mino, rotation, matrix):
+                            erase_mino(dx, dy, mino, rotation, matrix)
+                        hard_drop = False
+                        bottom_count = 0
+                        score += 10 * level
+                        screen.fill(ui_variables.real_white)
+                        draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
+                        pygame.display.update()
+                        if is_stackable(next_mino1, matrix):
+                            mino = next_mino1
+                            next_mino1 = next_mino2
+                            next_mino2 = randint(1, 7)
+                            dx, dy = 3, 0
+                            rotation = 0
+                            hold = False
+                        else:
+                            ui_variables.GameOver_sound.play()
+                            start = False
+                            game_status = 'start'
+                            game_over = True
+                            pygame.time.set_timer(pygame.USEREVENT, 1)
+                    else:
+                        bottom_count += 1
+
+                # Create new mino: 일반 모드
                 else:
                     if hard_drop or bottom_count == 6:
                         hard_drop = False
@@ -1790,7 +1859,7 @@ while not done:
                 for j in range(21):
                     is_full = True
                     for i in range(10):
-                        if matrix[i][j] == 0:
+                        if matrix[i][j] == 0 or matrix[i][j] == 9 :
                             is_full = False
                     if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
@@ -1849,7 +1918,7 @@ while not done:
                             pygame.display.update()
                             pygame.time.delay(500)
                         elif combo_count > 10:  # 11 이상 콤보 이미지
-                            screen.blit(tetris4, (board_width * 0.27, board_height * 0.3))  # blits the combo number
+                            #screen.blit(tetris4, (board_width * 0.27, board_height * 0.3))  # blits the combo number
                             pygame.display.update()
 
                             pygame.time.delay(300)
@@ -1875,9 +1944,10 @@ while not done:
                 if goal < 1 and level < 15:
                     level += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
                     goal += level * 5
                     framerate = int(framerate-speed_change) #곱셈이 아닌 -연산 해도 좋을듯
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation, matrix)
@@ -2260,11 +2330,8 @@ while not done:
                 if goal < 1 and level < 15:
                     level += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
-
                     goal += level * 5
                     framerate = int(framerate - speed_change)
-
                 #2P
                 if erase_count_2P >= 1:
                     combo_count_2P += 1
@@ -2966,6 +3033,12 @@ while not done:
                 # if event.key == K_SPACE:
                 #     ui_variables.click_sound.play()
                 #     start = True
+                if event.key == K_F1:
+                    ui_variables.click_sound.play()
+                    if not gravity_mode:
+                        gravity_mode = True
+                    else:
+                        gravity_mode = False
                 if event.key == K_d:
                     if not d:
                         d = True
@@ -3098,6 +3171,7 @@ while not done:
         leaderboard_icon.draw(screen, (0, 0, 0))
 
         if d == e == b == u == g == True:
+            ui_variables.click_sound.play() # 디버그 상태에서는 Start Screen에서 계속 소리 남
             debug = True # 이 상태로 start loop 들어가면 debug 모드 실행
         else:
             debug = False
