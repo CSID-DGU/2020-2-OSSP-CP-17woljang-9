@@ -3,9 +3,11 @@
 
 import pygame
 import operator
+import wave
 from mino import *
 from random import *
 from pygame.locals import *
+import os
 
 # Define
 block_size = 17  # Height, width of single block
@@ -768,6 +770,23 @@ def set_vol(val):
     print(volume)
     ui_variables.click_sound.set_volume(volume)
 
+def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
+    spf = wave.open('assets/sounds/SFX_BattleMusic.wav', 'rb')
+    RATE = spf.getframerate()
+    signal = spf.readframes(-1)
+    if os.path.isfile('assets/sounds/SFX_BattleMusic_Changed.wav'):
+        pygame.mixer.quit()
+        os.remove('assets/sounds/SFX_BattleMusic_Changed.wav')
+        pygame.mixer.init()
+    wf = wave.open('assets/sounds/SFX_BattleMusic_Changed.wav', 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(swidth)
+    wf.setframerate(RATE*Change_RATE)
+    wf.writeframes(signal)
+    wf.close()
+
+    pygame.mixer.music.load('assets/sounds/SFX_BattleMusic_Changed.wav')
+    pygame.mixer.music.play(-1)
 
 # Initial values
 blink = False
@@ -785,6 +804,11 @@ effect_volume = 10
 pvp = False
 help = False
 gravity_mode = False
+
+# 게임 음악 속도 조절 관련 변수
+CHANNELS = 1
+swidth = 2
+Change_RATE = 2
 
 combo_count = 0
 combo_count_2P = 0
@@ -1901,9 +1925,10 @@ while not done:
                 if goal < 1 and level < 15:
                     level += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
                     goal += level * 5
                     framerate = int(framerate-speed_change) #곱셈이 아닌 -연산 해도 좋을듯
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation, matrix)
@@ -2261,11 +2286,8 @@ while not done:
                 if goal < 1 and level < 15:
                     level += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
-
                     goal += level * 5
                     framerate = int(framerate - speed_change)
-
                 #2P
                 if erase_count_2P >= 1:
                     combo_count_2P += 1
