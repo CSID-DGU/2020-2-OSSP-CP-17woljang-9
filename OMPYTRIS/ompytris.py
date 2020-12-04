@@ -1356,8 +1356,10 @@ while not done:
                 board_width = event.w
                 board_height = event.h
                 block_size = int(board_height * 0.045)
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225    
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -1528,8 +1530,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -1617,8 +1621,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -1719,8 +1725,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -2067,8 +2075,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -2631,8 +2641,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -2982,8 +2994,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)    
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
@@ -3125,8 +3139,10 @@ while not done:
                 board_height = event.h
                 block_size = int(board_height * 0.045)
 
-                if board_width<800:
-                    board_width=800
+                if board_width<400:
+                    board_width=400
+                elif board_height<225:
+                    board_height=225 
                 elif (board_height/board_width) > board_rate:
                     board_width = int(board_height / board_rate)    
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
