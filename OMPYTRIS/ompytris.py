@@ -499,7 +499,7 @@ def draw_1Pboard(next, hold, score, level, goal):
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = int(board_height * 0.055) + block_size * x
+            dx = int(board_width * 0.05) + block_size * x
             dy = int(board_height * 0.055) + block_size * y
             draw_block_image(dx, dy, ui_variables.t_block[matrix[x][y + 1]])
 
@@ -519,7 +519,7 @@ def draw_2Pboard(next, hold, score, level, goal):
 
     for i in range(4):  # 16개의 그리드 칸에서 true인 값만 뽑아서 draw.rect
         for j in range(4):
-            dx = int(board_width * 0.045) + sidebar_width + block_size * j
+            dx = int(board_width * 0.05) + sidebar_width + block_size * j
             dy = int(board_height * 0.3743) + block_size * i
             if grid_n[i][j] != 0:
                 draw_block_image(dx, dy, ui_variables.t_block[grid_n[i][j]])
@@ -569,9 +569,6 @@ def draw_2Pboard(next, hold, score, level, goal):
             dy = int(board_height * 0.055) + block_size * y
             draw_block_image(dx, dy, ui_variables.t_block[matrix_2P[x][y + 1]])
 
-
-## 함수, _2P함수로 나눈것 너무 비효율적!! 함수 내용에서 matrix 인지 matrix_2p인지만 차이남!! ##
-#########################################################################################
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r, matrix): #mino는 모양, r은 회전된 모양 중 하나
@@ -1049,11 +1046,11 @@ while not done:
                     screen_setting = False
                 if smallsize_check_button.isOver(pos):
                     ui_variables.click_sound.play()
-
                     board_width = 800
                     board_height = 450
                     block_size = int(board_height * 0.045)
                     screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                     single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                         1, single_button_image)
                     pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1121,11 +1118,11 @@ while not done:
 
                 if midiumsize_check_button.isOver(pos):
                     ui_variables.click_sound.play()
-
                     board_width = 1200
                     board_height = 675
                     block_size = int(board_height * 0.045)
                     screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                     single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                     pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1193,12 +1190,11 @@ while not done:
 
                 if bigsize_check_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    block_size = int(board_height * 0.045)
-
                     board_width = 1600
                     board_height = 900
                     block_size = int(board_height * 0.045)
                     screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                     single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                     pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1359,14 +1355,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
-                    board_height=225    
-                elif (board_height/board_width) > board_rate:
+                    board_height=225  
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1532,15 +1529,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1623,15 +1620,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -1727,15 +1724,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -2077,15 +2074,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+                
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -2753,15 +2750,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -3106,15 +3103,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)    
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
@@ -3251,15 +3248,15 @@ while not done:
             elif event.type == VIDEORESIZE:
                 board_width = event.w
                 board_height = event.h
-                block_size = int(board_height * 0.045)
-
-                if board_width<400:
+                if board_width<400 or board_height<225:
                     board_width=400
-                elif board_height<225:
                     board_height=225 
-                elif (board_height/board_width) > board_rate:
+                if ((board_height/board_width) > board_rate) or ((board_height/board_width) < (board_rate-0.1)):
                     board_width = int(board_height / board_rate)    
+                    board_height = int(board_width*board_rate)
+                block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
+
                 single_button = button(board_width * 0.15, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45),
                        1, single_button_image)
                 pvp_button = button(board_width * 0.45, board_height * 0.55, int(board_width * 0.25), int(board_height * 0.45), 2,
