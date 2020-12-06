@@ -101,6 +101,7 @@ class ui_variables:
     black_pause = (0, 0, 0, 127)
     white = (0, 153, 153)  # rgb(255, 255, 255) # 청록색으로 변경
     real_white = (255, 255, 255)  # rgb(255, 255, 255)
+    pinkpurple = (250, 165, 255) #rgb(250, 165, 255) 핑크+보라#
 
     grey_1 = (70, 130, 180)  # rgb(26, 26, 26) 테두리 파랑색
     grey_2 = (221, 221, 221)  # rgb(35, 35, 35)
@@ -252,28 +253,28 @@ setting_icon = button(board_width * 0.9, board_height * 0.85, int(board_width * 
 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                             leaderboard_vector)
 
-resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                         resume_button_image)
-restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                             1, restart_button_image)
-setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                             1, setting_button_image)
-pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                            int(board_height * 0.1777), 1, quit_button_image)
+pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                            int(board_height * 0.35), 1, quit_button_image)
 
-back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                         back_button_image)
 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                         volume_vector)
 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                         screen_vector)
-ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                     ok_button_image)
 
-menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                         menu_button_image)
-gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                int(board_height * 0.1777), 1, quit_button_image)
+gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                int(board_height * 0.35), 1, quit_button_image)
 
 volume = 1.0
 
@@ -360,7 +361,7 @@ def draw_board(next1, next2, hold, score, level, goal):
     # Draw sidebar
     pygame.draw.rect(
         screen,
-        ui_variables.white,
+        ui_variables.pinkpurple,
         Rect(sidebar_width, 0, int(board_width * 0.2375), board_height) #크기 유동적
     )
 
@@ -441,7 +442,7 @@ def draw_1Pboard(next, hold, score, level, goal):
     # Draw sidebar
     pygame.draw.rect(
         screen,
-        ui_variables.white,
+        ui_variables.pinkpurple,
         Rect(sidebar_width, 0, int(board_width * 0.1875), board_height)
     )
 
@@ -509,7 +510,7 @@ def draw_2Pboard(next, hold, score, level, goal):
     # Draw sidebar
     pygame.draw.rect(
         screen,
-        ui_variables.white,
+        ui_variables.pinkpurple,
         Rect(sidebar_width, 0, int(board_width * 0.1875), board_height)
     )
 
@@ -985,7 +986,7 @@ while not done:
                 set_volume()
 
     elif screen_setting:
-        screen.fill(ui_variables.white)
+        screen.fill(ui_variables.pinkpurple)
         draw_image(screen, background_image, board_width * 0.5, board_height * 0.5, board_width, board_height)
         single_button.draw(screen, (0, 0, 0))
         pvp_button.draw(screen, (0, 0, 0))
@@ -1063,28 +1064,28 @@ while not done:
                     leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                                 leaderboard_vector)
 
-                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             resume_button_image)
-                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, restart_button_image)
-                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, setting_button_image)
-                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
-                    back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             back_button_image)
                     volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                             volume_vector)
                     screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                             screen_vector)
-                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         ok_button_image)
 
-                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             menu_button_image)
-                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                    int(board_height * 0.1777), 1, quit_button_image)
+                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                    int(board_height * 0.35), 1, quit_button_image)
 
                     effect_plus_button = button(board_width * effect_sound_plus_button_w, board_height * effect_plus_minus_button_h, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
@@ -1138,28 +1139,28 @@ while not done:
                     leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                                 leaderboard_vector)
 
-                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             resume_button_image)
-                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, restart_button_image)
-                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, setting_button_image)
-                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
-                    back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             back_button_image)
                     volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                             volume_vector)
                     screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                             screen_vector)
-                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         ok_button_image)
 
-                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             menu_button_image)
-                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                    int(board_height * 0.1777), 1, quit_button_image)
+                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                    int(board_height * 0.35), 1, quit_button_image)
 
                     effect_plus_button = button(board_width * effect_sound_plus_button_w, board_height * effect_plus_minus_button_h, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
@@ -1213,28 +1214,28 @@ while not done:
                     leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                                 leaderboard_vector)
 
-                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             resume_button_image)
-                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                    restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, restart_button_image)
-                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                    setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                                 1, setting_button_image)
-                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                    pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
-                    back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             back_button_image)
                     volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                             volume_vector)
                     screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                             screen_vector)
-                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         ok_button_image)
 
-                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                    menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                             menu_button_image)
-                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                    int(board_height * 0.1777), 1, quit_button_image)
+                    gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                    int(board_height * 0.35), 1, quit_button_image)
 
                     effect_plus_button = button(board_width * effect_sound_plus_button_w, board_height * effect_plus_minus_button_h, int(board_width * 0.0625),
                                                 int(board_height * 0.1111), 1, plus_button_image)
@@ -1385,28 +1386,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
     elif pause:
         pygame.mixer.music.pause()
@@ -1559,28 +1560,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
     elif help:
         draw_image(screen, background_image, board_width * 0.5, board_height * 0.5, board_width, board_height)
@@ -1650,28 +1651,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
     # Game screen
     elif leader_board:
@@ -1754,28 +1755,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
     elif start:
         if debug:
@@ -2104,28 +2105,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
             elif event.type == pygame.MOUSEMOTION:
                 if debug:
@@ -2780,28 +2781,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
         # if any(movement_keys.values()):
         #    movement_keys_timer += clock.tick(50)
@@ -2824,13 +2825,13 @@ while not done:
                 restart_button.draw(screen, (0, 0, 0))
                 ok_button.draw(screen, (0, 0, 0))
 
-                name_1 = ui_variables.h1_b.render(chr(name[0]), 1, ui_variables.white)
-                name_2 = ui_variables.h1_b.render(chr(name[1]), 1, ui_variables.white)
-                name_3 = ui_variables.h1_b.render(chr(name[2]), 1, ui_variables.white)
+                name_1 = ui_variables.h1_b.render(chr(name[0]), 1, ui_variables.pinkpurple)
+                name_2 = ui_variables.h1_b.render(chr(name[1]), 1, ui_variables.pinkpurple)
+                name_3 = ui_variables.h1_b.render(chr(name[2]), 1, ui_variables.pinkpurple)
 
-                underbar_1 = ui_variables.h1_b.render("_", 1, ui_variables.white)
-                underbar_2 = ui_variables.h1_b.render("_", 1, ui_variables.white)
-                underbar_3 = ui_variables.h1_b.render("_", 1, ui_variables.white)
+                underbar_1 = ui_variables.h1_b.render("_", 1, ui_variables.pinkpurple)
+                underbar_2 = ui_variables.h1_b.render("_", 1, ui_variables.pinkpurple)
+                underbar_3 = ui_variables.h1_b.render("_", 1, ui_variables.pinkpurple)
 
                 screen.blit(name_1, (int(board_width * 0.434), int(board_height * 0.55)))
                 screen.blit(name_2, (int(board_width * 0.494), int(board_height * 0.55)))
@@ -3133,28 +3134,28 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
     # Start screen
     else:
@@ -3278,30 +3279,30 @@ while not done:
                 leaderboard_icon = button(board_width * 0.75, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.2), 6,
                                             leaderboard_vector)
 
-                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                resume_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         resume_button_image)
-                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734), int(board_height * 0.1777),
+                restart_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15), int(board_height * 0.35),
                                             1, restart_button_image)
-                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.3734), int(board_height * 0.1777),
+                setting_button = button(board_width * 0.5, board_height * 0.63, int(board_width * 0.15), int(board_height * 0.35),
                                             1, setting_button_image)
-                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734),
-                                            int(board_height * 0.1777), 1, quit_button_image)
+                pause_quit_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15),
+                                            int(board_height * 0.35), 1, quit_button_image)
 
-                back_button = button(board_width * 0.5, board_height * 0.9, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                back_button = button(board_width * 0.5, board_height * 0.85, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         back_button_image)
                 volume_icon = button(board_width * 0.4, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 5,
                                         volume_vector)
                 screen_icon = button(board_width * 0.6, board_height * 0.5, int(board_width * 0.12), int(board_height * 0.23), 6,
                                         screen_vector)
-                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                ok_button = button(board_width * 0.5, board_height * 0.83, int(board_width * 0.15), int(board_height * 0.35), 1,
                                     ok_button_image)
 
-                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.3734), int(board_height * 0.1777), 1,
+                menu_button = button(board_width * 0.5, board_height * 0.23, int(board_width * 0.15), int(board_height * 0.35), 1,
                                         menu_button_image)
-                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.3734),
-                                                int(board_height * 0.1777), 1, quit_button_image)
+                gameover_quit_button = button(board_width * 0.5, board_height * 0.43, int(board_width * 0.15),
+                                                int(board_height * 0.35), 1, quit_button_image)
 
-        screen.fill(ui_variables.white)
+        screen.fill(ui_variables.pinkpurple)
         draw_image(screen, background_image, board_width * 0.5, board_height * 0.5, board_width, board_height)
 
         single_button.draw(screen, (0, 0, 0))
