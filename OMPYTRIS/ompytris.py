@@ -2329,6 +2329,9 @@ while not done:
                     ui_variables.LevelUp_sound.play()
                     goal += level * 5
                     framerate = int(framerate - speed_change)
+                if level > level_2P and Change_RATE < level + 1:
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
                 #2P
                 if erase_count_2P >= 1:
                     combo_count_2P += 1
@@ -2375,10 +2378,11 @@ while not done:
                 if goal_2P < 1 and level_2P < 15:
                     level_2P += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
-
                     goal_2P += level_2P * 5
                     framerate_2P = int(framerate_2P - speed_change)
+                if level < level_2P and Change_RATE < level_2P + 1:
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
 
             elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
                 erase_mino(dx, dy, mino, rotation, matrix)
