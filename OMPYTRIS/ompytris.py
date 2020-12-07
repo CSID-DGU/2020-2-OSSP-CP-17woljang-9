@@ -65,7 +65,7 @@ class ui_variables:
     # Sounds
 
     pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav") #음악 불러옴
-    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.set_volume(0.3) # 이 부분도 필요 없음, set_volume에 추가해야 함
 
     intro_sound = pygame.mixer.Sound("assets/sounds/SFX_Intro.wav")
     fall_sound = pygame.mixer.Sound("assets/sounds/SFX_Fall.wav")
@@ -756,6 +756,7 @@ e = False
 b = False
 u = False
 g = False
+first = True
 
 # 게임 음악 속도 조절 관련 변수
 CHANNELS = 1
@@ -814,16 +815,6 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matr
 ###########################################################
 # Loop Start
 ###########################################################
-
-volume = 1.0
-
-ui_variables.click_sound.set_volume(volume)
-
-pygame.mixer.init()
-ui_variables.intro_sound.set_volume(0.1)
-ui_variables.intro_sound.play()
-game_status = ''
-ui_variables.break_sound.set_volume(0.2)
 
 while not done:
 
@@ -1465,11 +1456,14 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if pause_quit_button.isOver(pos):
                     ui_variables.click_sound.play()
+                    first = True
                     done = True
                 if setting_button.isOver(pos):
                     ui_variables.click_sound.play()
+                    first = True
                     setting = True
                 if restart_button.isOver(pos):
+                    first = True
                     ui_variables.click_sound.play()
 
                     combo_count = 0
@@ -2893,6 +2887,7 @@ while not done:
                     start = False
                     pvp = False
                     game_over = False
+                    first = True
 
                     framerate = 30
                     framerate_2P = 30
@@ -2934,9 +2929,11 @@ while not done:
 
                 if restart_button.isOver(pos):
                     if game_status == 'start':
+                        first = True
                         start = True
                         pygame.mixer.music.play(-1)
                     if game_status == 'pvp':
+                        first = True
                         pvp = True
                         pygame.mixer.music.play(-1)
                     ui_variables.click_sound.play()
@@ -2983,6 +2980,7 @@ while not done:
 
                 if resume_button.isOver(pos):
                     pause = False
+                    first = True
                     ui_variables.click_sound.play()
                     pygame.time.set_timer(pygame.USEREVENT, 1)
             elif event.type == VIDEORESIZE:
@@ -3035,6 +3033,15 @@ while not done:
 
     # Start screen
     else:
+        if first:
+            volume = 1.0 # 필요 없는 코드, effect_volume으로 대체 가능
+            ui_variables.click_sound.set_volume(volume) # 필요 없는 코드, 전체 코드에서 click_sound를 effect_volume로 설정하는 코드 하나만 있으면 됨
+            pygame.mixer.init()
+            ui_variables.intro_sound.set_volume(music_volume / 10)
+            ui_variables.break_sound.set_volume(effect_volume / 10) # 소리 설정 부분도 set_volume 함수에 넣으면 됨
+            ui_variables.intro_sound.play()
+            first = False
+        game_status = ''
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
             if event.type == QUIT:
@@ -3114,10 +3121,12 @@ while not done:
                     previous_time = pygame.time.get_ticks()
                     start = True
                     pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
                 if pvp_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     pvp = True
                     pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
                 if leaderboard_icon.isOver(pos):
                     ui_variables.click_sound.play()
                     leader_board = True
