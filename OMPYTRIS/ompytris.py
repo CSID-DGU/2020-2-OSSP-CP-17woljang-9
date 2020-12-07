@@ -757,6 +757,9 @@ b = False
 u = False
 g = False
 first = True
+time_attack = False
+total_time = 60 # 타임 어택 시간
+start_ticks = pygame.time.get_ticks()
 
 # 게임 음악 속도 조절 관련 변수
 CHANNELS = 1
@@ -2133,6 +2136,14 @@ while not done:
                             # framerate = int(framerate-speed_change)
 
                     pygame.display.update()
+        elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산
+
+        if time_attack and total_time - elapsed_time <= 0:
+            ui_variables.GameOver_sound.play()
+            start = False
+            game_status = 'start'
+            game_over = True
+            pygame.time.set_timer(pygame.USEREVENT, 1)
 
         pygame.display.update()
     elif pvp:
@@ -2828,7 +2839,7 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if ok_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    ui_variables.click_sound.play()
+                    first = True
 
                     #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
@@ -3089,6 +3100,13 @@ while not done:
                         g = True
                     else:
                         g = False
+                if event.key == K_t: #타임 어택 모드 진입
+                    if not time_attack:
+                        ui_variables.click_sound.play()
+                        time_attack = True # 이 상태로 start loop 들어가면 time_attack 모드 실행
+                    else:
+                        ui_variables.click_sound.play()
+                        time_attack = False
             elif event.type == pygame.MOUSEMOTION:
                 if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
@@ -3210,6 +3228,5 @@ while not done:
 
         if not start:
             pygame.display.update()
-            clock.tick(3)
 
 pygame.quit()
