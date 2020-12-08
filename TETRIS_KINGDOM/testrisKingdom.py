@@ -748,6 +748,42 @@ def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
     pygame.mixer.music.load('assets/sounds/SFX_BattleMusic_Changed.wav')
     pygame.mixer.music.play(-1)
 
+def set_initial_values():
+    combo_count = 0
+    combo_count_2P = 0
+    score = 0
+    level = 1
+    goal = level * 5
+    score_2P = 0
+    level_2P = 1
+    goal_2P = level_2P * 5
+    bottom_count = 0
+    bottom_count_2P = 0
+    hard_drop = False
+    hard_drop_2P = False
+    attack_point = 0
+    attack_point_2P = 0
+
+    dx, dy = 3, 0
+    dx_2P, dy_2P = 3, 0
+    rotation = 0
+    rotation_2P = 0
+    mino = randint(1, 7)
+    mino_2P = randint(1, 7)
+    next_mino1 = randint(1, 7)
+    next_mino2 = randint(1, 7)
+    next_mino1_2P = randint(1, 7)
+    hold = False
+    hold_2P = False
+    hold_mino = -1
+    hold_mino_2P = -1
+
+    framerate = 30
+    framerate_2P = 30
+
+    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+
 # Initial values
 blink = False
 start = False
@@ -1271,40 +1307,7 @@ while not done:
                     first = True
                     ui_variables.click_sound.play()
 
-                    combo_count = 0
-                    combo_count_2P = 0
-                    score = 0
-                    level = 1
-                    goal = level * 5
-                    score_2P = 0
-                    level_2P = 1
-                    goal_2P = level_2P * 5
-                    bottom_count = 0
-                    bottom_count_2P = 0
-                    hard_drop = False
-                    hard_drop_2P = False
-                    attack_point = 0
-                    attack_point_2P = 0
-
-                    dx, dy = 3, 0
-                    dx_2P, dy_2P = 3, 0
-                    rotation = 0
-                    rotation_2P = 0
-                    mino = randint(1, 7)
-                    mino_2P = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    next_mino1_2P = randint(1, 7)
-                    hold = False
-                    hold_2P = False
-                    hold_mino = -1
-                    hold_mino_2P = -1
-
-                    framerate = 30
-                    framerate_2P = 30
-
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+                    set_initial_values()
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -1919,40 +1922,7 @@ while not done:
                                 game_over = False
                                 pause = False
 
-                                framerate = 30
-                                framerate_2P = 30
-
-                                combo_count = 0
-                                combo_count_2P = 0
-                                score = 0
-                                level = 1
-                                goal = level * 5
-                                score_2P = 0
-                                level_2P = 1
-                                goal_2P = level_2P * 5
-                                bottom_count = 0
-                                bottom_count_2P = 0
-                                hard_drop = False
-                                hard_drop_2P = False
-                                attack_point = 0
-                                attack_point_2P = 0
-
-                                dx, dy = 3, 0
-                                dx_2P, dy_2P = 3, 0
-                                rotation = 0
-                                rotation_2P = 0
-                                mino = randint(1, 7)
-                                mino_2P = randint(1, 7)
-                                next_mino1 = randint(1, 7)
-                                next_mino2 = randint(1, 7)
-                                next_mino1_2P = randint(1, 7)
-                                hold = False
-                                hold_2P = False
-                                hold_mino = -1
-                                hold_mino_2P = -1
-
-                                matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                                matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                                set_initial_values()
                     else:
                         bottom_count += 1
 
@@ -2002,40 +1972,7 @@ while not done:
                                 game_over = False
                                 pause = False
 
-                                framerate = 30
-                                framerate_2P = 30
-
-                                combo_count = 0
-                                combo_count_2P = 0
-                                score = 0
-                                level = 1
-                                goal = level * 5
-                                score_2P = 0
-                                level_2P = 1
-                                goal_2P = level_2P * 5
-                                bottom_count = 0
-                                bottom_count_2P = 0
-                                hard_drop = False
-                                hard_drop_2P = False
-                                attack_point = 0
-                                attack_point_2P = 0
-
-                                dx, dy = 3, 0
-                                dx_2P, dy_2P = 3, 0
-                                rotation = 0
-                                rotation_2P = 0
-                                mino = randint(1, 7)
-                                mino_2P = randint(1, 7)
-                                next_mino1 = randint(1, 7)
-                                next_mino2 = randint(1, 7)
-                                next_mino1_2P = randint(1, 7)
-                                hold = False
-                                hold_2P = False
-                                hold_mino = -1
-                                hold_mino_2P = -1
-
-                                matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                                matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                                set_initial_values()
                     else:
                         bottom_count_2P += 1
 
@@ -2524,40 +2461,8 @@ while not done:
                     outfile.close()
 
                     game_over = False
-                    framerate = 30
-                    framerate_2P = 30
-
-                    combo_count = 0
-                    combo_count_2P = 0
-                    score = 0
-                    level = 1
-                    goal = level * 5
-                    score_2P = 0
-                    level_2P = 1
-                    goal_2P = level_2P * 5
-                    bottom_count = 0
-                    bottom_count_2P = 0
-                    hard_drop = False
-                    hard_drop_2P = False
-                    attack_point = 0
-                    attack_point_2P = 0
-
-                    dx, dy = 3, 0
-                    dx_2P, dy_2P = 3, 0
-                    rotation = 0
-                    rotation_2P = 0
-                    mino = randint(1, 7)
-                    mino_2P = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    next_mino1_2P = randint(1, 7)
-                    hold = False
-                    hold_2P = False
-                    hold_mino = -1
-                    hold_mino_2P = -1
-
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                    
+                    set_initial_values()
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2627,40 +2532,7 @@ while not done:
 
                     game_over = False
 
-                    framerate = 30
-                    framerate_2P = 30
-
-                    combo_count = 0
-                    combo_count_2P = 0
-                    score = 0
-                    level = 1
-                    goal = level * 5
-                    score_2P = 0
-                    level_2P = 1
-                    goal_2P = level_2P * 5
-                    bottom_count = 0
-                    bottom_count_2P = 0
-                    hard_drop = False
-                    hard_drop_2P = False
-                    attack_point = 0
-                    attack_point_2P = 0
-
-                    dx, dy = 3, 0
-                    dx_2P, dy_2P = 3, 0
-                    rotation = 0
-                    rotation_2P = 0
-                    mino = randint(1, 7)
-                    mino_2P = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    next_mino1_2P = randint(1, 7)
-                    hold = False
-                    hold_2P = False
-                    hold_mino = -1
-                    hold_mino_2P = -1
-
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                    set_initial_values()
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2683,40 +2555,7 @@ while not done:
                     game_over = False
                     first = True
 
-                    framerate = 30
-                    framerate_2P = 30
-
-                    combo_count = 0
-                    combo_count_2P = 0
-                    score = 0
-                    level = 1
-                    goal = level * 5
-                    score_2P = 0
-                    level_2P = 1
-                    goal_2P = level_2P * 5
-                    bottom_count = 0
-                    bottom_count_2P = 0
-                    hard_drop = False
-                    hard_drop_2P = False
-                    attack_point = 0
-                    attack_point_2P = 0
-
-                    dx, dy = 3, 0
-                    dx_2P, dy_2P = 3, 0
-                    rotation = 0
-                    rotation_2P = 0
-                    mino = randint(1, 7)
-                    mino_2P = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    next_mino1_2P = randint(1, 7)
-                    hold = False
-                    hold_2P = False
-                    hold_mino = -1
-                    hold_mino_2P = -1
-
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                    set_initial_values()
 
                     name_location = 0
                     name = [65, 65, 65]
@@ -2734,40 +2573,7 @@ while not done:
                     game_over = False
                     pause = False
 
-                    framerate = 30
-                    framerate_2P = 30
-
-                    combo_count = 0
-                    combo_count_2P = 0
-                    score = 0
-                    level = 1
-                    goal = level * 5
-                    score_2P = 0
-                    level_2P = 1
-                    goal_2P = level_2P * 5
-                    bottom_count = 0
-                    bottom_count_2P = 0
-                    hard_drop = False
-                    hard_drop_2P = False
-                    attack_point = 0
-                    attack_point_2P = 0
-
-                    dx, dy = 3, 0
-                    dx_2P, dy_2P = 3, 0
-                    rotation = 0
-                    rotation_2P = 0
-                    mino = randint(1, 7)
-                    mino_2P = randint(1, 7)
-                    next_mino1 = randint(1, 7)
-                    next_mino2 = randint(1, 7)
-                    next_mino1_2P = randint(1, 7)
-                    hold = False
-                    hold_2P = False
-                    hold_mino = -1
-                    hold_mino_2P = -1
-
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
-                    matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
+                    set_initial_values()
 
                     name_location = 0
                     name = [65, 65, 65]
