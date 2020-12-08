@@ -54,7 +54,7 @@ class ui_variables:
     # Sounds
 
     pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav") #음악 불러옴
-    pygame.mixer.music.set_volume(0.3) # 이 부분도 필요 없음, set_volume에 추가해야 함
+    pygame.mixer.music.set_volume(0.5) # 이 부분도 필요 없음, set_volume에 추가해야 함
 
     intro_sound = pygame.mixer.Sound("assets/sounds/SFX_Intro.wav")
     fall_sound = pygame.mixer.Sound("assets/sounds/SFX_Fall.wav")
@@ -639,7 +639,7 @@ def gravity(x, y, mino, r, matrix):
                 if ((dy + i) == 20 or (matrix[x + j][dy + i+1] != 0)) :
                     matrix[x+j][dy+i] = grid[i][j]
                 else :
-                    while( (dy+1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
+                    while((dy + 1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
                         dy+=1
                         matrix[x+j][dy+i] = 9
                         #grid[i][j]
@@ -749,6 +749,39 @@ def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
     pygame.mixer.music.play(-1)
 
 def set_initial_values():
+    global combo_count
+    global combo_count_2P
+    global score
+    global level
+    global goal
+    global score_2P
+    global level_2P
+    global goal_2P
+    global bottom_count
+    global bottom_count_2P
+    global hard_drop
+    global hard_drop_2P
+    global attack_point
+    global attack_point_2P
+    global dx, dy
+    global dx_2P, dy_2P
+    global rotation
+    global rotation_2P
+    global mino
+    global mino_2P
+    global next_mino1
+    global next_mino2
+    global next_mino1_2P
+    global hold
+    global hold_2P
+    global hold_mino
+    global hold_mino_2P
+    global framerate
+    global framerate_2P
+    global matrix
+    global matrix_2P
+    global Change_RATE
+
     combo_count = 0
     combo_count_2P = 0
     score = 0
@@ -783,6 +816,9 @@ def set_initial_values():
 
     matrix = [[0 for y in range(height + 1)] for x in range(width)]
     matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+    Change_RATE = 2
+
+    pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav")
 
 # Initial values
 blink = False
