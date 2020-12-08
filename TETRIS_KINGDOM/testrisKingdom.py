@@ -268,7 +268,12 @@ effect_minus_button = button(board_width, board_height, 0.52, 0.73, 0.0625, 0.11
 
 sound_plus_button = button(board_width, board_height, 0.37, 0.53, 0.0625, 0.1111, plus_button_image)
 sound_minus_button = button(board_width, board_height, 0.52, 0.53, 0.0625, 0.1111, minus_button_image)
-level_plus_button = button(board_width, board_height, 0.625, 0.7719, 0.0625, 0.1111, plus_button_image)
+level_plus_button = button(board_width, board_height, 0.63, 0.7719, 0.0625, 0.1111, plus_button_image)
+level_minus_button = button(board_width, board_height, 0.56, 0.7719, 0.0625, 0.1111, minus_button_image)
+combo_plus_button = button(board_width, board_height, 0.63, 0.9419, 0.0625, 0.1111, plus_button_image)
+combo_minus_button =button(board_width, board_height, 0.56, 0.9419, 0.0625, 0.1111, minus_button_image)
+speed_plus_button = button(board_width, board_height, 0.69, 0.0419, 0.0625, 0.1111, plus_button_image)
+speed_minus_button =button(board_width, board_height, 0.56, 0.0419, 0.0625, 0.1111, minus_button_image)
 
 #음소거 추가#
 effect_sound_off_button = button(board_width, board_height, 0.65, 0.73, 0.08, 0.15, sound_off_button_image)
@@ -285,7 +290,7 @@ bigsize_check_button = button(board_width, board_height, 0.5, 0.65, 0.1875, 0.14
 button_list = [mute_button, default_button, single_button, pvp_button, help_button, quit_button, resume_button, restart_button, setting_button, pause_quit_button, back_button, 
         ok_button, menu_button, gameover_quit_button, effect_plus_button, effect_minus_button, sound_plus_button, sound_minus_button, level_plus_button, 
         effect_sound_off_button, music_sound_off_button, effect_sound_on_button, music_sound_on_button, mute_check_button, smallsize_check_button, midiumsize_check_button, bigsize_check_button,
-        setting_icon, leaderboard_icon, volume_icon, screen_icon]
+        setting_icon, leaderboard_icon, volume_icon, screen_icon, level_minus_button, combo_minus_button, combo_plus_button, speed_minus_button, speed_plus_button]
 
 
 def set_volume():
@@ -1518,7 +1523,13 @@ while not done:
     elif start:
         if debug:
             level_plus_button.draw(screen, (0, 0, 0))
+            level_minus_button.draw(screen, (0, 0, 0))
+            combo_plus_button.draw(screen, (0, 0, 0))
+            combo_minus_button.draw(screen, (0, 0, 0))
+            speed_plus_button.draw(screen, (0, 0, 0))
+            speed_minus_button.draw(screen, (0, 0, 0))
         for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
             if event.type == QUIT:
                 done = True
             elif event.type == USEREVENT:
@@ -1854,11 +1865,26 @@ while not done:
                         level_plus_button.image = clicked_plus_button_image
                     else:
                         level_plus_button.image = plus_button_image
-
-                    # if level_minus_button.isOver(pos):
-                    #     level_minus_button.image = clicked_minus_button_image
-                    # else:
-                    #     level_minus_button.image = minus_button_image
+                    if level_minus_button.isOver(pos):
+                        level_minus_button.image = clicked_minus_button_image
+                    else:
+                        level_minus_button.image = minus_button_image
+                    if combo_plus_button.isOver(pos):
+                        combo_plus_button.image = clicked_plus_button_image
+                    else:
+                        combo_plus_button.image = plus_button_image
+                    if combo_minus_button.isOver(pos):
+                        combo_minus_button.image = clicked_minus_button_image
+                    else:
+                        combo_minus_button.image = minus_button_image
+                    if speed_plus_button.isOver(pos):
+                        speed_plus_button.image = clicked_plus_button_image
+                    else:
+                        speed_plus_button.image = plus_button_image
+                    if speed_minus_button.isOver(pos):
+                        speed_minus_button.image = clicked_minus_button_image
+                    else:
+                        speed_minus_button.image = minus_button_image
 
                     pygame.display.update()
 
@@ -1867,11 +1893,32 @@ while not done:
                     if level_plus_button.isOver(pos):
                         ui_variables.click_sound.play()
                         if level < 15:
-                            # level_plus_button.image = plus_button_image
                             level += 1
-                            # goal += level * 5
-                            # framerate = int(framerate-speed_change)
-
+                            goal += level * 5
+                            Change_RATE = level + 1
+                            set_music_playing_speed(CHANNELS, swidth, Change_RATE)
+                    if level_minus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        if level > 1:
+                            level -= 1
+                            goal += level * 5
+                            Change_RATE = level + 1
+                            set_music_playing_speed(CHANNELS, swidth, Change_RATE)
+                    if combo_plus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        combo_count += 1
+                    if combo_minus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        if combo_count > 0:
+                            combo_count -= 1
+                    if speed_plus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        if framerate <= 28:
+                            framerate = int(framerate + speed_change)
+                    if speed_minus_button.isOver(pos):
+                        ui_variables.click_sound.play()
+                        if framerate > 2:
+                            framerate = int(framerate - speed_change)
                     pygame.display.update()
         elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산
 
