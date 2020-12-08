@@ -65,7 +65,7 @@ class ui_variables:
     # Sounds
 
     pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav") #음악 불러옴
-    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.set_volume(0.3) # 이 부분도 필요 없음, set_volume에 추가해야 함
 
     intro_sound = pygame.mixer.Sound("assets/sounds/SFX_Intro.wav")
     fall_sound = pygame.mixer.Sound("assets/sounds/SFX_Fall.wav")
@@ -738,7 +738,6 @@ def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
     pygame.mixer.music.load('assets/sounds/SFX_BattleMusic_Changed.wav')
     pygame.mixer.music.play(-1)
 
-
 # Initial values
 blink = False
 start = False
@@ -761,6 +760,10 @@ e = False
 b = False
 u = False
 g = False
+first = True
+time_attack = False
+total_time = 60 # 타임 어택 시간
+start_ticks = pygame.time.get_ticks()
 
 # 게임 음악 속도 조절 관련 변수
 CHANNELS = 1
@@ -819,16 +822,6 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matr
 ###########################################################
 # Loop Start
 ###########################################################
-
-volume = 1.0
-
-ui_variables.click_sound.set_volume(volume)
-
-pygame.mixer.init()
-ui_variables.intro_sound.set_volume(0.1)
-ui_variables.intro_sound.play()
-game_status = ''
-ui_variables.break_sound.set_volume(0.2)
 
 while not done:
 
@@ -1479,11 +1472,14 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if pause_quit_button.isOver(pos):
                     ui_variables.click_sound.play()
+                    first = True
                     done = True
                 if setting_button.isOver(pos):
                     ui_variables.click_sound.play()
+                    first = True
                     setting = True
                 if restart_button.isOver(pos):
+                    first = True
                     ui_variables.click_sound.play()
 
                     combo_count = 0
@@ -2153,6 +2149,14 @@ while not done:
                             # framerate = int(framerate-speed_change)
 
                     pygame.display.update()
+        elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산
+
+        if time_attack and total_time - elapsed_time <= 0:
+            ui_variables.GameOver_sound.play()
+            start = False
+            game_status = 'start'
+            game_over = True
+            pygame.time.set_timer(pygame.USEREVENT, 1)
 
         pygame.display.update()
     elif pvp:
@@ -2459,6 +2463,9 @@ while not done:
                     ui_variables.LevelUp_sound.play()
                     goal += level * 5
                     framerate = int(framerate - speed_change)
+                if level > level_2P and Change_RATE < level + 1:
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
                 #2P
                 if erase_count_2P >= 1:
                     combo_count_2P += 1
@@ -2505,10 +2512,11 @@ while not done:
                 if goal_2P < 1 and level_2P < 15:
                     level_2P += 1
                     ui_variables.LevelUp_sound.play()
-                    ui_variables.LevelUp_sound.play()
-
                     goal_2P += level_2P * 5
                     framerate_2P = int(framerate_2P - speed_change)
+                if level < level_2P and Change_RATE < level_2P + 1:
+                    Change_RATE += 1
+                    set_music_playing_speed(CHANNELS, swidth, Change_RATE)
 
             elif event.type == KEYDOWN:  ##중요 keyboard 수정 필요
                 erase_mino(dx, dy, mino, rotation, matrix)
@@ -2954,7 +2962,7 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if ok_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    ui_variables.click_sound.play()
+                    first = True
 
                     #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
@@ -3017,6 +3025,7 @@ while not done:
                     start = False
                     pvp = False
                     game_over = False
+                    first = True
 
                     framerate = 30
                     framerate_2P = 30
@@ -3058,9 +3067,11 @@ while not done:
 
                 if restart_button.isOver(pos):
                     if game_status == 'start':
+                        first = True
                         start = True
                         pygame.mixer.music.play(-1)
                     if game_status == 'pvp':
+                        first = True
                         pvp = True
                         pygame.mixer.music.play(-1)
                     ui_variables.click_sound.play()
@@ -3107,6 +3118,7 @@ while not done:
 
                 if resume_button.isOver(pos):
                     pause = False
+                    first = True
                     ui_variables.click_sound.play()
                     pygame.time.set_timer(pygame.USEREVENT, 1)
             elif event.type == VIDEORESIZE:
@@ -3159,6 +3171,15 @@ while not done:
 
     # Start screen
     else:
+        if first:
+            volume = 1.0 # 필요 없는 코드, effect_volume으로 대체 가능
+            ui_variables.click_sound.set_volume(volume) # 필요 없는 코드, 전체 코드에서 click_sound를 effect_volume로 설정하는 코드 하나만 있으면 됨
+            pygame.mixer.init()
+            ui_variables.intro_sound.set_volume(music_volume / 10)
+            ui_variables.break_sound.set_volume(effect_volume / 10) # 소리 설정 부분도 set_volume 함수에 넣으면 됨
+            ui_variables.intro_sound.play()
+            first = False
+        game_status = ''
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
             if event.type == QUIT:
@@ -3202,6 +3223,13 @@ while not done:
                         g = True
                     else:
                         g = False
+                if event.key == K_t: #타임 어택 모드 진입
+                    if not time_attack:
+                        ui_variables.click_sound.play()
+                        time_attack = True # 이 상태로 start loop 들어가면 time_attack 모드 실행
+                    else:
+                        ui_variables.click_sound.play()
+                        time_attack = False
             elif event.type == pygame.MOUSEMOTION:
                 if single_button.isOver_2(pos):
                     single_button.image = clicked_single_button_image
@@ -3238,10 +3266,12 @@ while not done:
                     previous_time = pygame.time.get_ticks()
                     start = True
                     pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
                 if pvp_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     pvp = True
                     pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
                 if leaderboard_icon.isOver(pos):
                     ui_variables.click_sound.play()
                     leader_board = True
@@ -3321,6 +3351,5 @@ while not done:
 
         if not start:
             pygame.display.update()
-            clock.tick(3)
 
 pygame.quit()
