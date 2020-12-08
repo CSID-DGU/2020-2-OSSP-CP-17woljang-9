@@ -19,9 +19,9 @@ board_height = 450 # Board height
 board_rate = 0.5625 #가로세로비율
 block_size = int(board_height * 0.045)
 
-framerate = 30  # Bigger -> Slower  기본 게임속도
+framerate = 30  # Bigger -> Slower  기본 블록 하강 속도, 2도 할만 함, 0 또는 음수 이상이어야 함
 framerate_2P = 30
-speed_change = 2
+speed_change = 2 # 레벨별 블록 하강 속도 상승 정도
 
 pygame.init()
 
@@ -741,7 +741,7 @@ def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
     wf = wave.open('assets/sounds/SFX_BattleMusic_Changed.wav', 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(swidth)
-    wf.setframerate(RATE*Change_RATE)
+    wf.setframerate(RATE * Change_RATE)
     wf.writeframes(signal)
     wf.close()
 
@@ -1679,6 +1679,9 @@ while not done:
                     draw_image(screen, gamebackground_image , board_width * 0.5, board_height * 0.5, board_width, board_height)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
                     pygame.display.update()
+                elif event.key == K_j :
+                    framerate = int(framerate-speed_change) #곱셈이 아닌 -연산 해도 좋을듯
+                    print(framerate)
 
                 # Hold
                 elif event.key == K_RSHIFT : #keyboard 변경하기
