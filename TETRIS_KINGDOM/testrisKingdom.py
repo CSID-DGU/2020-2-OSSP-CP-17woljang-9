@@ -14,10 +14,14 @@ block_size = 17  # Height, width of single block
 width = 10  
 height = 20  
 
+board_x = 10
+board_y = 20
 board_width = 800 # Board width
 board_height = 450 # Board height
 board_rate = 0.5625 #가로세로비율
 block_size = int(board_height * 0.045)
+mino_matrix_x = 4 #mino는 4*4 배열이어서 이를 for문에 사용
+mino_matrix_y = 4 #mino는 4*4 배열이어서 이를 for문에 사용
 
 framerate = 30  # Bigger -> Slower  기본 블록 하강 속도, 2도 할만 함, 0 또는 음수 이상이어야 함
 framerate_2P = 30
@@ -33,7 +37,7 @@ pygame.display.set_caption("TETRIS KINGDOM") #GUI 창의 이름
 
 
 class ui_variables:
-    # Fonts
+    # Fonts & 글자크기 조절
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
     font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
@@ -74,12 +78,12 @@ class ui_variables:
     large_combos = []
     combo_ring = pygame.image.load("assets/Combo/4combo ring.png")  # 4블록 동시제거 그래픽
     combo_4ring = pygame.transform.smoothscale(combo_ring, (200, 100)) #이미지를 특정 크기로 불러
-    for i in range(1, 11):
+    for i in range(1, 11): #10가지의 콤보 이미지 존재. 각 숫자에 해당하는 이미지 불러옴
         combos.append(pygame.image.load("assets/Combo/" + str(i) + "combo.png"))
         large_combos.append(pygame.transform.smoothscale(combos[i - 1], (150, 200))) #이미지를 특정 크기로 불러옴
 
     combos_sound = []
-    for i in range(1, 10):
+    for i in range(1, 10): #1-9까지 콤보사운드 존재. 각 숫자에 해당하는 음악 불러옴
         combos_sound.append(pygame.mixer.Sound("assets/sounds/SFX_" + str(i + 2) + "Combo.wav"))
 
     #rainbow 보너스점수 graphic
@@ -234,6 +238,7 @@ clicked_check_button_image = 'assets/vector/clicked_checkbox_button.png'
 pvp_win_image = 'assets/vector/pvp_win.png'
 pvp_lose_image = 'assets/vector/pvp_lose.png'
 
+
 #버튼객체 생성
 #def __init__(self, board_width, board_height, x_rate, y_rate, width_rate, height_rate, img='')
 #(현재 보드너비, 현재보드높이, 버튼의 x좌표 위치비율, 버튼의 y좌표 위치비율, 버튼의 너비 길이비율, 버튼의 높이 길이비율)
@@ -307,13 +312,13 @@ def set_volume():
     ui_variables.GameOver_sound.set_volume(music_volume / 10)
     ui_variables.intro_sound.set_volume(music_volume / 10)
     pygame.mixer.music.set_volume(music_volume / 10)
-    for i in range(1, 10):
+    for i in range(1, 10): #10가지의 combo 사운드를 한번에 조절함
         ui_variables.combos_sound[i - 1].set_volume(effect_volume / 10)
 
 
 def draw_image(window, img_path, x, y, width, height):
-    x = x - (width / 2)
-    y = y - (height / 2)
+    x = x - (width / 2) #해당 이미지의 가운데 x좌표
+    y = y - (height / 2) #해당 이미지의 가운데 y좌표
     image = pygame.image.load(img_path)
     image = pygame.transform.smoothscale(image, (width, height))
     window.blit(image, (x, y))
@@ -338,6 +343,9 @@ def draw_block_image(x, y, image):
     draw_image(screen, image, x, y, block_size, block_size)
 
 
+# grid[i][j] = 0 / matrix[tx + j][ty + i] = 0에서
+# 0은 빈 칸 / 1-7은 테트리스 블록 종류 / 8은 ghost / 9은 장애물(벽돌) 에 해당함 = t_block 참고
+
 # Draw game screen
 def draw_board(next1, next2, hold, score, level, goal):
     sidebar_width = int(board_width * 0.5312) #크기 유동적
@@ -353,16 +361,16 @@ def draw_board(next1, next2, hold, score, level, goal):
     grid_n1 = tetrimino.mino_map[next1 - 1][0] #(배열이라-1) 다음 블록의 원래 모양
     grid_n2 = tetrimino.mino_map[next2 - 1][0] #(배열이라-1) 다음 블록의 원래 모양
 
-    for i in range(4): #다음 블록
-        for j in range(4):
+    for i in range(mino_matrix_y): #다음 블록
+        for j in range(mino_matrix_x):
             dx1 = int(board_width * 0.025) + sidebar_width + block_size * j
             dy1 = int(board_height * 0.3743) + block_size * i
             if grid_n1[i][j] != 0: #해당 부분에 블록 존재하면
                 ##draw_block(dx,dy,ui_variables.t_color[grid_n[i][j]])
                 draw_block_image(dx1, dy1, ui_variables.t_block[grid_n1[i][j]]) #블록 이미지 출력
 
-    for i in range(4): #다다음블록
-        for j in range(4):
+    for i in range(mino_matrix_y): #다다음블록
+        for j in range(mino_matrix_x):
             dx2 = int(board_width * 0.145) + sidebar_width + block_size * j
             dy2 = int(board_height * 0.3743) + block_size * i
             if grid_n2[i][j] != 0: #해당 부분에 블록 존재하면
@@ -370,11 +378,11 @@ def draw_board(next1, next2, hold, score, level, goal):
                 draw_block_image(dx2, dy2, ui_variables.t_block[grid_n2[i][j]]) #블록 이미지 출력
 
     # Draw hold mino
-    grid_h = tetrimino.mino_map[hold - 1][0]
+    grid_h = tetrimino.mino_map[hold - 1][0]  #(배열이라-1) 기본 모양
 
-    if hold_mino != -1:
-        for i in range(4):
-            for j in range(4):
+    if hold_mino != -1: #hold 존재X
+        for i in range(mino_matrix_y):
+            for j in range(mino_matrix_x):
                 dx = int(board_width * 0.045) + sidebar_width + block_size * j
                 dy = int(board_height * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
@@ -441,10 +449,10 @@ def draw_1Pboard(next, hold, score, level, goal):
     )
 
     # Draw next mino
-    grid_n = tetrimino.mino_map[next - 1][0]
+    grid_n = tetrimino.mino_map[next - 1][0]  #(배열이라-1) 다음 블록의 원래 모양
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             dx = int(board_width * 0.045) + sidebar_width + block_size * j
             dy = int(board_height * 0.3743) + block_size * i
             if grid_n[i][j] != 0:
@@ -452,11 +460,11 @@ def draw_1Pboard(next, hold, score, level, goal):
                 draw_block_image(dx, dy, ui_variables.t_block[grid_n[i][j]])
 
     # Draw hold mino
-    grid_h = tetrimino.mino_map[hold - 1][0]
+    grid_h = tetrimino.mino_map[hold - 1][0]  #(배열이라-1) 기본 모양
 
     if hold_mino != -1: #기본값이 -1. 즉 hold블록 존재할 떄
-        for i in range(4):
-            for j in range(4):
+        for i in range(mino_matrix_y):
+            for j in range(mino_matrix_x):
                 dx = int(board_width * 0.045) + sidebar_width + block_size * j
                 dy = int(board_height * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
@@ -521,8 +529,8 @@ def draw_2Pboard(next, hold, score, level, goal):
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]
 
-    for i in range(4):  # 16개의 그리드 칸에서 true인 값만 뽑아서 draw.rect
-        for j in range(4):
+    for i in range(mino_matrix_y):  # 16개의 그리드 칸에서 true인 값만 뽑아서 draw.rect
+        for j in range(mino_matrix_x):
             dx = int(board_width * 0.05) + sidebar_width + block_size * j
             dy = int(board_height * 0.3743) + block_size * i
             if grid_n[i][j] != 0:
@@ -532,8 +540,8 @@ def draw_2Pboard(next, hold, score, level, goal):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino_2P != -1:  #기본값이 -1. 즉 hold블록 존재할 떄
-        for i in range(4):
-            for j in range(4):
+        for i in range(mino_matrix_y):
+            for j in range(mino_matrix_x):
                 dx = int(board_width * 0.045) + sidebar_width + block_size * j
                 dy = int(board_height * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
@@ -593,14 +601,14 @@ def draw_mino(x, y, mino, r, matrix): #mino는 모양, r은 회전된 모양 중
         ty += 1 #한칸 밑으로 하강
 
     # Draw ghost
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0: #테트리스 블록에서 해당 행렬위치에 블록 존재하면
                 matrix[tx + j][ty + i] = 8 #테트리스가 쌓일 위치에 8 이라는 ghost 만듦
 
     # Draw mino
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = grid[i][j]
 
@@ -609,14 +617,14 @@ def erase_mino(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
     # Erase ghost
-    for j in range(21):
-        for i in range(10):
+    for j in range(board_y+1):
+        for i in range(board_x):
             if matrix[i][j] == 8:
                 matrix[i][j] = 0
 
     # Erase mino
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0
 
@@ -624,10 +632,10 @@ def erase_mino(x, y, mino, r, matrix):
 def is_bottom(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
-                if (y + i + 1) > 20:   #바닥의 y좌표에 있음(바닥에 닿음)
+                if (y + i + 1) > board_y :   #바닥의 y좌표에 있음(바닥에 닿음)
                     return True
                 elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8: #그 블록위치에 0, 8 아님(즉 블록 존재 함)
                     return True
@@ -637,17 +645,16 @@ def is_bottom(x, y, mino, r, matrix):
 def gravity(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for j in [3, 2, 1, 0]:
-        for i in [3, 2, 1, 0]:
+    for j in range(mino_matrix_x-1, -1, -1): #mino_matrix 4*4 배열이므로 -1 해서 3, 2, 1, 0 index로 for문을 돎
+        for i in range(mino_matrix_y-1, -1, -1):  #mino_matrix 4*4 배열이므로 -1 해서 3, 2, 1, 0 index로 for문을 돎
             if grid[i][j] != 0:
                 dy = y
-                if ((dy + i) == 20 or (matrix[x + j][dy + i+1] != 0)) :
+                if ((dy + i) == board_y or (matrix[x + j][dy + i+1] != 0)) :
                     matrix[x+j][dy+i] = grid[i][j]
                 else :
-                    while((dy + 1 + i) <= 20 and (matrix[x + j][dy + i + 1] == 0)):
+                    while((dy + 1 + i) <= board_y and (matrix[x + j][dy + i + 1] == 0)):
                         dy+=1
                         matrix[x+j][dy+i] = 9
-                        #grid[i][j]
                         matrix[x+j][dy+i-1] = 0
 
 
@@ -655,8 +662,8 @@ def gravity(x, y, mino, r, matrix):
 def is_leftedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
                 if (x + j - 1) < 0:  #맨 왼쪽에 위치함
                     return True
@@ -669,10 +676,10 @@ def is_leftedge(x, y, mino, r, matrix):
 def is_rightedge(x, y, mino, r, matrix):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
-                if (x + j + 1) > 9:  #맨 오른쪽에 위치
+                if (x + j + 1) >= board_x :  #맨 오른쪽에 위치
                     return True
                 elif matrix[x + j + 1][y + i] != 0:
                     return True
@@ -685,10 +692,10 @@ def is_turnable_r(x, y, mino, r, matrix):
     else:
         grid = tetrimino.mino_map[mino - 1][0] #3이면 0번째 모양으로
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:  #테트리스 matrix크기 벗어나면 못돌림
+                if (x + j) < 0 or (x + j) >= board_x or (y + i) < 0 or (y + i) > board_y :  #테트리스 matrix크기 벗어나면 못돌림
                     return False
                 elif matrix[x + j][y + i] != 0:  #해당 자리에 이미 블록이 있으면 못돌림
                     return False
@@ -701,10 +708,10 @@ def is_turnable_l(x, y, mino, r, matrix):
     else:
         grid = tetrimino.mino_map[mino - 1][3]
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
+                if (x + j) < 0 or (x + j) >= board_x or (y + i) < 0 or (y + i) > board_y:
                     return False
                 elif matrix[x + j][y + i] != 0:
                     return False
@@ -715,8 +722,8 @@ def is_turnable_l(x, y, mino, r, matrix):
 def is_stackable(mino, matrix):
     grid = tetrimino.mino_map[mino - 1][0]
 
-    for i in range(4):
-        for j in range(4):
+    for i in range(mino_matrix_y):
+        for j in range(mino_matrix_x):
             # print(grid[i][j], matrix[3 + j][i])
             if grid[i][j] != 0 and matrix[3 + j][i] != 0:
                 return False
@@ -1618,10 +1625,10 @@ while not done:
                 matrix_contents = []
                 combo_value = 0
 
-                for j in range(21):
+                for j in range(board_y+1):
                     is_full = True
-                    for i in range(10):
-                        if matrix[i][j] == 0 or matrix[i][j] == 9 :
+                    for i in range(board_x):
+                        if matrix[i][j] == 0 or matrix[i][j] == 9 : #빈 공간이거나, 장애물블록
                             is_full = False
                     if is_full: # 한 줄 꽉 찼을 때
                         erase_count += 1
@@ -1629,14 +1636,14 @@ while not done:
                         combo_value += 1
                         #rainbow보너스 점수
                         rainbow = [1,2,3,4,5,6,7] #각 mino에 해당하는 숫자
-                        for i in range(10):
+                        for i in range(board_x):
                             matrix_contents.append(matrix[i][j]) #현재 클리어된 줄에 있는 mino 종류들 저장
                         rainbow_check = list(set(matrix_contents).intersection(rainbow)) #현재 클리어된 줄에 있는 mino와 mino의 종류중 겹치는 것 저장
                         if rainbow == rainbow_check: #현재 클리어된 줄에 모든 종류 mino 있다면
                             rainbow_count += 1
 
                         while k > 0:
-                            for i in range(10):
+                            for i in range(board_x):
                                 matrix[i][k] = matrix[i][k - 1]  # 남아있는 블록 한 줄씩 내리기(덮어쓰기)
                             k -= 1
                 if erase_count >= 1:
@@ -1694,12 +1701,6 @@ while not done:
                     previous_time = current_time
                     combo_count = 0
 
-                # 지운 블록이 없으면 콤보 -1
-                #               if is_bottom(dx, dy, mino, rotation) :
-                #                   if erase_count == 0 :
-                #                       combo_count -= 1
-                #                       if combo_count < 0:
-                #                           combo_count = 0
 
                 # Increase level
                 goal -= erase_count
@@ -2068,9 +2069,9 @@ while not done:
                 attack_line = 0
                 attack_line_2P = 0
 
-                for j in range(21):
+                for j in range(board_y+1):
                     is_full = True
-                    for i in range(10):
+                    for i in range(board_x):
                         if matrix[i][j] == 0 or matrix[i][j] == 9:
                             is_full = False
                     if is_full:
@@ -2079,13 +2080,13 @@ while not done:
                         k = j
                         combo_value += 1
                         while k > 0:
-                            for i in range(10):
+                            for i in range(board_x):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
 
-                for j in range(21):
+                for j in range(board_y+1):
                     is_full = True
-                    for i in range(10):
+                    for i in range(board_x):
                         if matrix_2P[i][j] == 0 or matrix_2P[i][j] == 9:
                             is_full = False
                     if is_full:
@@ -2094,31 +2095,25 @@ while not done:
                         k = j
                         combo_value_2P += 1
                         while k > 0:
-                            for i in range(10):
+                            for i in range(board_x):
                                 matrix_2P[i][k] = matrix_2P[i][k - 1]
                             k -= 1
 
                 while attack_line >= 1 : #2p에게 공격 보내기
-                    for i in range(10):
-                        if matrix_2P[i][20-attack_point] == 0 :
-                            matrix_2P[i][20-attack_point] = 9
+                    for i in range(board_x):
+                        if matrix_2P[i][board_y-attack_point] == 0 :
+                            matrix_2P[i][board_y-attack_point] = 9
                     attack_line -= 1
                     attack_point += 1
 
 
                 while attack_line_2P >= 1 :  #1p에게 공격 보내기
-                    for i in range(10):
-                        if matrix[i][20-attack_point_2P] == 0 :
-                            matrix[i][20-attack_point_2P] = 9
+                    for i in range(board_x):
+                        if matrix[i][board_y-attack_point_2P] == 0 :
+                            matrix[i][board_y-attack_point_2P] = 9
                     attack_line_2P -= 1
                     attack_point_2P += 1
 
-
-                # 지운 블록이 없으면 콤보 -1
-                # if erase_count == 0 :
-                # combo_count -= 1
-                # if combo_count < 0:
-                # combo_count = 0
 
                 #1P
                 if erase_count >= 1:
