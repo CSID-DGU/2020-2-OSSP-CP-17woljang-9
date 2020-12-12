@@ -11,8 +11,8 @@ import os
 
 # Define
 block_size = 17  # Height, width of single block
-width = 10  
-height = 20  
+width = 10
+height = 20
 
 board_x = 10
 board_y = 20
@@ -175,6 +175,12 @@ clicked_help_button_image = 'assets/vector/clicked_help_button.png'
 quit_button_image = 'assets/vector/quit_button.png'
 clicked_quit_button_image = 'assets/vector/clicked_quit_button.png'
 
+gravity_button_image = 'assets/vector/gravity_button.png'
+clicked_gravity_button_image = 'assets/vector/clicked_gravity_button.png'
+
+timeattack_button_image = 'assets/vector/timeattack_button.png'
+clicked_timeattack_button_image = 'assets/vector/clicked_timeattack_button.png'
+
 leaderboard_vector = 'assets/vector/leaderboard_vector.png'
 clicked_leaderboard_vector = 'assets/vector/clicked_leaderboard_vector.png'
 
@@ -246,12 +252,14 @@ pvp_lose_image = 'assets/vector/pvp_lose.png'
 mute_button = button(board_width, board_height, 0.5, 0.27, 0.25, 0.45, mute_button_image)
 default_button = button(board_width, board_height, 0.5, 0.27, 0.25, 0.45, default_button_image)
 
-single_button = button(board_width,board_height, 0.15, 0.55, 0.25, 0.45, single_button_image)
-pvp_button = button(board_width, board_height, 0.45, 0.55, 0.25, 0.45, pvp_button_image)
-help_button = button(board_width, board_height, 0.15, 0.8, 0.25, 0.45, help_button_image)
-quit_button = button(board_width, board_height, 0.45, 0.8, 0.25, 0.45, quit_button_image)
+single_button = button(board_width,board_height, 0.12, 0.55, 0.235, 0.435, single_button_image)
+pvp_button = button(board_width, board_height, 0.35, 0.55, 0.235, 0.435, pvp_button_image)
+help_button = button(board_width, board_height, 0.12, 0.8, 0.235, 0.435, help_button_image)
+quit_button = button(board_width, board_height, 0.35, 0.8, 0.235, 0.435, quit_button_image)
+gravity_button = button(board_width, board_height, 0.58, 0.55, 0.235, 0.435, gravity_button_image)
+timeattack_button = button(board_width, board_height, 0.58, 0.8, 0.235, 0.435, timeattack_button_image)
 setting_icon = button(board_width, board_height, 0.9, 0.85, 0.10, 0.15, setting_vector)
-leaderboard_icon = button(board_width, board_height, 0.75, 0.85, 0.15, 0.2, leaderboard_vector)
+leaderboard_icon = button(board_width, board_height, 0.77, 0.85, 0.15, 0.2, leaderboard_vector)
 
 resume_button = button(board_width, board_height, 0.5, 0.23, 0.15, 0.35, resume_button_image)
 restart_button = button(board_width, board_height, 0.5, 0.43, 0.15, 0.35, restart_button_image)
@@ -292,8 +300,8 @@ midiumsize_check_button = button(board_width, board_height, 0.5, 0.45, 0.1875, 0
 bigsize_check_button = button(board_width, board_height, 0.5, 0.65, 0.1875, 0.1444, bigsize_board)
 
 #게임 중 버튼 생성하기위한 버튼객체 리스트 (버튼 전체)
-button_list = [mute_button, default_button, single_button, pvp_button, help_button, quit_button, resume_button, restart_button, setting_button, pause_quit_button, back_button, 
-        ok_button, menu_button, gameover_quit_button, effect_plus_button, effect_minus_button, sound_plus_button, sound_minus_button, level_plus_button, 
+button_list = [mute_button, default_button, single_button, pvp_button, help_button, quit_button, gravity_button, timeattack_button, resume_button, restart_button, setting_button, pause_quit_button, back_button,
+        ok_button, menu_button, gameover_quit_button, effect_plus_button, effect_minus_button, sound_plus_button, sound_minus_button, level_plus_button,
         effect_sound_off_button, music_sound_off_button, effect_sound_on_button, music_sound_on_button, mute_check_button, smallsize_check_button, midiumsize_check_button, bigsize_check_button,
         setting_icon, leaderboard_icon, volume_icon, screen_icon, level_minus_button, combo_minus_button, combo_plus_button, speed_minus_button, speed_plus_button]
 
@@ -1081,6 +1089,8 @@ while not done:
         pvp_button.draw(screen, (0, 0, 0))
         help_button.draw(screen, (0, 0, 0))
         quit_button.draw(screen, (0, 0, 0))
+        gravity_button.draw(screen,(0, 0, 0))
+        timeattack_button.draw(screen,(0, 0, 0))
         setting_icon.draw(screen, (0, 0, 0))
         leaderboard_icon.draw(screen, (0, 0, 0))
         #배경 약간 어둡게
@@ -1175,6 +1185,8 @@ while not done:
         pvp_button.draw(screen, (0, 0, 0))
         help_button.draw(screen, (0, 0, 0))
         quit_button.draw(screen, (0, 0, 0))
+        gravity_button.draw(screen,(0, 0, 0))
+        timeattack_button.draw(screen,(0, 0, 0))
         setting_icon.draw(screen, (0, 0, 0))
         #배경 약간 어둡게
         leaderboard_icon.draw(screen, (0, 0, 0))
@@ -1267,7 +1279,7 @@ while not done:
                     textsize=True
                 if board_width < 1200 :
                     textsize=False
-                
+
                 block_size = int(board_height * 0.045)
                 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE)
 
@@ -1396,6 +1408,8 @@ while not done:
         pvp_button.draw(screen, (0, 0, 0))
         help_button.draw(screen, (0, 0, 0))
         quit_button.draw(screen, (0, 0, 0))
+        gravity_button.draw(screen,(0, 0, 0))
+        timeattack_button.draw(screen,(0, 0, 0))
         setting_icon.draw(screen, (0, 0, 0))
         leaderboard_icon.draw(screen, (0, 0, 0))
         #배경 약간 어둡게
@@ -1459,6 +1473,8 @@ while not done:
         pvp_button.draw(screen, (0, 0, 0))
         help_button.draw(screen, (0, 0, 0))
         quit_button.draw(screen, (0, 0, 0))
+        gravity_button.draw(screen,(0, 0, 0))
+        timeattack_button.draw(screen,(0, 0, 0))
         setting_icon.draw(screen, (0, 0, 0))
         leaderboard_icon.draw(screen, (0, 0, 0))
         #배경 약간 어둡게
@@ -1588,6 +1604,7 @@ while not done:
                             start = False
                             game_status = 'start'
                             game_over = True
+                            gravity_mode = False
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
                         bottom_count += 1
@@ -1928,6 +1945,7 @@ while not done:
             start = False
             game_status = 'start'
             game_over = True
+            time_attack = False
             pygame.time.set_timer(pygame.USEREVENT, 1)
 
         pygame.display.update()
@@ -2218,7 +2236,7 @@ while not done:
                     Change_RATE += 1
                     set_music_playing_speed(CHANNELS, swidth, Change_RATE)
 
-            elif event.type == KEYDOWN: 
+            elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation, matrix)
                 erase_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
 
@@ -2539,7 +2557,7 @@ while not done:
                     outfile.close()
 
                     game_over = False
-                    
+
                     set_initial_values()
 
                     name_location = 0
@@ -2647,6 +2665,14 @@ while not done:
                         first = True
                         pvp = True
                         pygame.mixer.music.play(-1)
+                    if game_status == 'gravity_mode':
+                        first = True
+                        gravity_mode = True
+                        pygame.mixer.music.play(-1)
+                    if game_status == 'time_attack':
+                        first = True
+                        time_attack = True
+                        pygame.mixer.music.play(-1)
                     ui_variables.click_sound.play()
                     game_over = False
                     pause = False
@@ -2690,6 +2716,8 @@ while not done:
             ui_variables.break_sound.set_volume(effect_volume / 10) # 소리 설정 부분도 set_volume 함수에 넣으면 됨
             ui_variables.intro_sound.play()
             first = False
+            gravity_mode = False #이 코드가 없으면 중력모드 게임을 했다가 Restart해서 일반모드로 갈때 중력모드로 게임이 진행됨#
+            time_attack = False
         game_status = ''
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
@@ -2762,6 +2790,16 @@ while not done:
                 else:
                     quit_button.image = quit_button_image
 
+                if gravity_button.isOver_2(pos):
+                    gravity_button.image = clicked_gravity_button_image
+                else:
+                    gravity_button.image = gravity_button_image
+
+                if timeattack_button.isOver_2(pos):
+                    timeattack_button.image = clicked_timeattack_button_image
+                else:
+                    timeattack_button.image = timeattack_button_image
+
                 if setting_icon.isOver(pos):
                     setting_icon.image = clicked_setting_vector
                 else:
@@ -2781,6 +2819,18 @@ while not done:
                 if pvp_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     pvp = True
+                    pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
+                if gravity_button.isOver_2(pos):
+                    ui_variables.click_sound.play()
+                    start = True
+                    gravity_mode = True
+                    pygame.mixer.music.play(-1)
+                    ui_variables.intro_sound.stop()
+                if timeattack_button.isOver_2(pos):
+                    ui_variables.click_sound.play()
+                    start = True
+                    time_attack = True
                     pygame.mixer.music.play(-1)
                     ui_variables.intro_sound.stop()
                 if leaderboard_icon.isOver(pos):
@@ -2816,14 +2866,15 @@ while not done:
 
         draw_image(screen, gamebackground_image , board_width * 0.5, board_height * 0.5, board_width, board_height)
         screen.fill(ui_variables.pinkpurple)
-        
+
         draw_image(screen, background_image, board_width * 0.5, board_height * 0.5, board_width, board_height)
 
         single_button.draw(screen, (0, 0, 0))
         pvp_button.draw(screen, (0, 0, 0))
         help_button.draw(screen, (0, 0, 0))
         quit_button.draw(screen, (0, 0, 0))
-
+        gravity_button.draw(screen,(0, 0, 0))
+        timeattack_button.draw(screen,(0, 0, 0))
         setting_icon.draw(screen, (0, 0, 0))
         leaderboard_icon.draw(screen, (0, 0, 0))
 
