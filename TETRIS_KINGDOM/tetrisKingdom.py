@@ -9,7 +9,8 @@ from random import *
 from pygame.locals import *
 import os
 
-# Define
+# Unchanged values Define 변하지 않는 변수 선언
+
 block_size = 17  # Height, width of single block
 width = 10
 height = 20
@@ -23,22 +24,21 @@ block_size = int(board_height * 0.045)
 mino_matrix_x = 4 #mino는 4*4 배열이어서 이를 for문에 사용
 mino_matrix_y = 4 #mino는 4*4 배열이어서 이를 for문에 사용
 
-framerate = 30  # Bigger -> Slower  기본 블록 하강 속도, 2도 할만 함, 0 또는 음수 이상이어야 함
-framerate_2P = 30
 speed_change = 2 # 레벨별 블록 하강 속도 상승 정도
 
 min_width = 400
 min_height = 225
 mid_width = 1200
 
+total_time = 60 # 타임 어택 시간
+
+initalize = True
+
 pygame.init()
 
 clock = pygame.time.Clock() #창, 화면을 초당 몇번 출력하는가(FPS) clock.tick 높을수록 cpu많이 사용
 screen = pygame.display.set_mode((board_width, board_height), pygame.RESIZABLE) #GUI창 설정하는 변수
-pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 10)
 pygame.display.set_caption("TETRIS KINGDOM") #GUI 창의 이름
-
 
 class ui_variables:
     font_path = "./assets/fonts/OpenSans-Light.ttf"
@@ -422,8 +422,11 @@ def draw_board(next1, next2, hold, score, level, goal):
     # 디버그 출력 코드
     if debug:
         speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
-
-
+    
+    if time_attack:
+        time = total_time - elapsed_time
+        value = ui_variables.h5.render("TIME : "+str(int(time)), 1, ui_variables.real_white)
+        screen.blit(value, (int(board_width * -0.445) + sidebar_width, int(board_height * 0.015)))
     # Place texts. 위치 비율 고정
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
@@ -501,9 +504,6 @@ def draw_1Pboard(next, hold, score, level, goal):
         combo_value = ui_variables.h2.render(str(combo_count), 1, ui_variables.real_white)
     if debug:
         speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
-
-    # Place texts 위치 비율 고정
-    if debug:
         screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
@@ -578,9 +578,6 @@ def draw_2Pboard(next, hold, score, level, goal):
         combo_value = ui_variables.h3.render(str(combo_count), 1, ui_variables.real_white)
     if debug:
         speed_value = ui_variables.h5.render("SPEED : "+str(framerate_2P), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
-
-    # Place texts 위치 비율 고정
-    if debug:
         screen.blit(speed_value, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.015)))
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
@@ -767,38 +764,44 @@ def set_music_playing_speed(CHANNELS, swidth, Change_RATE):
     pygame.mixer.music.play(-1)
 
 def set_initial_values():
-    global combo_count
-    global combo_count_2P
-    global score
-    global level
-    global goal
-    global score_2P
-    global level_2P
-    global goal_2P
-    global bottom_count
-    global bottom_count_2P
-    global hard_drop
-    global hard_drop_2P
-    global attack_point
-    global attack_point_2P
-    global dx, dy
-    global dx_2P, dy_2P
-    global rotation
-    global rotation_2P
-    global mino
-    global mino_2P
-    global next_mino1
-    global next_mino2
-    global next_mino1_2P
-    global hold
-    global hold_2P
-    global hold_mino
-    global hold_mino_2P
-    global framerate
-    global framerate_2P
-    global matrix
-    global matrix_2P
-    global Change_RATE
+    global combo_count, combo_count_2P, score, level, goal, score_2P, level_2P, goal_2P, bottom_count, bottom_count_2P, hard_drop, hard_drop_2P, attack_point, attack_point_2P, dx, dy, dx_2P, dy_2P, rotation, rotation_2P, mino, mino_2P, next_mino1, next_mino2, next_mino1_2P, hold, hold_2P, hold_mino, hold_mino_2P, framerate, framerate_2P, matrix, matrix_2P, Change_RATE, blink, start, pause, done, game_over, leader_board, setting, volume_setting, screen_setting, music_volume, effect_volume, pvp, help, gravity_mode, debug, d, e, b, u, g, time_attack, start_ticks, textsize, CHANNELS, swidth, name_location, name, previous_time, current_time, pause_time, lines, leaders, volume, game_status, framerate_blockmove, framerate_2P_blockmove, game_speed
+
+    framerate = 30 # Bigger -> Slower  기본 블록 하강 속도, 2도 할만 함, 0 또는 음수 이상이어야 함
+    framerate_blockmove = framerate * 3 # 블록 이동 시 속도
+    game_speed = framerate * 20 # 게임 기본 속도
+    framerate_2P = 30 # 2P
+    framerate_2P_blockmove = framerate_2P * 3 # 블록 이동 시 속도
+    game_speed_2P = framerate_2P * 20 # 2P 게임 기본 속도
+
+    # Initial values
+    blink = False
+    start = False
+    pause = False
+    done = False
+    game_over = False
+    leader_board = False
+    setting = False
+    volume_setting = False
+    screen_setting = False
+    music_volume = 5
+    effect_volume = 5
+    pvp = False
+    help = False
+    gravity_mode = False #이 코드가 없으면 중력모드 게임을 했다가 Restart해서 일반모드로 갈때 중력모드로 게임이 진행됨#
+    debug = False
+    d = False
+    e = False
+    b = False
+    u = False
+    g = False
+    time_attack = False
+    start_ticks = pygame.time.get_ticks()
+    textsize = False
+
+    # 게임 음악 속도 조절 관련 변수
+    CHANNELS = 1
+    swidth = 2
+    Change_RATE = 2
 
     combo_count = 0
     combo_count_2P = 0
@@ -815,111 +818,51 @@ def set_initial_values():
     attack_point = 0
     attack_point_2P = 0
 
-    dx, dy = 3, 0
+    dx, dy = 3, 0  # Minos location status
     dx_2P, dy_2P = 3, 0
-    rotation = 0
+    rotation = 0  # Minos rotation status
     rotation_2P = 0
-    mino = randint(1, 7)
+    mino = randint(1, 7)  # Current mino #테트리스 블록 7가지 중 하나
     mino_2P = randint(1, 7)
-    next_mino1 = randint(1, 7)
-    next_mino2 = randint(1, 7)
+    next_mino1 = randint(1, 7)  # Next mino1 # 다음 테트리스 블록 7가지 중 하나
+    next_mino2 = randint(1, 7)  # Next mino2 # 다음 테트리스 블록 7가지 중 하나
     next_mino1_2P = randint(1, 7)
-    hold = False
+    hold = False  # Hold status
     hold_2P = False
-    hold_mino = -1
+    hold_mino = -1  # Holded mino #현재 hold하는 것 없는 상태
     hold_mino_2P = -1
+    textsize = False
 
-    framerate = 30
-    framerate_2P = 30
+    name_location = 0
+    name = [65, 65, 65]
 
-    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+    previous_time = pygame.time.get_ticks()
+    current_time = pygame.time.get_ticks()
+    pause_time = pygame.time.get_ticks()
+
+    with open('leaderboard.txt') as f:
+        lines = f.readlines()
+    lines = [line.rstrip('\n') for line in open('leaderboard.txt')]  #leaderboard.txt 한줄씩 읽어옴
+
+    leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
+    for i in lines:
+        leaders[i.split(' ')[0]] = int(i.split(' ')[1])
+    leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
+
+    matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
     matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
-    Change_RATE = 2
 
+    volume = 1.0 # 필요 없는 코드, effect_volume으로 대체 가능
+    ui_variables.click_sound.set_volume(volume) # 필요 없는 코드, 전체 코드에서 click_sound를 effect_volume로 설정하는 코드 하나만 있으면 됨
+    pygame.mixer.init()
+    ui_variables.intro_sound.set_volume(music_volume / 10)
+    ui_variables.break_sound.set_volume(effect_volume / 10) # 소리 설정 부분도 set_volume 함수에 넣으면 됨
+    ui_variables.intro_sound.play()
+    game_status = ''
     pygame.mixer.music.load("assets/sounds/SFX_BattleMusic.wav")
 
-# Initial values
-blink = False
-start = False
-pause = False
-done = False
-game_over = False
-leader_board = False
-setting = False
-volume_setting = False
-screen_setting = False
-keyboard_setting = False
-music_volume = 5
-effect_volume = 5
-pvp = False
-help = False
-gravity_mode = False
-debug = False
-d = False
-e = False
-b = False
-u = False
-g = False
-first = True
-time_attack = False
-total_time = 60 # 타임 어택 시간
-start_ticks = pygame.time.get_ticks()
-textsize = False
-
-# 게임 음악 속도 조절 관련 변수
-CHANNELS = 1
-swidth = 2
-Change_RATE = 2
-
-combo_count = 0
-combo_count_2P = 0
-score = 0
-level = 1
-goal = level * 5
-score_2P = 0
-level_2P = 1
-goal_2P = level_2P * 5
-bottom_count = 0
-bottom_count_2P = 0
-hard_drop = False
-hard_drop_2P = False
-attack_point = 0
-attack_point_2P = 0
-
-dx, dy = 3, 0  # Minos location status
-dx_2P, dy_2P = 3, 0
-rotation = 0  # Minos rotation status
-rotation_2P = 0
-mino = randint(1, 7)  # Current mino #테트리스 블록 7가지 중 하나
-mino_2P = randint(1, 7)
-next_mino1 = randint(1, 7)  # Next mino1 # 다음 테트리스 블록 7가지 중 하나
-next_mino2 = randint(1, 7)  # Next mino2 # 다음 테트리스 블록 7가지 중 하나
-next_mino1_2P = randint(1, 7)
-hold = False  # Hold status
-hold_2P = False
-hold_mino = -1  # Holded mino #현재 hold하는 것 없는 상태
-hold_mino_2P = -1
-textsize = False
-
-name_location = 0
-name = [65, 65, 65]
-
-previous_time = pygame.time.get_ticks()
-current_time = pygame.time.get_ticks()
-pause_time = pygame.time.get_ticks()
-
-with open('leaderboard.txt') as f:
-    lines = f.readlines()
-lines = [line.rstrip('\n') for line in open('leaderboard.txt')]  #leaderboard.txt 한줄씩 읽어옴
-
-leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-for i in lines:
-    leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
-
-matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
-
-matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
+set_initial_values()
+pygame.time.set_timer(pygame.USEREVENT, 10)
 
 ###########################################################
 # Loop Start
@@ -1330,19 +1273,12 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if pause_quit_button.isOver_2(pos):
                     ui_variables.click_sound.play()
-                    first = True
                     done = True
                 if setting_button.isOver_2(pos):
                     ui_variables.click_sound.play()
-                    first = True
                     setting = True
                 if restart_button.isOver_2(pos):
-                    first = True
                     ui_variables.click_sound.play()
-
-                    set_initial_values()
-                    name_location = 0
-                    name = [65, 65, 65]
 
                     pause = False
                     start = False
@@ -1522,6 +1458,8 @@ while not done:
             combo_minus_button.draw(screen, (0, 0, 0))
             speed_plus_button.draw(screen, (0, 0, 0))
             speed_minus_button.draw(screen, (0, 0, 0))
+        if time_attack:
+            elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
             if event.type == QUIT:
@@ -1531,9 +1469,9 @@ while not done:
                 if not game_over:
                     keys_pressed = pygame.key.get_pressed()
                     if keys_pressed[K_DOWN]:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 1) #프레임 시간만큼 빠르게 소프트드롭
+                        pygame.time.set_timer(pygame.USEREVENT, framerate) #프레임 시간만큼 빠르게 소프트드롭
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 20)
+                        pygame.time.set_timer(pygame.USEREVENT, game_speed)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation, matrix)
@@ -1913,7 +1851,6 @@ while not done:
                         if framerate > 2:
                             framerate = int(framerate - speed_change)
                     pygame.display.update()
-        elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산
 
         if time_attack and total_time - elapsed_time < 0: #타임어택 모드이면서, 60초가 지났으면
             ui_variables.GameOver_sound.play()
@@ -1933,12 +1870,12 @@ while not done:
                 if not game_over: 
                     keys_pressed = pygame.key.get_pressed()
                     if keys_pressed[K_s]: #프레임만큼의 시간으로 소프트드롭 되도록 함
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 1) 
+                        pygame.time.set_timer(pygame.USEREVENT, framerate) 
                     elif keys_pressed[K_DOWN] :  #프레임만큼의 시간으로 소프트드롭 되도록 함
-                        pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 1)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate_2P)
                     else :
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 20)  #기본 게임속도
-                        pygame.time.set_timer(pygame.USEREVENT, framerate_2P * 20)
+                        pygame.time.set_timer(pygame.USEREVENT, game_speed)  #기본 게임속도
+                        pygame.time.set_timer(pygame.USEREVENT, game_speed_2P)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation, matrix)
@@ -1990,8 +1927,6 @@ while not done:
                                 ui_variables.click_sound.play()
                                 game_over = False
                                 pause = False
-
-                                set_initial_values()
                     else:
                         bottom_count += 1
 
@@ -2033,8 +1968,6 @@ while not done:
                                 ui_variables.click_sound.play()
                                 game_over = False
                                 pause = False
-
-                                set_initial_values()
                     else:
                         bottom_count_2P += 1
 
@@ -2404,7 +2337,7 @@ while not done:
                     if not is_leftedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_blockmove)
                         dx -= 1
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
@@ -2414,7 +2347,7 @@ while not done:
                     if not is_rightedge(dx, dy, mino, rotation, matrix):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_blockmove)
                         dx += 1
                     draw_mino(dx, dy, mino, rotation, matrix)
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
@@ -2425,7 +2358,7 @@ while not done:
                     if not is_leftedge(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate_2P * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_2P_blockmove)
                         dx_2P -= 1
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
@@ -2435,7 +2368,7 @@ while not done:
                     if not is_rightedge(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P):
                         ui_variables.move_sound.play()
                         keys_pressed = pygame.key.get_pressed()
-                        pygame.time.set_timer(pygame.KEYUP, framerate_2P * 3)
+                        pygame.time.set_timer(pygame.KEYUP, framerate_2P_blockmove)
                         dx_2P += 1
                     draw_mino(dx_2P, dy_2P, mino_2P, rotation_2P, matrix_2P)
                     draw_mino(dx, dy, mino, rotation, matrix)
@@ -2514,21 +2447,6 @@ while not done:
                     outfile.close()
 
                     game_over = False
-
-                    set_initial_values()
-
-                    name_location = 0
-                    name = [65, 65, 65] #A, A, A
-
-                    with open('leaderboard.txt') as f:
-                        lines = f.readlines()
-                    lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
-                    leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-                    for i in lines:
-                        leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-                    leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
-
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
                 #name은 3글자로 name_locationd은 0~2, name[name_location]은 영어 아스키코드로 65~90. 
@@ -2579,72 +2497,36 @@ while not done:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if ok_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    first = True
-
                     #현재 1p점수만 저장함
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
-
                     game_over = False
-
-                    set_initial_values()
-
-                    name_location = 0
-                    name = [65, 65, 65]  #A, A, A
-
-                    with open('leaderboard.txt') as f:
-                        lines = f.readlines()
-                    lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
-                    leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-                    for i in lines:
-                        leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-                    leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
-
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
                 if menu_button.isOver(pos):
                     ui_variables.click_sound.play()
-                    start = False
-                    pvp = False
                     game_over = False
-                    first = True
-
-                    set_initial_values()
-
-                    name_location = 0
-                    name = [65, 65, 65]  #A, A, A
 
                 if restart_button.isOver_2(pos):
                     if game_status == 'start':
-                        first = True
                         start = True
                         pygame.mixer.music.play(-1)
                     if game_status == 'pvp':
-                        first = True
                         pvp = True
                         pygame.mixer.music.play(-1)
                     if game_status == 'gravity_mode':
-                        first = True
                         gravity_mode = True
                         pygame.mixer.music.play(-1)
                     if game_status == 'time_attack':
-                        first = True
                         time_attack = True
                         pygame.mixer.music.play(-1)
                     ui_variables.click_sound.play()
                     game_over = False
                     pause = False
 
-                    set_initial_values()
-
-                    name_location = 0
-                    name = [65, 65, 65]  #A, A, A
-
                 if resume_button.isOver_2(pos):
                     pause = False
-                    first = True
                     ui_variables.click_sound.play()
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
@@ -2670,17 +2552,11 @@ while not done:
 
     # Start screen
     else:
-        if first:
-            volume = 1.0 # 필요 없는 코드, effect_volume으로 대체 가능
-            ui_variables.click_sound.set_volume(volume) # 필요 없는 코드, 전체 코드에서 click_sound를 effect_volume로 설정하는 코드 하나만 있으면 됨
-            pygame.mixer.init()
-            ui_variables.intro_sound.set_volume(music_volume / 10)
-            ui_variables.break_sound.set_volume(effect_volume / 10) # 소리 설정 부분도 set_volume 함수에 넣으면 됨
-            ui_variables.intro_sound.play()
-            first = False
-            gravity_mode = False #이 코드가 없으면 중력모드 게임을 했다가 Restart해서 일반모드로 갈때 중력모드로 게임이 진행됨#
-            time_attack = False
-        game_status = ''
+        # 변수 선언 및 초기화
+        if initalize:
+            set_initial_values()
+        initalize = False
+
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
             if event.type == QUIT:
@@ -2783,23 +2659,27 @@ while not done:
                     ui_variables.click_sound.play()
                     previous_time = pygame.time.get_ticks()
                     start = True
+                    initalize = True
                     pygame.mixer.music.play(-1)
                     ui_variables.intro_sound.stop()
                 if pvp_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     pvp = True
+                    initalize = True
                     pygame.mixer.music.play(-1)
                     ui_variables.intro_sound.stop()
                 if gravity_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     start = True
                     gravity_mode = True
+                    initalize = True
                     pygame.mixer.music.play(-1)
                     ui_variables.intro_sound.stop()
                 if timeattack_button.isOver_2(pos):
                     ui_variables.click_sound.play()
                     start = True
                     time_attack = True
+                    initalize = True
                     pygame.mixer.music.play(-1)
                     ui_variables.intro_sound.stop()
                 if leaderboard_icon.isOver(pos):
