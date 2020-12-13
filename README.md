@@ -50,19 +50,19 @@ Single, PvP, Gravity, Time Attack 총 4가지 게임 모드가 있으며 특정 
 * Rainbow count: 누적 레인보우 달성 횟수(초기화 X)
 
 ## Screenshots
-<img src="assets/Screenshots/startscreen.png" width="500">  
-<img src="assets/Screenshots/single.png" width="500">  
-<img src="assets/Screenshots/pvp.png" width="500">  
-<img src="assets/Screenshots/gravity.png" width="500">  
-<img src="assets/Screenshots/debug.png" width="500">  
-<img src="assets/Screenshots/paused.png" width="500">  
-<img src="assets/Screenshots/gameover.png" width="500">  
-<img src="assets/Screenshots/gameoverpvp.png" width="500">  
-<img src="assets/Screenshots/help.png" width="500">  
-<img src="assets/Screenshots/leaderboard.png" width="500">  
-<img src="assets/Screenshots/setting.png" width="500">  
-<img src="assets/Screenshots/settingsound.png" width="500">  
-<img src="assets/Screenshots/settingdisplay.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/startscreen.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/single.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/pvp.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/gravity.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/debug.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/paused.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/gameover.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/gameoverpvp.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/help.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/leaderboard.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/setting.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/settingsound.png" width="500">  
+<img src="TETRIS_KINGDOM/assets/Screenshots/settingdisplay.png" width="500">  
 
 ## Etc
 [issues and pull requests](캡처사진 모아둔 폴더)  
