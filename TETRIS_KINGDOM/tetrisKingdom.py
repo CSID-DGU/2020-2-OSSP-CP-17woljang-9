@@ -290,8 +290,8 @@ level_plus_button = button(board_width, board_height, 0.63, 0.7719, 0.0625, 0.11
 level_minus_button = button(board_width, board_height, 0.56, 0.7719, 0.0625, 0.1111, minus_button_image)
 combo_plus_button = button(board_width, board_height, 0.63, 0.9419, 0.0625, 0.1111, plus_button_image)
 combo_minus_button =button(board_width, board_height, 0.56, 0.9419, 0.0625, 0.1111, minus_button_image)
-speed_plus_button = button(board_width, board_height, 0.69, 0.0419, 0.0625, 0.1111, plus_button_image)
-speed_minus_button =button(board_width, board_height, 0.56, 0.0419, 0.0625, 0.1111, minus_button_image)
+speed_plus_button = button(board_width, board_height, 0.18, 0.12, 0.055, 0.09, plus_button_image)
+speed_minus_button =button(board_width, board_height, 0.035, 0.12, 0.055, 0.09, minus_button_image)
 
 #음소거 추가#
 effect_sound_off_button = button(board_width, board_height, 0.65, 0.73, 0.08, 0.15, sound_off_button_image)
@@ -414,6 +414,13 @@ def draw_board(next1, next2, hold, score, level, goal):
         level_value = ui_variables.h4.render(str(level), 1, ui_variables.real_white)
         text_combo = ui_variables.h5.render("COMBO", 1, ui_variables.real_white)
         combo_value = ui_variables.h4.render(str(combo_count), 1, ui_variables.real_white)
+        if debug:
+            speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+        if time_attack:
+            time = total_time - elapsed_time
+            value = ui_variables.h5.render("TIME : "+str(int(time)), 1, ui_variables.real_white)
+            screen.blit(value, (int(board_width * -0.445) + sidebar_width, int(board_height * 0.015)))
+    
     if textsize==True:
         text_hold = ui_variables.h3.render("HOLD", 1, ui_variables.real_white)
         text_next = ui_variables.h3.render("NEXT", 1, ui_variables.real_white)
@@ -423,14 +430,17 @@ def draw_board(next1, next2, hold, score, level, goal):
         level_value = ui_variables.h2.render(str(level), 1, ui_variables.real_white)
         text_combo = ui_variables.h3.render("COMBO", 1, ui_variables.real_white)
         combo_value = ui_variables.h2.render(str(combo_count), 1, ui_variables.real_white)
-    # 디버그 출력 코드
-    if debug:
-        speed_value = ui_variables.h5.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+        if debug:
+            speed_value = ui_variables.h3.render("SPEED : "+str(framerate), 1, ui_variables.real_white) #speed를 알려주는 framerate(기본값 30. 빨라질 수록 숫자 작아짐)
+        if time_attack:
+            time = total_time - elapsed_time
+            value = ui_variables.h2.render("TIME : "+str(int(time)), 1, ui_variables.real_white)
+            screen.blit(value, (int(board_width * -0.445) + sidebar_width, int(board_height * 0.015)))
     
-    if time_attack:
-        time = total_time - elapsed_time
-        value = ui_variables.h5.render("TIME : "+str(int(time)), 1, ui_variables.real_white)
-        screen.blit(value, (int(board_width * -0.445) + sidebar_width, int(board_height * 0.015)))
+    #if time_attack:
+    #    time = total_time - elapsed_time
+    #    value = ui_variables.h5.render("TIME : "+str(int(time)), 1, ui_variables.real_white)
+    #    screen.blit(value, (int(board_width * -0.445) + sidebar_width, int(board_height * 0.015)))
     # Place texts. 위치 비율 고정
     screen.blit(text_hold, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.0374)))
     screen.blit(text_next, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.2780)))
@@ -441,7 +451,7 @@ def draw_board(next1, next2, hold, score, level, goal):
     screen.blit(text_combo, (int(board_width * 0.045) + sidebar_width, int(board_height * 0.8395)))
     screen.blit(combo_value, (int(board_width * 0.055) + sidebar_width, int(board_height * 0.8823)))
     if debug:
-        screen.blit(speed_value, (int(board_width * 0.060) + sidebar_width, int(board_height * 0.015)))
+        screen.blit(speed_value, (int(board_width * 0.065), int(board_height * 0.1)))
 
     # Draw board
     for x in range(width):
@@ -1608,6 +1618,7 @@ while not done:
                         ui_variables.tetris_sound.play()
                         score += 1000 * level * erase_count + 4 * combo_count
                         screen.blit(ui_variables.combo_4ring, (250, 160)) #blit(이미지, 위치)
+                    total_time += 5 # 콤보 시 시간 5초 연장
 
                     for i in range(1, 11):
                         if combo_count == i:  # 1 ~ 10 콤보 이미지
@@ -1770,6 +1781,42 @@ while not done:
                     screen.fill(ui_variables.real_white)
                     draw_image(screen, gamebackground_image , board_width * 0.5, board_height * 0.5, board_width, board_height) #(window, 이미지주소, x좌표, y좌표, 너비, 높이)
                     draw_board(next_mino1, next_mino2, hold_mino, score, level, goal)
+                # rainbow test
+                elif event.key == K_F1:
+                    ui_variables.click_sound.play()
+                    matrix[0][20] = 7 #빨
+                    matrix[1][20] = 7 #빨
+                    matrix[2][20] = 3#주
+                    matrix[3][20] = 3#주
+                    matrix[4][20] = 4#노
+                    matrix[5][20] = 5#초
+                    matrix[6][20] = 5#초
+                    matrix[7][20] = 1#하
+                    matrix[8][20] = 2#파
+                    mino = 6
+                # debug mode block change
+                elif debug:
+                    if event.key == K_1:
+                        ui_variables.click_sound.play()
+                        mino = 1 #빨
+                    if event.key == K_2:
+                        ui_variables.click_sound.play()
+                        mino = 2 #빨
+                    if event.key == K_3:
+                        ui_variables.click_sound.play()
+                        mino = 3 #빨
+                    if event.key == K_4:
+                        ui_variables.click_sound.play()
+                        mino = 4 #빨
+                    if event.key == K_5:
+                        ui_variables.click_sound.play()
+                        mino = 5 #빨
+                    if event.key == K_6:
+                        ui_variables.click_sound.play()
+                        mino = 6 #빨
+                    if event.key == K_7:
+                        ui_variables.click_sound.play()
+                        mino = 7 #빨
             
             elif event.type == VIDEORESIZE:
                 board_width = event.w
